@@ -9,29 +9,47 @@ package's.
 
 ``BackspaceCore`` (from Phase 3 onward) is the facade: it owns a session-local
 ``FactNotebook`` and ``DependencyGraph`` and exposes their operations as one
-surface. As of Phase 5 it also exposes ``invalidate``/``invalidate_many``, but
-deliberately does *not* call them from ``assert_fact`` - that wiring, and
-recomputation planning, are later phases' work. Every facade method here is a
-thin delegation; this file decides nothing on its own that ``facts.py``,
-``graph.py`` or ``invalidation.py`` doesn't already decide.
+surface. It exposes the full read side of the pipeline - ``assert_fact`` ->
+(nothing automatic yet) -> ``invalidate`` -> ``plan_recompute`` - but
+deliberately does not wire the arrows itself: a CHANGED ``assert_fact`` still
+returns ``invalidation=None``/``plan=None``, and ``invalidate`` never calls
+``plan_recompute`` on its own. Phase 7 adds the claim ledger on top the same
+way - ``invalidate`` still only flips a spoken claim's status to
+``INVALIDATED`` and classifies it into ``Invalidation.
+spoken_invalidated_claim_ids``; nothing calls ``retract_claim`` automatically
+just because a claim landed there. Wiring these stages together end to end is
+a later phase's work, once each has been independently verified. Every facade
+method here is a thin delegation; this file decides nothing on its own that
+``facts.py``, ``graph.py``, ``invalidation.py``, ``planner.py`` or
+``claims.py`` doesn't already decide. The one piece of state this file itself
+owns is ``_retractions`` (Phase 7) - the session-scoped record of "has this
+claim already been retracted", which belongs on the facade rather than in any
+one of those modules since it is about the retraction *act*'s idempotency,
+not about any single object's own fields.
 """
 
 from __future__ import annotations
 
 import time
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from enum import Enum
 from typing import Any, Sequence
 
 from .changes import ChangeKind, ChangeSet
-from .claims import Claim
+from .claims import Claim, ClaimStatus
+from .claims import get_claim_history as _get_claim_history
+from .claims import invalidate_claim as _invalidate_claim
+from .claims import mark_claim_spoken as _mark_claim_spoken
+from .claims import require_claim_retractable as _require_claim_retractable
+from .claims import supersede_claim as _supersede_claim
 from .facts import Fact, FactNotebook
 from .graph import Dependency, DependencyGraph, DependencyKind, WorkItem
 from .invalidation import Invalidation
 from .invalidation import invalidate as _invalidate
 from .invalidation import invalidate_many as _invalidate_many
 from .planner import RecomputationPlan
+from .planner import plan_recompute as _plan_recompute
 
 
 @dataclass
@@ -64,12 +82,14 @@ class FactUpdate:
 
 @dataclass
 class Retraction:
-    """The result a future ``retract_claim`` will return.
+    """The result ``BackspaceCore.retract_claim`` (Phase 7) returns.
 
     Distinct from ``Invalidation``: an invalidation is graph-wide bookkeeping
     triggered by a fact change; a retraction is the user-facing act of taking
     back one already-spoken claim, and carries the reason a person reading
-    the transcript would need.
+    the transcript would need. ``previous_claim`` is a snapshot of the claim
+    as it stood *before* retraction (status ``INVALIDATED``, ``spoken_at``
+    set, original ``text``) - not the live, now-``RETRACTED`` object.
     """
 
     claim_id: str
@@ -163,6 +183,11 @@ class BackspaceCore:
     def __init__(self) -> None:
         self.facts = FactNotebook()
         self.graph = DependencyGraph()
+        # Session-scoped: the one canonical Retraction per claim_id, once
+        # retract_claim succeeds for it. Lives here, not on DependencyGraph
+        # or Claim, because "has this been retracted" is state about the
+        # retraction *act* (idempotency), not about the claim's own fields.
+        self._retractions: dict[str, Retraction] = {}
 
     # -- fact operations ---------------------------------------------------
     def assert_fact(
@@ -204,14 +229,28 @@ class BackspaceCore:
         return self.facts.get_fact_history(key)
 
     def snapshot(self) -> dict[str, Any]:
-        """A read-only, serialisation-friendly dump of this session's facts."""
-        return {"facts": self.facts.snapshot()}
+        """A read-only, serialisation-friendly dump of this session's facts,
+        claims (with their lifecycle state - status, spoken_at, supersession,
+        invalidation reason) and retractions. Every value is built fresh via
+        each object's own ``to_dict()``; nothing here exposes a live,
+        mutable internal collection."""
+        return {
+            "facts": self.facts.snapshot(),
+            "claims": {
+                claim_id: self.graph.get_claim(claim_id).to_dict()
+                for claim_id in self.graph.all_claim_ids()
+            },
+            "retractions": {
+                claim_id: retraction.to_dict() for claim_id, retraction in self._retractions.items()
+            },
+        }
 
     def reset(self) -> None:
-        """Clear this instance's notebook and graph. Other ``BackspaceCore``
-        instances are untouched."""
+        """Clear this instance's notebook, graph and retraction ledger.
+        Other ``BackspaceCore`` instances are untouched."""
         self.facts.reset()
         self.graph.reset()
+        self._retractions.clear()
 
     # -- dependency-graph operations -----------------------------------------
     def register_work(self, work: WorkItem) -> WorkItem:
@@ -232,6 +271,84 @@ class BackspaceCore:
     def get_transitive_dependents(self, node_id: str) -> list[str]:
         return self.graph.get_transitive_dependents(node_id)
 
+    # -- claim ledger -----------------------------------------------------------
+    def get_claim(self, claim_id: str) -> Claim | None:
+        return self.graph.get_claim(claim_id)
+
+    def get_claim_history(self, claim_id: str) -> list[Claim]:
+        """The full supersession chain containing ``claim_id`` - see
+        ``claims.get_claim_history``."""
+        return _get_claim_history(self.graph, claim_id)
+
+    def mark_claim_spoken(self, claim_id: str) -> None:
+        """Record that ``claim_id`` was actually said to the user. Idempotent
+        - see ``claims.mark_claim_spoken``. Raises ``ClaimNotFoundError`` for
+        an unregistered id."""
+        _mark_claim_spoken(self.graph, claim_id)
+
+    def invalidate_claim(self, claim_id: str, reason: str) -> None:
+        """Mark one claim invalid directly, outside the bulk graph walk -
+        see ``claims.invalidate_claim``. Does not create a Retraction; call
+        ``retract_claim`` explicitly for a claim that was spoken."""
+        _invalidate_claim(self.graph, claim_id, reason)
+
+    def retract_claim(
+        self, claim_id: str, reason: str, *, changed_facts: list[Fact] | None = None
+    ) -> Retraction:
+        """Record the retraction of an already-spoken, already-invalidated
+        claim.
+
+        Raises ``ClaimNotFoundError``/``ClaimNotSpokenError``/
+        ``ClaimNotInvalidatedError`` (from ``claims.py``) if ``claim_id``
+        cannot be retracted - see ``claims.require_claim_retractable`` for
+        the exact rule. Idempotent: a second call for the same ``claim_id``
+        returns the *same* ``Retraction`` unchanged (the given ``reason``/
+        ``changed_facts`` are ignored on a repeat call) - one canonical
+        retraction per claim, matching ``register_work``/``register_claim``'s
+        established first-registration-wins convention.
+
+        ``changed_facts`` is optional context ("which fact change caused
+        this"), not required: a caller with only a ``claim_id`` and a reason
+        string can still retract; a caller that already has an
+        ``Invalidation``'s ``changed_facts`` on hand can thread it through
+        for a more complete structured record.
+        """
+        existing = self._retractions.get(claim_id)
+        if existing is not None:
+            return existing
+
+        claim = _require_claim_retractable(self.graph, claim_id)  # raises if ineligible
+        # Snapshot *before* mutating - the same discipline FactNotebook uses
+        # for a superseded Fact: `previous_claim` must show the claim as it
+        # was (status=INVALIDATED, spoken_at set, original text) rather than
+        # the post-retraction state the live object moves on to.
+        previous_claim = replace(claim)
+
+        claim.status = ClaimStatus.RETRACTED
+
+        retraction = Retraction(
+            claim_id=claim_id,
+            reason=reason,
+            previous_claim=previous_claim,
+            changed_facts=list(changed_facts) if changed_facts else [],
+            source="backspace_core",
+        )
+        self._retractions[claim_id] = retraction
+        claim.retraction_id = retraction.retraction_id
+        return retraction
+
+    def get_retraction(self, claim_id: str) -> Retraction | None:
+        """The canonical Retraction for ``claim_id``, if one has been
+        recorded - ``None`` otherwise (never raises for an unknown id,
+        matching this package's lenient-read convention for queries)."""
+        return self._retractions.get(claim_id)
+
+    def supersede_claim(self, old_claim_id: str, new_claim: Claim) -> Claim:
+        """Register ``new_claim`` as the replacement for ``old_claim_id`` -
+        see ``claims.supersede_claim``. Does not generate ``new_claim``
+        itself; that is recomputation's job, out of scope for this phase."""
+        return _supersede_claim(self.graph, old_claim_id, new_claim)
+
     # -- invalidation ---------------------------------------------------------
     def invalidate(self, changeset: ChangeSet) -> Invalidation:
         """Compute what becomes stale downstream of one ChangeSet, against
@@ -244,3 +361,12 @@ class BackspaceCore:
         """Same as ``invalidate``, merged across a batch of ChangeSets - see
         ``invalidation.invalidate_many`` for the exact semantics."""
         return _invalidate_many(self.graph, changesets)
+
+    # -- recomputation planning -------------------------------------------------
+    def plan_recompute(self, invalidation: Invalidation) -> RecomputationPlan:
+        """Turn an Invalidation into a deterministic recomputation plan
+        against this instance's own graph. Read-only, never executes
+        anything - see ``planner.plan_recompute``. Not called automatically
+        from ``invalidate`` or ``assert_fact``; that wiring is a later
+        phase's job."""
+        return _plan_recompute(self.graph, invalidation)

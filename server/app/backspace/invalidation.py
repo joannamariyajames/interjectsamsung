@@ -53,6 +53,15 @@ class Invalidation:
     kept_work_ids: list[str] = field(default_factory=list)
     invalidated_work_ids: list[str] = field(default_factory=list)
     invalidated_claim_ids: list[str] = field(default_factory=list)
+    # Phase 7: which of invalidated_claim_ids had already been spoken to the
+    # user at the moment of invalidation, and which hadn't - the exact
+    # distinction the claim ledger's silent-vs-retraction-eligible rule
+    # turns on. Both are subsets of invalidated_claim_ids, computed once by
+    # invalidate_many() (which already visits each claim to flip its status,
+    # so checking spoken_at there is free) rather than left for every caller
+    # to recompute by re-reading claim.spoken_at themselves.
+    spoken_invalidated_claim_ids: list[str] = field(default_factory=list)
+    unspoken_invalidated_claim_ids: list[str] = field(default_factory=list)
     affected_dependencies: list[Dependency] = field(default_factory=list)
     reason: str = ""
     created_at: float = field(default_factory=time.time)
@@ -86,6 +95,8 @@ class Invalidation:
             "kept_work_ids": list(self.kept_work_ids),
             "invalidated_work_ids": list(self.invalidated_work_ids),
             "invalidated_claim_ids": list(self.invalidated_claim_ids),
+            "spoken_invalidated_claim_ids": list(self.spoken_invalidated_claim_ids),
+            "unspoken_invalidated_claim_ids": list(self.unspoken_invalidated_claim_ids),
             "affected_dependencies": [d.to_dict() for d in self.affected_dependencies],
             "affected_dependency_ids": self.affected_dependency_ids,
             "reason": self.reason,
@@ -203,18 +214,28 @@ def invalidate_many(graph: DependencyGraph, changesets: Sequence[ChangeSet]) -> 
         if work is not None:
             work.status = WorkStatus.STALE
 
+    spoken_invalidated_claim_ids: list[str] = []
+    unspoken_invalidated_claim_ids: list[str] = []
     for claim_id in invalidated_claim_ids:
         claim = graph.get_claim(claim_id)
         if claim is not None:
             claim.status = ClaimStatus.INVALIDATED
             # `claim.spoken_at` is deliberately left untouched. A claim that
             # was already spoken keeps its spoken_at timestamp even after
-            # being invalidated, so a later phase can tell "safe to drop
-            # silently" (spoken_at is None) apart from "needs a user-visible
-            # retraction" (spoken_at is not None) just by reading that one
-            # field - without this function needing to know what to do
-            # about it. That decision, and the rest of the claim lifecycle
-            # state machine, belongs to a later phase.
+            # being invalidated, so a later phase (the claim ledger, Phase 7)
+            # can tell "safe to drop silently" (spoken_at is None) apart from
+            # "needs a user-visible retraction" (spoken_at is not None) just
+            # by reading that one field. This function still does not decide
+            # what to do about that distinction - it only classifies the
+            # already-computed invalidated set by it, below, so a caller
+            # does not have to re-read claim.spoken_at itself. Whether a
+            # Retraction actually gets created is a separate, explicit
+            # decision made through ``BackspaceCore.retract_claim`` - never
+            # automatic just because a claim was spoken and invalidated.
+            if claim.spoken_at is not None:
+                spoken_invalidated_claim_ids.append(claim_id)
+            else:
+                unspoken_invalidated_claim_ids.append(claim_id)
 
     kept_work_ids = [work_id for work_id in graph.all_work_ids() if work_id not in seen_work]
 
@@ -227,6 +248,8 @@ def invalidate_many(graph: DependencyGraph, changesets: Sequence[ChangeSet]) -> 
         kept_work_ids=kept_work_ids,
         invalidated_work_ids=invalidated_work_ids,
         invalidated_claim_ids=invalidated_claim_ids,
+        spoken_invalidated_claim_ids=spoken_invalidated_claim_ids,
+        unspoken_invalidated_claim_ids=unspoken_invalidated_claim_ids,
         affected_dependencies=affected_dependencies,
         reason=reason,
     )

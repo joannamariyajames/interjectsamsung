@@ -16,7 +16,19 @@ testable without spinning up the agent runtime.
 from __future__ import annotations
 
 from .changes import ChangeKind, ChangeSet
-from .claims import Claim, ClaimStatus, Evidence
+from .claims import (
+    Claim,
+    ClaimNotFoundError,
+    ClaimNotInvalidatedError,
+    ClaimNotSpokenError,
+    ClaimStatus,
+    Evidence,
+)
+from .claims import get_claim_history
+from .claims import invalidate_claim
+from .claims import mark_claim_spoken
+from .claims import require_claim_retractable
+from .claims import supersede_claim
 from .core import BackspaceCore, BackspaceEvent, BackspaceEventType, FactUpdate, Retraction
 from .facts import Fact, FactNotebook, FactNotFoundError, FactStatus
 from .graph import (
@@ -33,7 +45,7 @@ from .graph import (
     WorkStatus,
 )
 from .invalidation import Invalidation, invalidate, invalidate_many
-from .planner import PlanStatus, RecomputationPlan
+from .planner import PlanStatus, RecomputationPlan, plan_recompute
 
 __all__ = [
     "BackspaceCore",
@@ -42,6 +54,9 @@ __all__ = [
     "ChangeKind",
     "ChangeSet",
     "Claim",
+    "ClaimNotFoundError",
+    "ClaimNotInvalidatedError",
+    "ClaimNotSpokenError",
     "ClaimStatus",
     "Dependency",
     "DependencyCycleError",
@@ -54,15 +69,21 @@ __all__ = [
     "FactNotebook",
     "FactStatus",
     "FactUpdate",
+    "get_claim_history",
     "Invalidation",
     "invalidate",
+    "invalidate_claim",
     "invalidate_many",
+    "mark_claim_spoken",
     "NodeKind",
     "NodeKindMismatchError",
     "NodeNotRegisteredError",
     "PlanStatus",
     "RecomputationPlan",
+    "plan_recompute",
+    "require_claim_retractable",
     "Retraction",
+    "supersede_claim",
     "UnsupportedDependencyKindError",
     "WorkItem",
     "WorkStatus",

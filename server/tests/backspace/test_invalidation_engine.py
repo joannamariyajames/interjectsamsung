@@ -589,3 +589,73 @@ def test_end_to_end_through_backspace_core_assert_fact_then_invalidate():
     assert result.invalidated_work_ids == ["W3", "W4"]
     assert result.invalidated_claim_ids == ["C3", "C4"]
     assert sorted(result.kept_work_ids) == ["W1", "W2"]
+
+
+# ===========================================================================
+# Phase 7 - spoken vs unspoken claim classification on the Invalidation result
+# ===========================================================================
+
+
+def test_invalidation_classifies_unspoken_invalidated_claims():
+    graph = DependencyGraph()
+    graph.register_work(_work("W3"))
+    graph.register_claim(_claim("C3"))  # never marked spoken
+    graph.register_dependency(FTW, "F2", "W3")
+    graph.register_dependency(WTC, "W3", "C3")
+
+    result = invalidate(graph, _changed("party_size", 2, 5, fact_id="F2"))
+
+    assert result.invalidated_claim_ids == ["C3"]
+    assert result.unspoken_invalidated_claim_ids == ["C3"]
+    assert result.spoken_invalidated_claim_ids == []
+
+
+def test_invalidation_classifies_spoken_invalidated_claims():
+    graph = DependencyGraph()
+    graph.register_work(_work("W3"))
+    claim = _claim("C3")
+    claim.status = ClaimStatus.SPOKEN
+    claim.spoken_at = 42.0
+    graph.register_claim(claim)
+    graph.register_dependency(FTW, "F2", "W3")
+    graph.register_dependency(WTC, "W3", "C3")
+
+    result = invalidate(graph, _changed("party_size", 2, 5, fact_id="F2"))
+
+    assert result.invalidated_claim_ids == ["C3"]
+    assert result.spoken_invalidated_claim_ids == ["C3"]
+    assert result.unspoken_invalidated_claim_ids == []
+    assert claim.spoken_at == 42.0  # preserved through invalidation
+
+
+def test_invalidation_partitions_a_mix_of_spoken_and_unspoken_claims():
+    graph = DependencyGraph()
+    graph.register_work(_work("W3"))
+    spoken = _claim("C-spoken")
+    spoken.spoken_at = 1.0
+    graph.register_claim(spoken)
+    graph.register_claim(_claim("C-unspoken"))
+    graph.register_dependency(FTW, "F2", "W3")
+    graph.register_dependency(WTC, "W3", "C-spoken")
+    graph.register_dependency(WTC, "W3", "C-unspoken")
+
+    result = invalidate(graph, _changed("party_size", 2, 5, fact_id="F2"))
+
+    assert set(result.invalidated_claim_ids) == {"C-spoken", "C-unspoken"}
+    assert result.spoken_invalidated_claim_ids == ["C-spoken"]
+    assert result.unspoken_invalidated_claim_ids == ["C-unspoken"]
+
+
+def test_invalidation_to_dict_includes_the_spoken_unspoken_split():
+    graph = DependencyGraph()
+    graph.register_work(_work("W3"))
+    claim = _claim("C3")
+    claim.spoken_at = 1.0
+    graph.register_claim(claim)
+    graph.register_dependency(FTW, "F2", "W3")
+    graph.register_dependency(WTC, "W3", "C3")
+
+    result = invalidate(graph, _changed("party_size", 2, 5, fact_id="F2"))
+    data = result.to_dict()
+    assert data["spoken_invalidated_claim_ids"] == ["C3"]
+    assert data["unspoken_invalidated_claim_ids"] == []
