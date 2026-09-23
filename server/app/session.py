@@ -55,10 +55,27 @@ class Session:
     goals: GoalTracker = field(default_factory=GoalTracker)
     turns: list[Turn] = field(default_factory=list)
     notes: dict[str, str] = field(default_factory=dict)
+    facts: dict[str, Any] = field(default_factory=dict)
     checkpoint: Checkpoint | None = None
     created_at: float = field(default_factory=time.time)
     interruptions: int = 0
     resumes: int = 0
+
+    def set_fact(self, key: str, value: Any) -> None:
+        """Store or update a session-scoped fact."""
+        self.facts[key] = value
+
+    def get_fact(self, key: str, default: Any = None) -> Any:
+        """Retrieve a session-scoped fact by key, returning default if not found."""
+        return self.facts.get(key, default)
+
+    def has_fact(self, key: str) -> bool:
+        """Check whether a fact exists in the session ledger."""
+        return key in self.facts
+
+    def get_all_facts(self) -> dict[str, Any]:
+        """Return a safe copy of all session-scoped facts."""
+        return dict(self.facts)
 
     def add_turn(self, turn: Turn) -> None:
         self.turns.append(turn)
@@ -98,6 +115,7 @@ class Session:
         self.goals.clear()
         self.turns.clear()
         self.notes.clear()
+        self.facts.clear()
         self.checkpoint = None
         self.interruptions = 0
         self.resumes = 0
@@ -107,6 +125,7 @@ class Session:
             "session_id": self.session_id,
             "turns": len(self.turns),
             "goals": len(self.goals.stack),
+            "facts": len(self.facts),
             "interruptions": self.interruptions,
             "resumes": self.resumes,
             "age_s": round(time.time() - self.created_at, 1),
