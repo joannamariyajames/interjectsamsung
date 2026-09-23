@@ -57,8 +57,10 @@ from .graph import (
 )
 from .invalidation import Invalidation, invalidate, invalidate_many
 from .planner import PlanStatus, RecomputationPlan, plan_recompute
+from .runtime_adapter import BackspaceIntegrationResult, FactObservation, process_backspace_observation
 
 __all__ = [
+    "BackspaceIntegrationResult",
     "BackspaceCore",
     "BackspaceEvent",
     "BackspaceEventType",
@@ -84,6 +86,7 @@ __all__ = [
     "Fact",
     "FactNotFoundError",
     "FactNotebook",
+    "FactObservation",
     "FactStatus",
     "FactUpdate",
     "get_claim_history",
@@ -96,6 +99,7 @@ __all__ = [
     "NodeKindMismatchError",
     "NodeNotRegisteredError",
     "PlanStatus",
+    "process_backspace_observation",
     "RecomputationPlan",
     "plan_recompute",
     "RecomputeStep",
