@@ -43,6 +43,9 @@ from .claims import invalidate_claim as _invalidate_claim
 from .claims import mark_claim_spoken as _mark_claim_spoken
 from .claims import require_claim_retractable as _require_claim_retractable
 from .claims import supersede_claim as _supersede_claim
+from .explanation import BackspaceExplanation, ChangeSetNotFoundError
+from .explanation import build_explanation as _build_explanation
+from .explanation import render_explanation_text as _render_explanation_text
 from .facts import Fact, FactNotebook
 from .graph import Dependency, DependencyGraph, DependencyKind, WorkItem
 from .invalidation import Invalidation
@@ -188,6 +191,15 @@ class BackspaceCore:
         # or Claim, because "has this been retracted" is state about the
         # retraction *act* (idempotency), not about the claim's own fields.
         self._retractions: dict[str, Retraction] = {}
+        # Phase 8: a small session-scoped history so explain_change(id) has
+        # something to look up. ChangeSets are remembered whenever
+        # assert_fact/update_fact actually produces one (CHANGED only - NEW
+        # and UNCHANGED never carry a changeset, unchanged since Phase 3).
+        # Invalidations are remembered whenever invalidate()/invalidate_many()
+        # runs, keyed under *every* changeset_id they cover, so explaining
+        # any one of a batch's changeset_ids finds the same merged result.
+        self._changesets: dict[str, ChangeSet] = {}
+        self._invalidations: dict[str, Invalidation] = {}
 
     # -- fact operations ---------------------------------------------------
     def assert_fact(
@@ -202,9 +214,11 @@ class BackspaceCore:
     ) -> FactUpdate:
         """Record a structured fact observation. See ``FactNotebook.observe``
         for the NEW/UNCHANGED/CHANGED semantics this delegates to."""
-        return self.facts.observe(
+        update = self.facts.observe(
             key, value, source=source, turn_id=turn_id, goal_id=goal_id, confidence=confidence
         )
+        self._remember_changeset(update.changeset)
+        return update
 
     def update_fact(
         self,
@@ -218,9 +232,15 @@ class BackspaceCore:
     ) -> FactUpdate:
         """Correct the fact identified by ``fact_id``. Raises
         ``FactNotFoundError`` (from ``facts.py``) if it does not exist."""
-        return self.facts.update_fact(
+        update = self.facts.update_fact(
             fact_id, value, source=source, turn_id=turn_id, goal_id=goal_id, confidence=confidence
         )
+        self._remember_changeset(update.changeset)
+        return update
+
+    def _remember_changeset(self, changeset: ChangeSet | None) -> None:
+        if changeset is not None:
+            self._changesets[changeset.changeset_id] = changeset
 
     def get_fact(self, key: str) -> Fact | None:
         return self.facts.get_fact(key)
@@ -246,11 +266,14 @@ class BackspaceCore:
         }
 
     def reset(self) -> None:
-        """Clear this instance's notebook, graph and retraction ledger.
-        Other ``BackspaceCore`` instances are untouched."""
+        """Clear this instance's notebook, graph, retraction ledger and
+        changeset/invalidation history. Other ``BackspaceCore`` instances
+        are untouched."""
         self.facts.reset()
         self.graph.reset()
         self._retractions.clear()
+        self._changesets.clear()
+        self._invalidations.clear()
 
     # -- dependency-graph operations -----------------------------------------
     def register_work(self, work: WorkItem) -> WorkItem:
@@ -355,12 +378,20 @@ class BackspaceCore:
         this instance's own graph. Does not touch FactNotebook state and is
         not called automatically from ``assert_fact`` - that wiring is a
         later phase's job."""
-        return _invalidate(self.graph, changeset)
+        result = _invalidate(self.graph, changeset)
+        self._remember_invalidation(result)
+        return result
 
     def invalidate_many(self, changesets: Sequence[ChangeSet]) -> Invalidation:
         """Same as ``invalidate``, merged across a batch of ChangeSets - see
         ``invalidation.invalidate_many`` for the exact semantics."""
-        return _invalidate_many(self.graph, changesets)
+        result = _invalidate_many(self.graph, changesets)
+        self._remember_invalidation(result)
+        return result
+
+    def _remember_invalidation(self, invalidation: Invalidation) -> None:
+        for changeset_id in invalidation.changeset_ids:
+            self._invalidations[changeset_id] = invalidation
 
     # -- recomputation planning -------------------------------------------------
     def plan_recompute(self, invalidation: Invalidation) -> RecomputationPlan:
@@ -370,3 +401,62 @@ class BackspaceCore:
         from ``invalidate`` or ``assert_fact``; that wiring is a later
         phase's job."""
         return _plan_recompute(self.graph, invalidation)
+
+    # -- provenance / explanation (Phase 8) --------------------------------------
+    def get_changeset(self, changeset_id: str) -> ChangeSet | None:
+        """The remembered ChangeSet for ``changeset_id``, if any - ``None``
+        for an id this session never produced (lenient read, matching this
+        package's convention elsewhere)."""
+        return self._changesets.get(changeset_id)
+
+    def get_invalidation_for_changeset(self, changeset_id: str) -> Invalidation | None:
+        """The Invalidation last computed that covered ``changeset_id``, if
+        ``invalidate``/``invalidate_many`` has been called for it - ``None``
+        otherwise. Read-only: this never computes one on demand."""
+        return self._invalidations.get(changeset_id)
+
+    def build_explanation(self, changeset_id: str) -> BackspaceExplanation:
+        """The structured, authoritative explanation of one changeset.
+
+        Raises ``ChangeSetNotFoundError`` if ``changeset_id`` was never
+        produced by ``assert_fact``/``update_fact`` on this instance.
+        Entirely read-only: it looks up the already-remembered ``ChangeSet``
+        and ``Invalidation`` (if ``invalidate``/``invalidate_many`` has
+        already been called for it - if not, the invalidated/kept/recompute
+        sections come back empty rather than this method computing them
+        itself) and computes a fresh ``RecomputationPlan`` via
+        ``plan_recompute``, which is itself already guaranteed read-only
+        (Phase 6). Nothing here mutates a Fact, WorkItem or Claim.
+        """
+        return self.build_explanation_many([changeset_id])
+
+    def build_explanation_many(self, changeset_ids: Sequence[str]) -> BackspaceExplanation:
+        """Same as ``build_explanation``, for a batch of changeset_ids that
+        share one ``invalidate_many`` call - e.g. two facts changed in the
+        same turn. Raises ``ChangeSetNotFoundError`` for the first unknown id."""
+        changesets: list[ChangeSet] = []
+        for changeset_id in changeset_ids:
+            changeset = self._changesets.get(changeset_id)
+            if changeset is None:
+                raise ChangeSetNotFoundError(changeset_id)
+            changesets.append(changeset)
+
+        invalidation: Invalidation | None = None
+        for changeset_id in changeset_ids:
+            candidate = self._invalidations.get(changeset_id)
+            if candidate is not None:
+                invalidation = candidate
+                break
+        plan = self.plan_recompute(invalidation) if invalidation is not None else None
+
+        return _build_explanation(self.graph, changesets, invalidation, plan, self._retractions)
+
+    def explain_change(self, changeset_id: str) -> str:
+        """A deterministic, concise human-readable rendering of
+        ``build_explanation(changeset_id)``. The structured explanation is
+        authoritative; this string is convenience output derived from it."""
+        return _render_explanation_text(self.build_explanation(changeset_id))
+
+    def explain_changes(self, changeset_ids: Sequence[str]) -> str:
+        """Same as ``explain_change``, for a batch of changeset_ids."""
+        return _render_explanation_text(self.build_explanation_many(changeset_ids))

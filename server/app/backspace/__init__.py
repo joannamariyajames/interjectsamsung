@@ -30,6 +30,17 @@ from .claims import mark_claim_spoken
 from .claims import require_claim_retractable
 from .claims import supersede_claim
 from .core import BackspaceCore, BackspaceEvent, BackspaceEventType, FactUpdate, Retraction
+from .explanation import (
+    BackspaceExplanation,
+    ChangeExplanation,
+    ChangeSetNotFoundError,
+    ClaimExplanation,
+    ExplanationSummary,
+    RecomputeStep,
+    WorkExplanation,
+)
+from .explanation import build_explanation
+from .explanation import render_explanation_text
 from .facts import Fact, FactNotebook, FactNotFoundError, FactStatus
 from .graph import (
     Dependency,
@@ -51,9 +62,14 @@ __all__ = [
     "BackspaceCore",
     "BackspaceEvent",
     "BackspaceEventType",
+    "BackspaceExplanation",
+    "build_explanation",
+    "ChangeExplanation",
     "ChangeKind",
     "ChangeSet",
+    "ChangeSetNotFoundError",
     "Claim",
+    "ClaimExplanation",
     "ClaimNotFoundError",
     "ClaimNotInvalidatedError",
     "ClaimNotSpokenError",
@@ -64,6 +80,7 @@ __all__ = [
     "DependencyGraphError",
     "DependencyKind",
     "Evidence",
+    "ExplanationSummary",
     "Fact",
     "FactNotFoundError",
     "FactNotebook",
@@ -81,10 +98,13 @@ __all__ = [
     "PlanStatus",
     "RecomputationPlan",
     "plan_recompute",
+    "RecomputeStep",
+    "render_explanation_text",
     "require_claim_retractable",
     "Retraction",
     "supersede_claim",
     "UnsupportedDependencyKindError",
+    "WorkExplanation",
     "WorkItem",
     "WorkStatus",
 ]
