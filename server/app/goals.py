@@ -20,6 +20,7 @@ from typing import Any
 
 from .retrieval import tokenize
 from .schemas import GoalAction
+from .work import WorkItem
 
 
 class GoalStatus(str, Enum):
@@ -39,6 +40,7 @@ class Goal:
     # lets the UI show progress towards the end goal rather than just activity.
     steps: list[str] = field(default_factory=list)
     step_index: int = 0
+    work_items: list[WorkItem] = field(default_factory=list)
 
     @property
     def progress(self) -> float:
@@ -56,6 +58,10 @@ class Goal:
             "steps": list(self.steps),
             "step_index": self.step_index,
             "progress": round(self.progress, 3),
+            "work_items": [
+                w.to_dict() if hasattr(w, "to_dict") else vars(w)
+                for w in self.work_items
+            ],
         }
 
 
@@ -183,14 +189,27 @@ class GoalTracker:
         constraints = [m.group(0).strip() for m in _CONSTRAINT.finditer(utterance)]
 
         if action is GoalAction.REVERT:
+            target_goal: Goal | None = None
+            best_overlap = 0.0
             for goal in reversed(self.stack):
                 if goal.status is GoalStatus.PARKED:
-                    goal.status = GoalStatus.ACTIVE
-                    goal.turns += 1
-                    for other in self.stack:
-                        if other is not goal and other.status is GoalStatus.ACTIVE:
-                            other.status = GoalStatus.DONE
-                    return goal
+                    overlap = _overlap(utterance, goal.text)
+                    if overlap > best_overlap:
+                        best_overlap = overlap
+                        target_goal = goal
+            if target_goal is None:
+                for goal in reversed(self.stack):
+                    if goal.status is GoalStatus.PARKED:
+                        target_goal = goal
+                        break
+
+            if target_goal is not None:
+                target_goal.status = GoalStatus.ACTIVE
+                target_goal.turns += 1
+                for other in self.stack:
+                    if other is not target_goal and other.status is GoalStatus.ACTIVE:
+                        other.status = GoalStatus.DONE
+                return target_goal
 
         if action in (GoalAction.PUSH, GoalAction.SWITCH):
             for goal in self.stack:

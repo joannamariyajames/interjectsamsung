@@ -51,6 +51,13 @@ from .schemas import (
 )
 from .session import Session, Turn
 from .speculation import SpeculationManager
+from .work import (
+    ReconciliationResult,
+    extract_work_items_from_evidence,
+    format_reconciliation_summary,
+    reconcile_work_items,
+    validate_work_item,
+)
 
 Emit = Callable[[ServerFrame], Awaitable[None]]
 
@@ -88,6 +95,7 @@ class AgentRuntime:
         self._token_delay = settings.token_delay_ms
         self._stage: Stage = Stage.IDLE
         self._filler: asyncio.Task[None] | None = None
+        self._reconciliation: ReconciliationResult | None = None
 
     # ------------------------------------------------------------------
     # state
@@ -321,8 +329,25 @@ class AgentRuntime:
             self._evidence = evidence
             self._plan_progress = "evidence gathered"
 
+            # -- 3a. work items & reconciliation (BACKSPACE) ------------
+            facts = self.session.get_all_facts()
+            reconciliation = reconcile_work_items(goal.work_items, facts)
+            self._reconciliation = reconciliation
+
+            new_items = extract_work_items_from_evidence(evidence, goal.goal_id, facts)
+            existing_ids = {item.item_id for item in goal.work_items}
+            for item in new_items:
+                if item.item_id not in existing_ids:
+                    goal.work_items.append(item)
+                    existing_ids.add(item.item_id)
+
             # -- 3b. irreversible actions go through the harness ---------
             notice: str | None = None
+            if reconciliation.became_stale or (classification.action is GoalAction.REVERT and reconciliation.stale):
+                recon_summary = format_reconciliation_summary(reconciliation)
+                if recon_summary:
+                    notice = recon_summary
+
             if _ACTION_INTENT.search(utterance):
                 await self.emit(
                     StageFrame(stage=Stage.TOOLING, turn_id=turn_id, detail="Requesting an irreversible action")
@@ -337,11 +362,12 @@ class AgentRuntime:
                     )
                 )
                 if attempt.status == "blocked":
-                    notice = (
+                    blocked_notice = (
                         "I can't put that booking through myself - the harness blocks irreversible "
                         f"actions without a human confirming them. ({attempt.verdict}) "
                         "Here is everything you need to decide, then you can confirm it."
                     )
+                    notice = f"{notice}\n\n{blocked_notice}" if notice else blocked_notice
 
             # -- 4. plan ------------------------------------------------
             request = GenerationRequest(
@@ -414,6 +440,7 @@ class AgentRuntime:
                             {"name": o.name, "status": o.status, "verdict": o.verdict}
                             for o in budget.audit
                         ],
+                        "reconciliation": reconciliation.to_dict() if goal.work_items else None,
                     },
                 )
             )
