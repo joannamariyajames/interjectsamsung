@@ -27,6 +27,7 @@ import uuid
 from typing import Any, Awaitable, Callable
 
 from .config import settings
+from .facts import extract_facts
 from .filler import FillerVoice, keep_alive, topic_of
 from .goals import GoalAction
 from .harness import Harness, TurnBudget
@@ -242,6 +243,10 @@ class AgentRuntime:
                     rationale=classification.rationale,
                 )
             )
+
+            # Extract and update session-scoped facts
+            for key, value in extract_facts(utterance).items():
+                self.session.set_fact(key, value)
 
             # Keep the conversation alive while the slow part happens. This is a
             # separate task so the turn stays interruptible; cancelling the turn
