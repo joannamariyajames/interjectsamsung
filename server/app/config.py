@@ -40,6 +40,12 @@ class Settings:
     )
     llm_model: str = field(default_factory=lambda: os.environ.get("LLM_MODEL", "gpt-4o-mini"))
 
+    # Gemini configuration
+    gemini_api_key: str | None = field(default_factory=lambda: os.environ.get("GEMINI_API_KEY"))
+    gemini_model: str = field(
+        default_factory=lambda: os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+    )
+
     # --- timing ---------------------------------------------------------
     # Token emission delay for the local engine. Slow enough that a human can
     # actually barge in mid-sentence, which is the whole point of the demo.
@@ -76,6 +82,10 @@ class Settings:
         "http://localhost:5174",
         "http://127.0.0.1:5174",
     )
+
+    @property
+    def use_gemini(self) -> bool:
+        return bool(self.gemini_api_key)
 
     @property
     def use_real_llm(self) -> bool:
