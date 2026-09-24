@@ -56,8 +56,12 @@ def test_work_item_output_and_provenance_are_free_form():
 
 
 def test_work_status_enum_values():
+    # "running"/"cancelled"/"failed" (Phase M1-B) added for the in-flight
+    # execution lifecycle; "valid" is reused as that lifecycle's "completed
+    # successfully" state rather than adding a same-meaning "completed".
     assert {s.value for s in WorkStatus} == {
-        "pending", "valid", "stale", "invalidated", "retracted", "recomputed",
+        "pending", "running", "valid", "stale", "cancelled", "failed",
+        "invalidated", "retracted", "recomputed",
     }
 
 

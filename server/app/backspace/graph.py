@@ -44,11 +44,29 @@ from .claims import Claim
 
 
 class WorkStatus(str, Enum):
-    """Where a work item stands relative to the facts it depended on."""
+    """Where a work item stands - both relative to the facts it depended on,
+    and (Phase M1-B) what its current execution attempt is actually doing.
+
+    ``PENDING``/``STALE``/``INVALIDATED``/``RETRACTED``/``RECOMPUTED`` are
+    unchanged from Phase 2. ``RUNNING``/``CANCELLED``/``FAILED`` are new,
+    additive execution states. ``VALID`` - already defined since Phase 2 but
+    never assigned by any code path before this phase - is what this phase
+    uses as "completed successfully, current, trust it": the brief's own
+    vocabulary calls this state "completed", but the existing enum member is
+    reused rather than adding a same-meaning ``COMPLETED`` alongside it,
+    since ``VALID`` already means exactly that and two names for one state
+    would be the duplication the brief asks this phase to avoid.
+
+    See ``work_lifecycle.py`` for the legal-transition table between these -
+    this enum only declares the vocabulary, not the state machine.
+    """
 
     PENDING = "pending"
+    RUNNING = "running"
     VALID = "valid"
     STALE = "stale"
+    CANCELLED = "cancelled"
+    FAILED = "failed"
     INVALIDATED = "invalidated"
     RETRACTED = "retracted"
     RECOMPUTED = "recomputed"
@@ -64,7 +82,18 @@ class DependencyKind(str, Enum):
 
 @dataclass
 class WorkItem:
-    """Something the agent layer produced that may depend on facts/evidence."""
+    """Something the agent layer produced that may depend on facts/evidence.
+
+    ``execution_attempt`` (Phase M1-B) is a monotonic counter - the same
+    pattern as ``Fact.version`` - incremented each time this work_id starts a
+    new execution attempt (see ``work_lifecycle.start_work``). It exists
+    for exactly one reason: a ``work_id`` alone cannot tell a late-arriving
+    result from an old, superseded attempt apart from a legitimate result of
+    the *current* attempt, once a work item has been restarted after going
+    stale. Comparing the attempt number a result carries against this field
+    (``work_lifecycle.is_result_current``) is what makes that distinction
+    possible without inventing a second identity system alongside ``work_id``.
+    """
 
     kind: str
     work_id: str = field(default_factory=lambda: uuid.uuid4().hex[:8])
@@ -74,6 +103,7 @@ class WorkItem:
     output: Any = None
     depends_on_facts: list[str] = field(default_factory=list)
     depends_on_work: list[str] = field(default_factory=list)
+    execution_attempt: int = 0
     created_at: float = field(default_factory=time.time)
     provenance: dict[str, Any] = field(default_factory=dict)
 
@@ -87,6 +117,7 @@ class WorkItem:
             "output": self.output,
             "depends_on_facts": list(self.depends_on_facts),
             "depends_on_work": list(self.depends_on_work),
+            "execution_attempt": self.execution_attempt,
             "created_at": self.created_at,
             "provenance": dict(self.provenance),
         }

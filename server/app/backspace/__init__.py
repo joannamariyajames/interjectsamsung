@@ -15,6 +15,7 @@ testable without spinning up the agent runtime.
 
 from __future__ import annotations
 
+from .actions import ActionCommit, ActionCommitResult, ActionLedger, action_id_for
 from .changes import ChangeKind, ChangeSet
 from .claims import (
     Claim,
@@ -58,14 +59,29 @@ from .graph import (
 from .invalidation import Invalidation, invalidate, invalidate_many
 from .planner import PlanStatus, RecomputationPlan, plan_recompute
 from .runtime_adapter import BackspaceIntegrationResult, FactObservation, process_backspace_observation
+from .work_lifecycle import (
+    IllegalWorkTransitionError,
+    StaleExecutionError,
+    cancel_work,
+    complete_work,
+    fail_work,
+    invalidate_work,
+    is_result_current,
+    start_work,
+)
 
 __all__ = [
+    "ActionCommit",
+    "ActionCommitResult",
+    "ActionLedger",
+    "action_id_for",
     "BackspaceIntegrationResult",
     "BackspaceCore",
     "BackspaceEvent",
     "BackspaceEventType",
     "BackspaceExplanation",
     "build_explanation",
+    "cancel_work",
     "ChangeExplanation",
     "ChangeKind",
     "ChangeSet",
@@ -76,6 +92,7 @@ __all__ = [
     "ClaimNotInvalidatedError",
     "ClaimNotSpokenError",
     "ClaimStatus",
+    "complete_work",
     "Dependency",
     "DependencyCycleError",
     "DependencyGraph",
@@ -83,6 +100,7 @@ __all__ = [
     "DependencyKind",
     "Evidence",
     "ExplanationSummary",
+    "fail_work",
     "Fact",
     "FactNotFoundError",
     "FactNotebook",
@@ -90,10 +108,13 @@ __all__ = [
     "FactStatus",
     "FactUpdate",
     "get_claim_history",
+    "IllegalWorkTransitionError",
     "Invalidation",
     "invalidate",
     "invalidate_claim",
     "invalidate_many",
+    "invalidate_work",
+    "is_result_current",
     "mark_claim_spoken",
     "NodeKind",
     "NodeKindMismatchError",
@@ -106,6 +127,8 @@ __all__ = [
     "render_explanation_text",
     "require_claim_retractable",
     "Retraction",
+    "StaleExecutionError",
+    "start_work",
     "supersede_claim",
     "UnsupportedDependencyKindError",
     "WorkExplanation",

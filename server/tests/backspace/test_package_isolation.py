@@ -49,7 +49,8 @@ def test_backspace_source_files_exist():
     expected = {
         "__init__.py", "facts.py", "claims.py", "graph.py",
         "changes.py", "invalidation.py", "planner.py", "core.py",
-        "explanation.py", "runtime_adapter.py",
+        "explanation.py", "runtime_adapter.py", "work_lifecycle.py",
+        "actions.py",
     }
     actual = {p.name for p in BACKSPACE_DIR.glob("*.py")}
     assert expected <= actual
@@ -84,6 +85,9 @@ def test_package_exports_every_documented_model():
         "ClaimExplanation", "RecomputeStep", "ExplanationSummary",
         "ChangeSetNotFoundError", "build_explanation", "render_explanation_text",
         "FactObservation", "BackspaceIntegrationResult", "process_backspace_observation",
+        "IllegalWorkTransitionError", "StaleExecutionError", "start_work",
+        "complete_work", "fail_work", "cancel_work", "invalidate_work", "is_result_current",
+        "ActionCommit", "ActionCommitResult", "ActionLedger", "action_id_for",
     ]:
         assert hasattr(backspace, name), f"app.backspace does not export {name}"
         assert name in backspace.__all__

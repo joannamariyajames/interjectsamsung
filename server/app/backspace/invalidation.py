@@ -25,7 +25,8 @@ from typing import Any, Sequence
 from .changes import ChangeKind, ChangeSet
 from .claims import ClaimStatus
 from .facts import Fact
-from .graph import Dependency, DependencyGraph, NodeKind, WorkStatus
+from .graph import Dependency, DependencyGraph, NodeKind
+from .work_lifecycle import invalidate_work
 
 
 @dataclass
@@ -208,11 +209,17 @@ def invalidate_many(graph: DependencyGraph, changesets: Sequence[ChangeSet]) -> 
     # Status transitions: mutate the registered objects in place, the same
     # convention `goals.py` already uses for `Goal.status` (not the
     # supersede-a-copy discipline `FactNotebook` uses for `Fact` - a WorkItem
-    # has no version history to protect, it is just a status flag).
+    # has no version history to protect, it is just a status flag). Routed
+    # through `invalidate_work` (Phase M1-B) rather than a direct assignment
+    # so PENDING/RUNNING/VALID all move to STALE through one place that
+    # understands the execution-lifecycle state machine - a RUNNING item
+    # goes stale exactly like a PENDING or already-completed one, per the
+    # brief's invalidation semantics, and CANCELLED/FAILED items (already not
+    # current) are correctly left alone rather than resurrected into STALE.
     for work_id in invalidated_work_ids:
         work = graph.get_work(work_id)
         if work is not None:
-            work.status = WorkStatus.STALE
+            invalidate_work(work)
 
     spoken_invalidated_claim_ids: list[str] = []
     unspoken_invalidated_claim_ids: list[str] = []

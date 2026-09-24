@@ -36,6 +36,7 @@ from dataclasses import dataclass, field, replace
 from enum import Enum
 from typing import Any, Sequence
 
+from .actions import ActionCommit, ActionCommitResult, ActionLedger
 from .changes import ChangeKind, ChangeSet
 from .claims import Claim, ClaimStatus
 from .claims import get_claim_history as _get_claim_history
@@ -47,7 +48,7 @@ from .explanation import BackspaceExplanation, ChangeSetNotFoundError
 from .explanation import build_explanation as _build_explanation
 from .explanation import render_explanation_text as _render_explanation_text
 from .facts import Fact, FactNotebook
-from .graph import Dependency, DependencyGraph, DependencyKind, WorkItem
+from .graph import Dependency, DependencyGraph, DependencyKind, NodeKind, NodeNotRegisteredError, WorkItem
 from .invalidation import Invalidation
 from .invalidation import invalidate as _invalidate
 from .invalidation import invalidate_many as _invalidate_many
@@ -200,6 +201,13 @@ class BackspaceCore:
         # any one of a batch's changeset_ids finds the same merged result.
         self._changesets: dict[str, ChangeSet] = {}
         self._invalidations: dict[str, Invalidation] = {}
+        # Phase M1-C: the session-scoped at-most-once commit guard for
+        # state-changing actions - see actions.py. Owned here, not on
+        # DependencyGraph, for the same reason _retractions is owned here
+        # rather than on Claim: "has this action already been committed" is
+        # about the commit *act*'s idempotency, not a field of any one
+        # WorkItem.
+        self._actions = ActionLedger()
 
     # -- fact operations ---------------------------------------------------
     def assert_fact(
@@ -263,17 +271,22 @@ class BackspaceCore:
             "retractions": {
                 claim_id: retraction.to_dict() for claim_id, retraction in self._retractions.items()
             },
+            "actions": {
+                action_id: self._actions.get(action_id).to_dict()
+                for action_id in self._actions.all_action_ids()
+            },
         }
 
     def reset(self) -> None:
-        """Clear this instance's notebook, graph, retraction ledger and
-        changeset/invalidation history. Other ``BackspaceCore`` instances
-        are untouched."""
+        """Clear this instance's notebook, graph, retraction ledger,
+        changeset/invalidation history and action commit ledger. Other
+        ``BackspaceCore`` instances are untouched."""
         self.facts.reset()
         self.graph.reset()
         self._retractions.clear()
         self._changesets.clear()
         self._invalidations.clear()
+        self._actions.reset()
 
     # -- dependency-graph operations -----------------------------------------
     def register_work(self, work: WorkItem) -> WorkItem:
@@ -401,6 +414,33 @@ class BackspaceCore:
         from ``invalidate`` or ``assert_fact``; that wiring is a later
         phase's job."""
         return _plan_recompute(self.graph, invalidation)
+
+    # -- action commit guard (Phase M1-C) --------------------------------------
+    def commit_action(self, work_id: str, attempt: int, result: Any = None) -> ActionCommitResult:
+        """The at-most-once guard the execution layer calls right before (or
+        right after) performing a state-changing action's real-world effect.
+
+        Raises ``NodeNotRegisteredError`` if ``work_id`` was never registered
+        (there is nothing to check currency against). Raises
+        ``StaleExecutionError`` (from ``work_lifecycle.py``) if ``attempt``
+        is not this work item's current, in-flight/just-completed attempt -
+        this is the call that must happen *before* an old, superseded
+        execution's result is allowed to take effect. See ``actions.py`` for
+        the exact identity/idempotency rules and the precise guarantee this
+        provides.
+        """
+        work = self.graph.get_work(work_id)
+        if work is None:
+            raise NodeNotRegisteredError(work_id, NodeKind.WORK)
+        return self._actions.commit(work, attempt, result)
+
+    def get_action_commit(self, action_id: str) -> ActionCommit | None:
+        """The recorded commit for ``action_id``, if one exists - ``None``
+        otherwise (lenient read, matching this package's convention)."""
+        return self._actions.get(action_id)
+
+    def is_action_committed(self, action_id: str) -> bool:
+        return self._actions.is_committed(action_id)
 
     # -- provenance / explanation (Phase 8) --------------------------------------
     def get_changeset(self, changeset_id: str) -> ChangeSet | None:
