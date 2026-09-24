@@ -17,6 +17,18 @@ The rules that make interruption *clean* rather than merely fast:
 * Time-to-yield is measured from the instant the interrupt frame is read to the
   instant the task is actually finished, and reported to the UI. If that number
   ever creeps up, something in the turn is blocking the event loop.
+
+``observe_fact`` (Phase 9) is the one integration point with BACKSPACE Core:
+a structured fact observation in, a ``BackspaceIntegrationResult`` out. It
+contains no fact-versioning, dependency-traversal, invalidation or
+recomputation-planning logic of its own - every one of those stays exclusively
+in ``app.backspace``, reached only through ``BackspaceCore``'s own public
+methods via ``app.backspace.runtime_adapter.process_backspace_observation``.
+Nothing in ``_run_turn`` calls it yet: there is no structured-fact producer
+in this runtime today (that is Member 2's LLM/RAG layer, still to come), so
+wiring it into the turn itself would mean fabricating fact data no real turn
+produces. The method exists, is synchronous (BACKSPACE Core does no I/O), and
+is exercised directly by tests against the real ``AgentRuntime``/``Session``.
 """
 
 from __future__ import annotations
@@ -26,6 +38,7 @@ import re
 import uuid
 from typing import Any, Awaitable, Callable
 
+from .backspace import BackspaceIntegrationResult, FactObservation, process_backspace_observation
 from .config import settings
 from .facts import extract_facts
 from .filler import FillerVoice, keep_alive, topic_of
@@ -109,6 +122,47 @@ class AgentRuntime:
             self._token_delay = token_delay_ms
         if strict_harness is not None:
             self.harness.strict = strict_harness
+
+    def observe_fact(
+        self,
+        key: str,
+        value: Any,
+        *,
+        source: str = "user",
+        turn_id: str | None = None,
+        goal_id: str | None = None,
+        confidence: float = 1.0,
+    ) -> BackspaceIntegrationResult:
+        """Route one structured fact observation through this session's
+        BackspaceCore and return exactly what BACKSPACE computed.
+
+        ``turn_id`` defaults to whichever turn is currently in flight
+        (``self._turn_id``) rather than inventing a new one - use the
+        runtime's own identifier, per the brief. ``goal_id`` defaults to the
+        goal stack's current active goal id (read, never parsed or resolved -
+        ``GoalTracker`` remains the only thing that understands it) so a
+        caller does not have to duplicate that lookup; passing one explicitly
+        always wins.
+
+        Contains no fact-versioning, invalidation, recomputation or claim
+        logic itself - see ``app.backspace.runtime_adapter.
+        process_backspace_observation`` for the actual sequence
+        (``assert_fact`` -> ``invalidate`` -> ``plan_recompute`` ->
+        ``build_explanation``, only for a CHANGED observation). Raises
+        whatever ``BackspaceCore`` itself raises for a malformed observation;
+        nothing here catches or hides it.
+        """
+        active_goal = self.session.goals.active
+        resolved_goal_id = goal_id if goal_id is not None else (active_goal.goal_id if active_goal else None)
+        observation = FactObservation(
+            key=key,
+            value=value,
+            source=source,
+            turn_id=turn_id if turn_id is not None else self._turn_id,
+            goal_id=resolved_goal_id,
+            confidence=confidence,
+        )
+        return process_backspace_observation(self.session.backspace, observation)
 
     async def _stage_to(self, stage: Stage, detail: str, turn_id: str | None = None) -> None:
         self._stage = stage
