@@ -82,9 +82,12 @@ _REFINE_MARKERS = (
 _CONTINUE_MARKERS = ("go on", "keep going", "and then", "carry on", "finish", "continue")
 
 _CONSTRAINT = re.compile(
-    r"\b(under|below|over|above|before|after|cheaper than|within|no more than)\s+[\w,.:]+",
+    r"\b(under|below|over|above|before|after|cheaper than|within|no more than)\s+"
+    r"(?:(?:our|my|the|a|an)\s+)?(?:budget\s+(?:of|is)?\s*)?"
+    r"([₹\w,.:]+)",
     re.IGNORECASE,
 )
+_INVALID_CONSTRAINT_VALS = {"my", "our", "the", "a", "an", "this", "that", "me", "us", "it"}
 
 
 def _overlap(a: str, b: str) -> float:
@@ -186,7 +189,13 @@ class GoalTracker:
     # -- mutation --------------------------------------------------------
     def apply(self, utterance: str, classification: Classification) -> Goal:
         action = classification.action
-        constraints = [m.group(0).strip() for m in _CONSTRAINT.finditer(utterance)]
+        constraints: list[str] = []
+        for m in _CONSTRAINT.finditer(utterance):
+            prep = m.group(1).lower()
+            val = m.group(2).strip()
+            if val.lower() in _INVALID_CONSTRAINT_VALS:
+                continue
+            constraints.append(f"{prep} {val}")
 
         if action is GoalAction.REVERT:
             target_goal: Goal | None = None

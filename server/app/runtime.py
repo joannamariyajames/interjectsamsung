@@ -38,14 +38,17 @@ import re
 import uuid
 from typing import Any, Awaitable, Callable, Sequence
 
-
-from .backspace import BackspaceIntegrationResult, FactObservation, process_backspace_observation
-from .config import settings
-from .facts import extract_facts
-from .backspace import ChangeKind, DependencyKind, WorkItem, WorkStatus
+from .backspace import (
+    BackspaceIntegrationResult,
+    ChangeKind,
+    DependencyKind,
+    FactObservation,
+    WorkItem,
+    WorkStatus,
+    process_backspace_observation,
+)
 from .config import settings
 from .extraction import extract_facts_with_fallback
-
 from .filler import FillerVoice, keep_alive, topic_of
 from .goals import GoalAction
 from .harness import Harness, TurnBudget
@@ -55,6 +58,7 @@ from .schemas import (
     CheckpointFrame,
     ErrorFrame,
     FillerFrame,
+    HeadsUpFrame,
     NudgeFrame,
     GoalFrame,
     MessageFrame,
@@ -67,6 +71,8 @@ from .schemas import (
     ToolFrame,
     now_ms,
 )
+from .headsup import HeadsUpEvent, detect_contradiction
+from .headsup_travel import register_travel_rules
 from .session import Session, Turn
 from .speculation import SpeculationManager
 from .work import (
@@ -84,6 +90,9 @@ _TOOL_ARG_FACT_ALIASES: dict[str, tuple[str, ...]] = {
     "passenger": ("passenger", "passengers", "party_size"),
     "cabin": ("cabin", "cabin_class"),
 }
+
+# Register domain-specific travel contradiction rules into the global registry
+register_travel_rules()
 
 Emit = Callable[[ServerFrame], Awaitable[None]]
 
@@ -122,6 +131,7 @@ class AgentRuntime:
         self._stage: Stage = Stage.IDLE
         self._filler: asyncio.Task[None] | None = None
         self._reconciliation: ReconciliationResult | None = None
+        self._headsup: HeadsUpEvent | None = None
 
     # ------------------------------------------------------------------
     # state
@@ -319,22 +329,6 @@ class AgentRuntime:
                 )
             )
 
-            # Extract and update session-scoped facts
-            for key, value in extract_facts(utterance).items():
-                self.session.set_fact(key, value)
-
-            # Keep the conversation alive while the slow part happens. This is a
-            # separate task so the turn stays interruptible; cancelling the turn
-            # silences the chatter in the same instant.
-            self._filler = asyncio.ensure_future(
-                keep_alive(
-                    emit_line=lambda text: self.emit(FillerFrame(turn_id=turn_id, text=text)),
-                    current_stage=lambda: self._stage,
-                    topic=topic_of(goal.text),
-                    voice=FillerVoice(),
-                )
-            )
-
             # -- 1b. fact extraction & BACKSPACE assertion ---------------
             extracted = await extract_facts_with_fallback(utterance, goal.text)
             for f in extracted:
@@ -354,10 +348,22 @@ class AgentRuntime:
                 f.key: f.value
                 for f in (
                     self.session.backspace.get_fact(k)
-                    for k in self.session.backspace.snapshot()["facts"]
+                    for k in self.session.backspace.snapshot().get("facts", {})
                 )
                 if f is not None
             }
+
+            # Keep the conversation alive while the slow part happens. This is a
+            # separate task so the turn stays interruptible; cancelling the turn
+            # silences the chatter in the same instant.
+            self._filler = asyncio.ensure_future(
+                keep_alive(
+                    emit_line=lambda text: self.emit(FillerFrame(turn_id=turn_id, text=text)),
+                    current_stage=lambda: self._stage,
+                    topic=topic_of(goal.text),
+                    voice=FillerVoice(),
+                )
+            )
 
             # -- 2. decide what to do with any checkpoint ---------------
             checkpoint = self.session.take_checkpoint()
@@ -396,10 +402,6 @@ class AgentRuntime:
             # constraints are folded into the query. Only a self-contained
             # utterance is allowed to reuse a speculation, because speculation
             # ran against the raw partial text and knows nothing of the goal.
-            #
-            # Phase 2D: canonical facts are folded into the non-self-contained
-            # query so retrieval benefits from the full session context (e.g.
-            # "destination: Tokyo" enriches a follow-up like "what about hotels").
             self_contained = classification.action in (GoalAction.PUSH, GoalAction.SWITCH)
             if self_contained:
                 query = utterance
@@ -426,23 +428,41 @@ class AgentRuntime:
             self._plan_progress = "evidence gathered"
 
             # -- 3a. work items & reconciliation (BACKSPACE) ------------
-            facts = self.session.get_all_facts()
-            reconciliation = reconcile_work_items(goal.work_items, facts)
+            reconciliation = reconcile_work_items(goal.work_items, current_facts)
             self._reconciliation = reconciliation
 
-            new_items = extract_work_items_from_evidence(evidence, goal.goal_id, facts)
+            new_items = extract_work_items_from_evidence(evidence, goal.goal_id, current_facts)
             existing_ids = {item.item_id for item in goal.work_items}
             for item in new_items:
                 if item.item_id not in existing_ids:
                     goal.work_items.append(item)
                     existing_ids.add(item.item_id)
 
-            # -- 3b. irreversible actions go through the harness ---------
+            # -- 3b. Heads-Up contradiction check -----------------------
+            headsup = detect_contradiction(utterance, evidence, current_facts)
+            self._headsup = headsup
+            if headsup is not None:
+                await self.emit(
+                    HeadsUpFrame(
+                        turn_id=turn_id,
+                        claim=headsup.claim,
+                        contradiction=headsup.contradiction,
+                        confidence=headsup.confidence,
+                        source_doc_id=headsup.source_doc_id,
+                        cut_in_text=headsup.cut_in_text,
+                    )
+                )
+                await self._stage_to(Stage.HEADSUP, headsup.cut_in_text, turn_id)
+
+            # -- 3c. irreversible actions go through the harness ---------
             notice: str | None = None
+            if headsup is not None:
+                notice = headsup.cut_in_text
+
             if reconciliation.became_stale or (classification.action is GoalAction.REVERT and reconciliation.stale):
                 recon_summary = format_reconciliation_summary(reconciliation)
                 if recon_summary:
-                    notice = recon_summary
+                    notice = f"{notice}\n\n{recon_summary}" if notice else recon_summary
 
             if _ACTION_INTENT.search(utterance):
                 await self.emit(
@@ -473,8 +493,12 @@ class AgentRuntime:
                 )
                 await self.emit(
                     ToolFrame(
-                        call_id=attempt.call_id, name=attempt.name, status=attempt.status,
-                        verdict=attempt.verdict, args=attempt.args, latency_ms=attempt.latency_ms,
+                        call_id=attempt.call_id,
+                        name="send_booking",
+                        status=attempt.status,
+                        verdict=attempt.verdict,
+                        args=attempt.args,
+                        latency_ms=attempt.latency_ms,
                     )
                 )
                 if attempt.status == "blocked":
@@ -558,6 +582,7 @@ class AgentRuntime:
                             for o in budget.audit
                         ],
                         "reconciliation": reconciliation.to_dict() if goal.work_items else None,
+                        "headsup": headsup.to_dict() if headsup else None,
                     },
                 )
             )
@@ -629,7 +654,7 @@ class AgentRuntime:
             query_lower = query.lower()
             selected_fact_ids = [
                 f.fact_id
-                for k in self.session.backspace.snapshot()["facts"]
+                for k in self.session.backspace.snapshot().get("facts", {})
                 if (f := self.session.backspace.get_fact(k)) is not None
                 and f.value is not None
                 and str(f.value).strip() != ""
@@ -650,7 +675,7 @@ class AgentRuntime:
             joined_values = " ".join(arg_values)
             selected_fact_ids = [
                 f.fact_id
-                for k in self.session.backspace.snapshot()["facts"]
+                for k in self.session.backspace.snapshot().get("facts", {})
                 if (f := self.session.backspace.get_fact(k)) is not None
                 and (
                     k in relevant_keys
@@ -665,7 +690,7 @@ class AgentRuntime:
         else:
             selected_fact_ids = [
                 f.fact_id
-                for k in self.session.backspace.snapshot()["facts"]
+                for k in self.session.backspace.snapshot().get("facts", {})
                 if (f := self.session.backspace.get_fact(k)) is not None
             ]
 

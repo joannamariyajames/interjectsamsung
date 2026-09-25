@@ -20,6 +20,127 @@ class WorkStatus(str, Enum):
 
 
 @dataclass
+class ConstraintPredicate:
+    fact_key: str
+    operator: str  # "<=", ">=", "==", "!=", "in", "contains"
+    item_field: str | None = None
+    target_value: Any | None = None
+    description: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "fact_key": self.fact_key,
+            "operator": self.operator,
+            "item_field": self.item_field,
+            "target_value": self.target_value,
+            "description": self.description,
+        }
+
+    def evaluate(self, item_data: dict[str, Any], facts: dict[str, Any]) -> tuple[bool, str | None]:
+        """Evaluate the predicate against item data and active facts.
+
+        Returns:
+            (is_valid: bool, stale_reason: str | None)
+        """
+        # Determine fact value
+        if self.fact_key in facts and facts[self.fact_key] is not None:
+            fact_val = facts[self.fact_key]
+        elif self.target_value is not None:
+            fact_val = self.target_value
+        else:
+            # Fact is absent and no target_value fallback: passes without invalidation
+            return True, None
+
+        field_name = self.item_field or self.fact_key
+        if field_name not in item_data or item_data[field_name] is None:
+            # Item field is absent: passes without invalidation
+            return True, None
+
+        item_val = item_data[field_name]
+        op = self.operator.strip().lower()
+
+        try:
+            if op == "<=":
+                if item_val > fact_val:
+                    reason = (
+                        self.description
+                        or f"{field_name} {item_val} exceeds limit {fact_val}"
+                    )
+                    return False, reason
+            elif op == ">=":
+                if item_val < fact_val:
+                    reason = (
+                        self.description
+                        or f"{field_name} {item_val} is below required {fact_val}"
+                    )
+                    return False, reason
+            elif op == "==":
+                if isinstance(item_val, str) and isinstance(fact_val, str):
+                    is_valid = item_val.strip().lower() == fact_val.strip().lower()
+                else:
+                    is_valid = item_val == fact_val
+                if not is_valid:
+                    reason = (
+                        self.description
+                        or f"{field_name} '{item_val}' does not match '{fact_val}'"
+                    )
+                    return False, reason
+            elif op == "!=":
+                if isinstance(item_val, str) and isinstance(fact_val, str):
+                    is_valid = item_val.strip().lower() != fact_val.strip().lower()
+                else:
+                    is_valid = item_val != fact_val
+                if not is_valid:
+                    reason = (
+                        self.description
+                        or f"{field_name} '{item_val}' must not equal '{fact_val}'"
+                    )
+                    return False, reason
+            elif op == "in":
+                if isinstance(fact_val, (list, tuple, set)):
+                    if isinstance(item_val, str):
+                        is_valid = any(
+                            item_val.strip().lower() == str(v).strip().lower()
+                            for v in fact_val
+                        )
+                    else:
+                        is_valid = item_val in fact_val
+                elif isinstance(fact_val, str) and isinstance(item_val, str):
+                    is_valid = item_val.strip().lower() in fact_val.strip().lower()
+                else:
+                    is_valid = item_val in fact_val
+                if not is_valid:
+                    reason = (
+                        self.description
+                        or f"{field_name} '{item_val}' is not in allowed {fact_val}"
+                    )
+                    return False, reason
+            elif op == "contains":
+                if isinstance(item_val, (list, tuple, set)):
+                    if isinstance(fact_val, str):
+                        is_valid = any(
+                            str(v).strip().lower() == fact_val.strip().lower()
+                            for v in item_val
+                        )
+                    else:
+                        is_valid = fact_val in item_val
+                elif isinstance(item_val, str) and isinstance(fact_val, str):
+                    is_valid = fact_val.strip().lower() in item_val.strip().lower()
+                else:
+                    is_valid = fact_val in item_val
+                if not is_valid:
+                    reason = (
+                        self.description
+                        or f"{field_name} does not contain '{fact_val}'"
+                    )
+                    return False, reason
+        except (TypeError, ValueError):
+            return True, None
+
+        return True, None
+
+
+@dataclass
 class WorkItem:
     item_id: str
     goal_id: str
@@ -27,6 +148,7 @@ class WorkItem:
     title: str
     data: dict[str, Any] = field(default_factory=dict)
     depends_on: list[str] = field(default_factory=list)
+    predicates: list[ConstraintPredicate] = field(default_factory=list)
     source_doc_id: str | None = None
     status: WorkStatus = WorkStatus.VALID
     stale_reason: str | None = None
@@ -39,6 +161,10 @@ class WorkItem:
             "title": self.title,
             "data": dict(self.data),
             "depends_on": list(self.depends_on),
+            "predicates": [
+                p.to_dict() if hasattr(p, "to_dict") else vars(p)
+                for p in self.predicates
+            ],
             "source_doc_id": self.source_doc_id,
             "status": self.status.value if isinstance(self.status, WorkStatus) else str(self.status),
             "stale_reason": self.stale_reason,
@@ -49,18 +175,36 @@ def validate_work_item(item: WorkItem, facts: dict[str, Any]) -> tuple[WorkStatu
     """Validate a WorkItem against active session facts.
 
     Rules:
-    - If item depends on "budget" and its price exceeds facts["budget"]:
-        STALE + clear reason
-    - If item depends on "people" and its stored people count differs from facts["people"]:
-        STALE + clear reason
-    - If item depends on "destination" and its stored destination/city differs from facts["destination"]:
-        STALE + clear reason
+    - If item has predicates:
+        Evaluates each ConstraintPredicate. The first failing predicate marks
+        the item STALE with its reason.
+    - If item has no predicates (legacy slot validation):
+        - If item depends on "budget" and its price exceeds facts["budget"]:
+            STALE + clear reason
+        - If item depends on "people" and its stored people count differs from facts["people"]:
+            STALE + clear reason
+        - If item depends on "destination" and its stored destination differs from facts["destination"]:
+            STALE + clear reason
     - Otherwise:
         VALID, None
 
     Returns:
         (WorkStatus, reason | None)
     """
+    # A. Generic predicate validation (preferred)
+    if item.predicates:
+        for pred in item.predicates:
+            is_valid, reason = pred.evaluate(item.data, facts)
+            if not is_valid:
+                item.status = WorkStatus.STALE
+                item.stale_reason = reason
+                return WorkStatus.STALE, reason
+
+        item.status = WorkStatus.VALID
+        item.stale_reason = None
+        return WorkStatus.VALID, None
+
+    # B. Legacy slot validation (backward compatibility for items without predicates)
     # 1. Budget check
     if "budget" in item.depends_on and "budget" in facts and facts["budget"] is not None:
         price = item.data.get("price")

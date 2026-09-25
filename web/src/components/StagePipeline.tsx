@@ -14,7 +14,7 @@ const PIPELINE: { stage: Stage; label: string; hue: string }[] = [
 const ORDER: Stage[] = ["listening", "planning", "retrieving", "tooling", "reasoning", "responding"];
 
 export function StagePipeline({ stage, detail }: { stage: Stage; detail: string }) {
-  const broken = stage === "interrupted" || stage === "recovering";
+  const broken = stage === "interrupted" || stage === "recovering" || stage === "headsup";
   const activeIndex = ORDER.indexOf(stage);
 
   return (

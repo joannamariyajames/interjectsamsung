@@ -37,10 +37,10 @@ _NON_BUDGET_UNITS = re.compile(
 # Budget cues and currency markers
 _BUDGET_CUES = re.compile(
     r"\b(?:budget\s*(?:is|of|now|limit)?\s*(?:is|now)?|"
-    r"under|below|max|maximum|up\s+to|within|cheaper\s+than)\s*"
-    r"(?:₹|rs\.?|inr)?\s*(\d[\d,]*(?:\.\d+)?)\s*(k)?\b|"
+    r"under|below|max|maximum|up\s+to|within|cheaper\s+than|fits?(?:\s+in|\s+into|\s+within)?)\s*"
+    r"(?:(?:our|my|the)\s+)?(?:budget\s+(?:of|is)?\s*)?(?:₹|rs\.?|inr)?\s*(\d[\d,]*(?:\.\d+)?)\s*(k)?\b|"
     r"\b(?:₹|rs\.?|inr)\s*(\d[\d,]*(?:\.\d+)?)\s*(k)?\b|"
-    r"\b(\d[\d,]*(?:\.\d+)?)\s*(k)?\s*(?:₹|rs\.?|inr|rupees?)\b",
+    r"\b(\d[\d,]*(?:\.\d+)?)\s*(k)?\s*(?:₹|rs\.?|inr|rupees?|budget)\b",
     re.IGNORECASE,
 )
 

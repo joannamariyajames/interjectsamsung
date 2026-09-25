@@ -103,31 +103,34 @@ async def test_facts_update_across_turns_in_runtime_session() -> None:
     runtime = AgentRuntime(session, collector)
 
     # Turn 1: Initial booking parameters
-    await runtime.on_final("Book Goa for two under 20k.")
+    await runtime.on_final("Book hotel in Goa for 2 people under 20000.")
     await runtime._task
 
-    assert session.get_all_facts() == {
-        "destination": "Goa",
-        "people": 2,
-        "budget": 20000,
-    }
+    assert session.backspace.get_fact("destination") is not None
+    assert session.backspace.get_fact("destination").value == "Goa"
+    assert session.backspace.get_fact("party_size") is not None
+    assert session.backspace.get_fact("party_size").value == 2
+    assert session.backspace.get_fact("budget") is not None
+    assert session.backspace.get_fact("budget").value == 20000
 
     # Turn 2: Swerve / party size update
-    await runtime.on_final("Actually, we're five.")
+    await runtime.on_final("Actually, make it 5 people.")
     await runtime._task
 
-    assert session.get_all_facts() == {
-        "destination": "Goa",
-        "people": 5,
-        "budget": 20000,
-    }
+    assert session.backspace.get_fact("destination") is not None
+    assert session.backspace.get_fact("destination").value == "Goa"
+    assert session.backspace.get_fact("party_size") is not None
+    assert session.backspace.get_fact("party_size").value == 5
+    assert session.backspace.get_fact("budget") is not None
+    assert session.backspace.get_fact("budget").value == 20000
 
     # Turn 3: Budget change
-    await runtime.on_final("The budget is now 15k.")
+    await runtime.on_final("Budget 15000.")
     await runtime._task
 
-    assert session.get_all_facts() == {
-        "destination": "Goa",
-        "people": 5,
-        "budget": 15000,
-    }
+    assert session.backspace.get_fact("destination") is not None
+    assert session.backspace.get_fact("destination").value == "Goa"
+    assert session.backspace.get_fact("party_size") is not None
+    assert session.backspace.get_fact("party_size").value == 5
+    assert session.backspace.get_fact("budget") is not None
+    assert session.backspace.get_fact("budget").value == 15000

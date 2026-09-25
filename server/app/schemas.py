@@ -30,6 +30,7 @@ class Stage(str, Enum):
     INTERRUPTED = "interrupted"
     RECOVERING = "recovering"
     DONE = "done"
+    HEADSUP = "headsup"
 
 
 class GoalAction(str, Enum):
@@ -164,6 +165,16 @@ class SpecFrame(ServerFrame):
     query: str
     saved_ms: float = 0.0
     docs: list[str] = Field(default_factory=list)
+
+
+class HeadsUpFrame(ServerFrame):
+    t: Literal["headsup"] = "headsup"
+    turn_id: str
+    claim: str
+    contradiction: str
+    confidence: float
+    source_doc_id: str
+    cut_in_text: str
 
 
 class ToolFrame(ServerFrame):
