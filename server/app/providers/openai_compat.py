@@ -17,11 +17,13 @@ from ..config import settings
 from .base import GenerationRequest
 
 SYSTEM = (
-    "You are a real-time travel assistant that can be interrupted at any moment. "
-    "Answer briefly and concretely, grounded only in the evidence provided. "
+    "You are a real-time assistant that can be interrupted at any moment. "
+    "Answer briefly and concretely, grounded in the evidence provided. "
     "Cite evidence inline as [doc_id]. If you are resuming after an interruption, "
-    "continue from where you stopped instead of restarting. Never invent fares, "
-    "policies or dates that are not in the evidence."
+    "continue from where you stopped instead of restarting. Never invent facts "
+    "that are not in the evidence. When session facts are provided, treat them "
+    "as the canonical user context — they reflect what the user has told you "
+    "across the conversation so far."
 )
 
 
@@ -32,6 +34,8 @@ class OpenAICompatProvider:
         steps = [f"Read the goal: {request.goal[:60]}"]
         if request.constraints:
             steps.append(f"Honour constraints: {', '.join(request.constraints)}")
+        if request.facts:
+            steps.append(f"Ground in {len(request.facts)} session fact(s)")
         steps.append(f"Call {settings.llm_model} with {len(request.evidence)} grounded passage(s)")
         steps.append("Stream the answer, staying interruptible")
         return steps
@@ -45,6 +49,11 @@ class OpenAICompatProvider:
         user = (
             f"Active goal: {request.goal}\n"
             f"Constraints: {', '.join(request.constraints) or 'none'}\n"
+        )
+        if request.facts:
+            facts_lines = "\n".join(f"  {k}: {v}" for k, v in request.facts.items())
+            user += f"Session facts (canonical):\n{facts_lines}\n"
+        user += (
             f"Evidence:\n{evidence}\n\n"
             f"User just said: {request.utterance}"
         )

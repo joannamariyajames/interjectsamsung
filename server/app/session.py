@@ -71,6 +71,7 @@ class Session:
     created_at: float = field(default_factory=time.time)
     interruptions: int = 0
     resumes: int = 0
+    backspace: BackspaceCore = field(default_factory=BackspaceCore)
 
     def set_fact(self, key: str, value: Any) -> None:
         """Store or update a session-scoped fact."""
@@ -131,6 +132,7 @@ class Session:
         self.checkpoint = None
         self.interruptions = 0
         self.resumes = 0
+        self.backspace.reset()
 
     def stats(self) -> dict[str, Any]:
         return {
