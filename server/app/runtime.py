@@ -24,9 +24,11 @@ from __future__ import annotations
 import asyncio
 import re
 import uuid
-from typing import Any, Awaitable, Callable
+from typing import Any, Awaitable, Callable, Sequence
 
+from .backspace import ChangeKind, DependencyKind, WorkItem, WorkStatus
 from .config import settings
+from .extraction import extract_facts_with_fallback
 from .filler import FillerVoice, keep_alive, topic_of
 from .goals import GoalAction
 from .harness import Harness, TurnBudget
@@ -50,6 +52,14 @@ from .schemas import (
 )
 from .session import Session, Turn
 from .speculation import SpeculationManager
+
+# Semantic correspondences between tool argument names and canonical fact keys
+_TOOL_ARG_FACT_ALIASES: dict[str, tuple[str, ...]] = {
+    "route": ("route", "destination", "origin"),
+    "date": ("date", "dates", "departure_date", "return_date"),
+    "passenger": ("passenger", "passengers", "party_size"),
+    "cabin": ("cabin", "cabin_class"),
+}
 
 Emit = Callable[[ServerFrame], Awaitable[None]]
 
@@ -255,6 +265,30 @@ class AgentRuntime:
                 )
             )
 
+            # -- 1b. fact extraction & BACKSPACE assertion ---------------
+            extracted = await extract_facts_with_fallback(utterance, goal.text)
+            for f in extracted:
+                update = self.session.backspace.assert_fact(
+                    key=f.key,
+                    value=f.value,
+                    source="extraction",
+                    turn_id=turn_id,
+                    goal_id=goal.goal_id,
+                    confidence=f.confidence,
+                )
+                if update.status == ChangeKind.CHANGED and update.changeset is not None:
+                    self.session.backspace.invalidate(update.changeset)
+
+            # -- 1c. build canonical fact snapshot for retrieval & generation --
+            current_facts: dict[str, object] = {
+                f.key: f.value
+                for f in (
+                    self.session.backspace.get_fact(k)
+                    for k in self.session.backspace.snapshot()["facts"]
+                )
+                if f is not None
+            }
+
             # -- 2. decide what to do with any checkpoint ---------------
             checkpoint = self.session.take_checkpoint()
             resume_from: str | None = None
@@ -292,11 +326,16 @@ class AgentRuntime:
             # constraints are folded into the query. Only a self-contained
             # utterance is allowed to reuse a speculation, because speculation
             # ran against the raw partial text and knows nothing of the goal.
+            #
+            # Phase 2D: canonical facts are folded into the non-self-contained
+            # query so retrieval benefits from the full session context (e.g.
+            # "destination: Tokyo" enriches a follow-up like "what about hotels").
             self_contained = classification.action in (GoalAction.PUSH, GoalAction.SWITCH)
             if self_contained:
                 query = utterance
             else:
-                query = " ".join([goal.text, *goal.constraints, utterance])
+                fact_terms = " ".join(str(v) for v in current_facts.values() if v)
+                query = " ".join(filter(None, [goal.text, *goal.constraints, fact_terms, utterance]))
 
             await self._stage_to(Stage.RETRIEVING, "Gathering evidence", turn_id)
             budget = self.harness.new_budget()
@@ -322,8 +361,28 @@ class AgentRuntime:
                 await self.emit(
                     StageFrame(stage=Stage.TOOLING, turn_id=turn_id, detail="Requesting an irreversible action")
                 )
+                dest = current_facts.get("destination") or current_facts.get("route")
+                origin = current_facts.get("origin")
+                if origin and dest:
+                    route = f"{origin} to {dest}"
+                elif dest:
+                    route = str(dest)
+                else:
+                    route = goal.text[:60]
+
+                date = str(current_facts.get("date") or current_facts.get("dates") or "")
+                passenger = str(
+                    current_facts.get("passenger")
+                    or current_facts.get("passengers")
+                    or current_facts.get("party_size")
+                    or ""
+                )
+                booking_args = {"route": route, "date": date, "passenger": passenger}
+                work = self._create_and_register_work(
+                    "send_booking", tool_args=booking_args, turn_id=turn_id, goal_id=goal.goal_id
+                )
                 attempt = await self.harness.call(
-                    "send_booking", budget, route=goal.text[:60], date="", passenger=""
+                    "send_booking", budget, work=work, **booking_args
                 )
                 await self.emit(
                     ToolFrame(
@@ -348,6 +407,7 @@ class AgentRuntime:
                 resume_from=resume_from,
                 modality=modality,
                 notice=notice,
+                facts=current_facts,
             )
             await self._stage_to(Stage.REASONING, "Drafting a plan", turn_id)
             steps = self.provider.plan(request)
@@ -455,6 +515,82 @@ class AgentRuntime:
                 )
 
     # ------------------------------------------------------------------
+    def _create_and_register_work(
+        self,
+        kind: str,
+        fact_ids: Sequence[str] | None = None,
+        fact_keys: Sequence[str] | None = None,
+        query: str | None = None,
+        tool_args: dict[str, Any] | None = None,
+        turn_id: str | None = None,
+        goal_id: str | None = None,
+    ) -> WorkItem:
+        tid = self._turn_id if (turn_id is None or not turn_id) else turn_id
+        gid = self.session.goals.active.goal_id if (goal_id is None and self.session.goals.active is not None) else goal_id
+
+        if fact_ids is not None:
+            selected_fact_ids = list(fact_ids)
+        elif fact_keys is not None:
+            selected_fact_ids = [
+                f.fact_id
+                for k in fact_keys
+                if (f := self.session.backspace.get_fact(k)) is not None
+            ]
+        elif query is not None:
+            query_lower = query.lower()
+            selected_fact_ids = [
+                f.fact_id
+                for k in self.session.backspace.snapshot()["facts"]
+                if (f := self.session.backspace.get_fact(k)) is not None
+                and f.value is not None
+                and str(f.value).strip() != ""
+                and str(f.value).lower() in query_lower
+            ]
+        elif tool_args is not None:
+            relevant_keys: set[str] = set()
+            for arg_key in tool_args:
+                relevant_keys.add(arg_key)
+                if arg_key in _TOOL_ARG_FACT_ALIASES:
+                    relevant_keys.update(_TOOL_ARG_FACT_ALIASES[arg_key])
+
+            arg_values = [
+                str(v).lower()
+                for v in tool_args.values()
+                if v is not None and str(v).strip() != ""
+            ]
+            joined_values = " ".join(arg_values)
+            selected_fact_ids = [
+                f.fact_id
+                for k in self.session.backspace.snapshot()["facts"]
+                if (f := self.session.backspace.get_fact(k)) is not None
+                and (
+                    k in relevant_keys
+                    or (
+                        f.value is not None
+                        and len(str(f.value).strip()) >= 3
+                        and not str(f.value).strip().isdigit()
+                        and str(f.value).lower() in joined_values
+                    )
+                )
+            ]
+        else:
+            selected_fact_ids = [
+                f.fact_id
+                for k in self.session.backspace.snapshot()["facts"]
+                if (f := self.session.backspace.get_fact(k)) is not None
+            ]
+
+        work = WorkItem(
+            kind=kind,
+            turn_id=tid,
+            goal_id=gid,
+            depends_on_facts=selected_fact_ids,
+        )
+        self.session.backspace.register_work(work)
+        for fid in selected_fact_ids:
+            self.session.backspace.register_dependency(DependencyKind.FACT_TO_WORK, fid, work.work_id)
+        return work
+
     async def _retrieve(
         self, query: str, budget: TurnBudget, use_speculation: bool = True
     ) -> list[dict[str, str]]:
@@ -519,8 +655,9 @@ class AgentRuntime:
         return await self._cold_retrieve(query, budget)
 
     async def _cold_retrieve(self, query: str, budget: TurnBudget) -> list[dict[str, str]]:
+        work = self._create_and_register_work("search_corpus", query=query)
         outcome = await self.harness.call(
-            "search_corpus", budget, query=query, latency_ms=settings.retrieval_latency_ms
+            "search_corpus", budget, work=work, query=query, latency_ms=settings.retrieval_latency_ms
         )
         await self.emit(
             ToolFrame(

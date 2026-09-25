@@ -12,6 +12,7 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Any
 
+from .backspace import BackspaceCore
 from .config import settings
 from .goals import GoalTracker
 
@@ -59,6 +60,7 @@ class Session:
     created_at: float = field(default_factory=time.time)
     interruptions: int = 0
     resumes: int = 0
+    backspace: BackspaceCore = field(default_factory=BackspaceCore)
 
     def add_turn(self, turn: Turn) -> None:
         self.turns.append(turn)
@@ -101,6 +103,7 @@ class Session:
         self.checkpoint = None
         self.interruptions = 0
         self.resumes = 0
+        self.backspace.reset()
 
     def stats(self) -> dict[str, Any]:
         return {
