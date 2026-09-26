@@ -332,7 +332,7 @@ class AgentRuntime:
             # -- 1b. fact extraction & BACKSPACE assertion ---------------
             extracted = await extract_facts_with_fallback(utterance, goal.text)
             for f in extracted:
-                update = self.session.backspace.assert_fact(
+                self.observe_fact(
                     key=f.key,
                     value=f.value,
                     source="extraction",
@@ -340,8 +340,6 @@ class AgentRuntime:
                     goal_id=goal.goal_id,
                     confidence=f.confidence,
                 )
-                if update.status == ChangeKind.CHANGED and update.changeset is not None:
-                    self.session.backspace.invalidate(update.changeset)
 
             # -- 1c. build canonical fact snapshot for retrieval & generation --
             current_facts: dict[str, object] = {
