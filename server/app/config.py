@@ -43,7 +43,7 @@ class Settings:
     # Gemini configuration
     gemini_api_key: str | None = field(default_factory=lambda: os.environ.get("GEMINI_API_KEY"))
     gemini_model: str = field(
-        default_factory=lambda: os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+        default_factory=lambda: os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")
     )
 
     # --- timing ---------------------------------------------------------

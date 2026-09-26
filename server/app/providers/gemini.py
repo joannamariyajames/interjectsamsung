@@ -55,7 +55,16 @@ class GeminiProvider:
             )
         if not self.api_key:
             raise RuntimeError("GEMINI_API_KEY is not configured.")
-        self._client = genai.Client(api_key=self.api_key)
+        self._client = genai.Client(
+            api_key=self.api_key,
+            http_options=types.HttpOptions(
+                retry_options=types.HttpRetryOptions(
+                    attempts=3,
+                    initial_delay=0.5,
+                    max_delay=3.0,
+                )
+            ),
+        )
         return self._client
 
     def plan(self, request: GenerationRequest) -> list[str]:
@@ -132,6 +141,7 @@ class GeminiProvider:
         config = types.GenerateContentConfig(
             system_instruction=SYSTEM,
             temperature=0.3,
+            automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
         )
 
         try:

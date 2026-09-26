@@ -34,6 +34,7 @@ is exercised directly by tests against the real ``AgentRuntime``/``Session``.
 from __future__ import annotations
 
 import asyncio
+import logging
 import re
 import uuid
 from typing import Any, Awaitable, Callable, Sequence
@@ -614,6 +615,7 @@ class AgentRuntime:
             interrupted = True
             raise
         except Exception as exc:  # noqa: BLE001
+            logging.exception("Turn execution failed: %s", exc)
             await self.emit(ErrorFrame(message=f"{type(exc).__name__}: {exc}"))
             await self.emit(StageFrame(stage=Stage.IDLE, detail="Recovered from an error."))
         finally:
