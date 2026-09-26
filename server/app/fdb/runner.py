@@ -6,6 +6,8 @@ Does NOT modify or copy official FDB files.
 
 from __future__ import annotations
 
+import asyncio
+import inspect
 import json
 import logging
 import os
@@ -24,6 +26,15 @@ if _FDB_V3_DIR.exists() and str(_FDB_V3_DIR) not in sys.path:
 _SERVER_DIR = _REPO_ROOT / "server"
 if _SERVER_DIR.exists() and str(_SERVER_DIR) not in sys.path:
     sys.path.insert(0, str(_SERVER_DIR))
+
+try:
+    from dotenv import load_dotenv
+
+    _ENV_LOCAL = _REPO_ROOT / ".env.local"
+    if _ENV_LOCAL.exists():
+        load_dotenv(_ENV_LOCAL)
+except ImportError:
+    pass
 
 from app.backspace import BackspaceCore
 from app.fdb.adapter import FDBBackspaceAdapter
@@ -60,9 +71,17 @@ def wrap_assistant_tools(adapter: FDBBackspaceAdapter, fnc_ctx: AssistantFnc) ->
     tools = llm.find_function_tools(fnc_ctx)
     for tool in tools:
         fn_name = tool.info.name
+        tool_sig = inspect.signature(tool)
 
-        def _make_wrapper(name: str):
-            async def _adapted_tool(instance, *args, **kwargs):
+        def _make_wrapper(name: str, sig: inspect.Signature):
+            async def _adapted_tool(*args, **kwargs):
+                call_args = args
+                if call_args and call_args[0] is fnc_ctx:
+                    call_args = call_args[1:]
+                bound = sig.bind_partial(*call_args, **kwargs)
+                bound.apply_defaults()
+                resolved_kwargs = {k: v for k, v in bound.arguments.items() if v is not None}
+
                 def call_backend(**kw):
                     if registry is not None:
                         return registry.call(name, **kw)
@@ -70,14 +89,14 @@ def wrap_assistant_tools(adapter: FDBBackspaceAdapter, fnc_ctx: AssistantFnc) ->
 
                 result = adapter.execute_tool(
                     func_name=name,
-                    args=kwargs,
+                    args=resolved_kwargs,
                     call_fn=call_backend,
                 )
                 return json.dumps(result)
 
             return _adapted_tool
 
-        tool._func = _make_wrapper(fn_name)
+        tool._func = _make_wrapper(fn_name, tool_sig)
 
     return tools
 
@@ -119,14 +138,30 @@ if server is not None:
         runtime = AgentRuntime(session_state, emit=lambda frame: asyncio.sleep(0))
         adapter = FDBBackspaceAdapter(core=core, room_name=ctx.room.name)
 
+        session_done = asyncio.Event()
+
         # 2. Attach shutdown hook using official LiveKit JobContext API
-        ctx.add_shutdown_callback(adapter.flush)
+        async def _on_shutdown():
+            adapter.flush()
+            session_done.set()
+
+        ctx.add_shutdown_callback(_on_shutdown)
 
         # 3. Create official AssistantFnc and adapt tool dispatch
         fnc_ctx = AssistantFnc(tracker, ctx.room.name)
         tools = wrap_assistant_tools(adapter, fnc_ctx)
 
         session = AgentSession(llm=model, tools=tools)
+
+        @session.on("close")
+        def _on_session_close(*args):
+            adapter.flush()
+            session_done.set()
+
+        @ctx.room.on("disconnected")
+        def _on_room_disconnected(*args):
+            adapter.flush()
+            session_done.set()
 
         @session.on("user_input_transcribed")
         def on_user_input(msg: Any):
@@ -145,6 +180,7 @@ if server is not None:
 
         try:
             await session.start(room=ctx.room, agent=VoiceAgent())
+            await session_done.wait()
         finally:
             adapter.flush()
 
