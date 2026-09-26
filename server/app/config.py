@@ -42,6 +42,9 @@ class Settings:
 
     # Gemini configuration
     gemini_api_key: str | None = field(default_factory=lambda: os.environ.get("GEMINI_API_KEY"))
+    gemini_model: str = field(
+        default_factory=lambda: os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+    )
     gemini_live_model: str = field(
         default_factory=lambda: os.environ.get("GEMINI_LIVE_MODEL", "gemini-3.8-live")
     )
@@ -87,6 +90,10 @@ class Settings:
         "http://localhost:5174",
         "http://127.0.0.1:5174",
     )
+
+    @property
+    def use_gemini(self) -> bool:
+        return bool(self.gemini_api_key)
 
     @property
     def use_real_llm(self) -> bool:

@@ -17,6 +17,18 @@ The rules that make interruption *clean* rather than merely fast:
 * Time-to-yield is measured from the instant the interrupt frame is read to the
   instant the task is actually finished, and reported to the UI. If that number
   ever creeps up, something in the turn is blocking the event loop.
+
+``observe_fact`` (Phase 9) is the one integration point with BACKSPACE Core:
+a structured fact observation in, a ``BackspaceIntegrationResult`` out. It
+contains no fact-versioning, dependency-traversal, invalidation or
+recomputation-planning logic of its own - every one of those stays exclusively
+in ``app.backspace``, reached only through ``BackspaceCore``'s own public
+methods via ``app.backspace.runtime_adapter.process_backspace_observation``.
+Nothing in ``_run_turn`` calls it yet: there is no structured-fact producer
+in this runtime today (that is Member 2's LLM/RAG layer, still to come), so
+wiring it into the turn itself would mean fabricating fact data no real turn
+produces. The method exists, is synchronous (BACKSPACE Core does no I/O), and
+is exercised directly by tests against the real ``AgentRuntime``/``Session``.
 """
 
 from __future__ import annotations
@@ -24,9 +36,19 @@ from __future__ import annotations
 import asyncio
 import re
 import uuid
-from typing import Any, Awaitable, Callable
+from typing import Any, Awaitable, Callable, Sequence
 
+from .backspace import (
+    BackspaceIntegrationResult,
+    ChangeKind,
+    DependencyKind,
+    FactObservation,
+    WorkItem,
+    WorkStatus,
+    process_backspace_observation,
+)
 from .config import settings
+from .extraction import extract_facts_with_fallback
 from .filler import FillerVoice, keep_alive, topic_of
 from .goals import GoalAction
 from .harness import Harness, TurnBudget
@@ -36,6 +58,7 @@ from .schemas import (
     CheckpointFrame,
     ErrorFrame,
     FillerFrame,
+    HeadsUpFrame,
     NudgeFrame,
     GoalFrame,
     MessageFrame,
@@ -48,8 +71,28 @@ from .schemas import (
     ToolFrame,
     now_ms,
 )
+from .headsup import HeadsUpEvent, detect_contradiction
+from .headsup_travel import register_travel_rules
 from .session import Session, Turn
 from .speculation import SpeculationManager
+from .work import (
+    ReconciliationResult,
+    extract_work_items_from_evidence,
+    format_reconciliation_summary,
+    reconcile_work_items,
+    validate_work_item,
+)
+
+# Semantic correspondences between tool argument names and canonical fact keys
+_TOOL_ARG_FACT_ALIASES: dict[str, tuple[str, ...]] = {
+    "route": ("route", "destination", "origin"),
+    "date": ("date", "dates", "departure_date", "return_date"),
+    "passenger": ("passenger", "passengers", "party_size"),
+    "cabin": ("cabin", "cabin_class"),
+}
+
+# Register domain-specific travel contradiction rules into the global registry
+register_travel_rules()
 
 Emit = Callable[[ServerFrame], Awaitable[None]]
 
@@ -87,6 +130,8 @@ class AgentRuntime:
         self._token_delay = settings.token_delay_ms
         self._stage: Stage = Stage.IDLE
         self._filler: asyncio.Task[None] | None = None
+        self._reconciliation: ReconciliationResult | None = None
+        self._headsup: HeadsUpEvent | None = None
 
     # ------------------------------------------------------------------
     # state
@@ -100,6 +145,47 @@ class AgentRuntime:
             self._token_delay = token_delay_ms
         if strict_harness is not None:
             self.harness.strict = strict_harness
+
+    def observe_fact(
+        self,
+        key: str,
+        value: Any,
+        *,
+        source: str = "user",
+        turn_id: str | None = None,
+        goal_id: str | None = None,
+        confidence: float = 1.0,
+    ) -> BackspaceIntegrationResult:
+        """Route one structured fact observation through this session's
+        BackspaceCore and return exactly what BACKSPACE computed.
+
+        ``turn_id`` defaults to whichever turn is currently in flight
+        (``self._turn_id``) rather than inventing a new one - use the
+        runtime's own identifier, per the brief. ``goal_id`` defaults to the
+        goal stack's current active goal id (read, never parsed or resolved -
+        ``GoalTracker`` remains the only thing that understands it) so a
+        caller does not have to duplicate that lookup; passing one explicitly
+        always wins.
+
+        Contains no fact-versioning, invalidation, recomputation or claim
+        logic itself - see ``app.backspace.runtime_adapter.
+        process_backspace_observation`` for the actual sequence
+        (``assert_fact`` -> ``invalidate`` -> ``plan_recompute`` ->
+        ``build_explanation``, only for a CHANGED observation). Raises
+        whatever ``BackspaceCore`` itself raises for a malformed observation;
+        nothing here catches or hides it.
+        """
+        active_goal = self.session.goals.active
+        resolved_goal_id = goal_id if goal_id is not None else (active_goal.goal_id if active_goal else None)
+        observation = FactObservation(
+            key=key,
+            value=value,
+            source=source,
+            turn_id=turn_id if turn_id is not None else self._turn_id,
+            goal_id=resolved_goal_id,
+            confidence=confidence,
+        )
+        return process_backspace_observation(self.session.backspace, observation)
 
     async def _stage_to(self, stage: Stage, detail: str, turn_id: str | None = None) -> None:
         self._stage = stage
@@ -243,6 +329,28 @@ class AgentRuntime:
                 )
             )
 
+            # -- 1b. fact extraction & BACKSPACE assertion ---------------
+            extracted = await extract_facts_with_fallback(utterance, goal.text)
+            for f in extracted:
+                self.observe_fact(
+                    key=f.key,
+                    value=f.value,
+                    source="extraction",
+                    turn_id=turn_id,
+                    goal_id=goal.goal_id,
+                    confidence=f.confidence,
+                )
+
+            # -- 1c. build canonical fact snapshot for retrieval & generation --
+            current_facts: dict[str, object] = {
+                f.key: f.value
+                for f in (
+                    self.session.backspace.get_fact(k)
+                    for k in self.session.backspace.snapshot().get("facts", {})
+                )
+                if f is not None
+            }
+
             # Keep the conversation alive while the slow part happens. This is a
             # separate task so the turn stays interruptible; cancelling the turn
             # silences the chatter in the same instant.
@@ -296,7 +404,8 @@ class AgentRuntime:
             if self_contained:
                 query = utterance
             else:
-                query = " ".join([goal.text, *goal.constraints, utterance])
+                fact_terms = " ".join(str(v) for v in current_facts.values() if v)
+                query = " ".join(filter(None, [goal.text, *goal.constraints, fact_terms, utterance]))
 
             await self._stage_to(Stage.RETRIEVING, "Gathering evidence", turn_id)
             budget = self.harness.new_budget()
@@ -316,27 +425,87 @@ class AgentRuntime:
             self._evidence = evidence
             self._plan_progress = "evidence gathered"
 
-            # -- 3b. irreversible actions go through the harness ---------
+            # -- 3a. work items & reconciliation (BACKSPACE) ------------
+            reconciliation = reconcile_work_items(goal.work_items, current_facts)
+            self._reconciliation = reconciliation
+
+            new_items = extract_work_items_from_evidence(evidence, goal.goal_id, current_facts)
+            existing_ids = {item.item_id for item in goal.work_items}
+            for item in new_items:
+                if item.item_id not in existing_ids:
+                    goal.work_items.append(item)
+                    existing_ids.add(item.item_id)
+
+            # -- 3b. Heads-Up contradiction check -----------------------
+            headsup = detect_contradiction(utterance, evidence, current_facts)
+            self._headsup = headsup
+            if headsup is not None:
+                await self.emit(
+                    HeadsUpFrame(
+                        turn_id=turn_id,
+                        claim=headsup.claim,
+                        contradiction=headsup.contradiction,
+                        confidence=headsup.confidence,
+                        source_doc_id=headsup.source_doc_id,
+                        cut_in_text=headsup.cut_in_text,
+                    )
+                )
+                await self._stage_to(Stage.HEADSUP, headsup.cut_in_text, turn_id)
+
+            # -- 3c. irreversible actions go through the harness ---------
             notice: str | None = None
+            if headsup is not None:
+                notice = headsup.cut_in_text
+
+            if reconciliation.became_stale or (classification.action is GoalAction.REVERT and reconciliation.stale):
+                recon_summary = format_reconciliation_summary(reconciliation)
+                if recon_summary:
+                    notice = f"{notice}\n\n{recon_summary}" if notice else recon_summary
+
             if _ACTION_INTENT.search(utterance):
                 await self.emit(
                     StageFrame(stage=Stage.TOOLING, turn_id=turn_id, detail="Requesting an irreversible action")
                 )
+                dest = current_facts.get("destination") or current_facts.get("route")
+                origin = current_facts.get("origin")
+                if origin and dest:
+                    route = f"{origin} to {dest}"
+                elif dest:
+                    route = str(dest)
+                else:
+                    route = goal.text[:60]
+
+                date = str(current_facts.get("date") or current_facts.get("dates") or "")
+                passenger = str(
+                    current_facts.get("passenger")
+                    or current_facts.get("passengers")
+                    or current_facts.get("party_size")
+                    or ""
+                )
+                booking_args = {"route": route, "date": date, "passenger": passenger}
+                work = self._create_and_register_work(
+                    "send_booking", tool_args=booking_args, turn_id=turn_id, goal_id=goal.goal_id
+                )
                 attempt = await self.harness.call(
-                    "send_booking", budget, route=goal.text[:60], date="", passenger=""
+                    "send_booking", budget, work=work, **booking_args
                 )
                 await self.emit(
                     ToolFrame(
-                        call_id=attempt.call_id, name=attempt.name, status=attempt.status,
-                        verdict=attempt.verdict, args=attempt.args, latency_ms=attempt.latency_ms,
+                        call_id=attempt.call_id,
+                        name="send_booking",
+                        status=attempt.status,
+                        verdict=attempt.verdict,
+                        args=attempt.args,
+                        latency_ms=attempt.latency_ms,
                     )
                 )
                 if attempt.status == "blocked":
-                    notice = (
+                    blocked_notice = (
                         "I can't put that booking through myself - the harness blocks irreversible "
                         f"actions without a human confirming them. ({attempt.verdict}) "
                         "Here is everything you need to decide, then you can confirm it."
                     )
+                    notice = f"{notice}\n\n{blocked_notice}" if notice else blocked_notice
 
             # -- 4. plan ------------------------------------------------
             request = GenerationRequest(
@@ -348,6 +517,7 @@ class AgentRuntime:
                 resume_from=resume_from,
                 modality=modality,
                 notice=notice,
+                facts=current_facts,
             )
             await self._stage_to(Stage.REASONING, "Drafting a plan", turn_id)
             steps = self.provider.plan(request)
@@ -409,6 +579,8 @@ class AgentRuntime:
                             {"name": o.name, "status": o.status, "verdict": o.verdict}
                             for o in budget.audit
                         ],
+                        "reconciliation": reconciliation.to_dict() if goal.work_items else None,
+                        "headsup": headsup.to_dict() if headsup else None,
                     },
                 )
             )
@@ -455,6 +627,82 @@ class AgentRuntime:
                 )
 
     # ------------------------------------------------------------------
+    def _create_and_register_work(
+        self,
+        kind: str,
+        fact_ids: Sequence[str] | None = None,
+        fact_keys: Sequence[str] | None = None,
+        query: str | None = None,
+        tool_args: dict[str, Any] | None = None,
+        turn_id: str | None = None,
+        goal_id: str | None = None,
+    ) -> WorkItem:
+        tid = self._turn_id if (turn_id is None or not turn_id) else turn_id
+        gid = self.session.goals.active.goal_id if (goal_id is None and self.session.goals.active is not None) else goal_id
+
+        if fact_ids is not None:
+            selected_fact_ids = list(fact_ids)
+        elif fact_keys is not None:
+            selected_fact_ids = [
+                f.fact_id
+                for k in fact_keys
+                if (f := self.session.backspace.get_fact(k)) is not None
+            ]
+        elif query is not None:
+            query_lower = query.lower()
+            selected_fact_ids = [
+                f.fact_id
+                for k in self.session.backspace.snapshot().get("facts", {})
+                if (f := self.session.backspace.get_fact(k)) is not None
+                and f.value is not None
+                and str(f.value).strip() != ""
+                and str(f.value).lower() in query_lower
+            ]
+        elif tool_args is not None:
+            relevant_keys: set[str] = set()
+            for arg_key in tool_args:
+                relevant_keys.add(arg_key)
+                if arg_key in _TOOL_ARG_FACT_ALIASES:
+                    relevant_keys.update(_TOOL_ARG_FACT_ALIASES[arg_key])
+
+            arg_values = [
+                str(v).lower()
+                for v in tool_args.values()
+                if v is not None and str(v).strip() != ""
+            ]
+            joined_values = " ".join(arg_values)
+            selected_fact_ids = [
+                f.fact_id
+                for k in self.session.backspace.snapshot().get("facts", {})
+                if (f := self.session.backspace.get_fact(k)) is not None
+                and (
+                    k in relevant_keys
+                    or (
+                        f.value is not None
+                        and len(str(f.value).strip()) >= 3
+                        and not str(f.value).strip().isdigit()
+                        and str(f.value).lower() in joined_values
+                    )
+                )
+            ]
+        else:
+            selected_fact_ids = [
+                f.fact_id
+                for k in self.session.backspace.snapshot().get("facts", {})
+                if (f := self.session.backspace.get_fact(k)) is not None
+            ]
+
+        work = WorkItem(
+            kind=kind,
+            turn_id=tid,
+            goal_id=gid,
+            depends_on_facts=selected_fact_ids,
+        )
+        self.session.backspace.register_work(work)
+        for fid in selected_fact_ids:
+            self.session.backspace.register_dependency(DependencyKind.FACT_TO_WORK, fid, work.work_id)
+        return work
+
     async def _retrieve(
         self, query: str, budget: TurnBudget, use_speculation: bool = True
     ) -> list[dict[str, str]]:
@@ -519,8 +767,9 @@ class AgentRuntime:
         return await self._cold_retrieve(query, budget)
 
     async def _cold_retrieve(self, query: str, budget: TurnBudget) -> list[dict[str, str]]:
+        work = self._create_and_register_work("search_corpus", query=query)
         outcome = await self.harness.call(
-            "search_corpus", budget, query=query, latency_ms=settings.retrieval_latency_ms
+            "search_corpus", budget, work=work, query=query, latency_ms=settings.retrieval_latency_ms
         )
         await self.emit(
             ToolFrame(

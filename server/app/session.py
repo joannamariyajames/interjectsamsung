@@ -3,6 +3,15 @@
 Per the brief: session-scoped memory only, no cross-session user profile. The
 store is an in-process dict keyed by socket-issued session id, and closing the
 socket is what eventually retires it. Nothing is written to disk, ever.
+
+``backspace`` (Phase 9) is this session's one ``BackspaceCore`` - the fact
+notebook, dependency graph, invalidation/recomputation/claim-ledger state a
+structured observation flows through. It lives here for the same reason
+``goals`` does: one instance per ``Session``, created once, reset with
+everything else, never a global. ``goals`` (``GoalTracker``) and
+``backspace`` are deliberately separate objects with no reference to each
+other - goal tracking and fact/dependency state are two different concerns
+that happen to share a session, not one system.
 """
 
 from __future__ import annotations
@@ -12,6 +21,7 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Any
 
+from .backspace import BackspaceCore
 from .config import settings
 from .goals import GoalTracker
 
@@ -53,12 +63,31 @@ class Turn:
 class Session:
     session_id: str
     goals: GoalTracker = field(default_factory=GoalTracker)
+    backspace: BackspaceCore = field(default_factory=BackspaceCore)
     turns: list[Turn] = field(default_factory=list)
     notes: dict[str, str] = field(default_factory=dict)
+    facts: dict[str, Any] = field(default_factory=dict)
     checkpoint: Checkpoint | None = None
     created_at: float = field(default_factory=time.time)
     interruptions: int = 0
     resumes: int = 0
+    backspace: BackspaceCore = field(default_factory=BackspaceCore)
+
+    def set_fact(self, key: str, value: Any) -> None:
+        """Store or update a session-scoped fact."""
+        self.facts[key] = value
+
+    def get_fact(self, key: str, default: Any = None) -> Any:
+        """Retrieve a session-scoped fact by key, returning default if not found."""
+        return self.facts.get(key, default)
+
+    def has_fact(self, key: str) -> bool:
+        """Check whether a fact exists in the session ledger."""
+        return key in self.facts
+
+    def get_all_facts(self) -> dict[str, Any]:
+        """Return a safe copy of all session-scoped facts."""
+        return dict(self.facts)
 
     def add_turn(self, turn: Turn) -> None:
         self.turns.append(turn)
@@ -96,17 +125,21 @@ class Session:
     def reset(self) -> None:
         """Wipe everything. This is the only kind of memory the agent has."""
         self.goals.clear()
+        self.backspace.reset()
         self.turns.clear()
         self.notes.clear()
+        self.facts.clear()
         self.checkpoint = None
         self.interruptions = 0
         self.resumes = 0
+        self.backspace.reset()
 
     def stats(self) -> dict[str, Any]:
         return {
             "session_id": self.session_id,
             "turns": len(self.turns),
             "goals": len(self.goals.stack),
+            "facts": len(self.facts),
             "interruptions": self.interruptions,
             "resumes": self.resumes,
             "age_s": round(time.time() - self.created_at, 1),
