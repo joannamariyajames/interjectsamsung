@@ -3,3 +3,6 @@ uvicorn[standard]==0.34.0
 pydantic==2.10.4
 httpx==0.28.1
 python-multipart==0.0.20
+google-genai>=2.24.0
+livekit-agents>=1.8.3
+livekit-plugins-google>=1.8.3

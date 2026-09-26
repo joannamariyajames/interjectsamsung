@@ -40,6 +40,17 @@ class Settings:
     )
     llm_model: str = field(default_factory=lambda: os.environ.get("LLM_MODEL", "gpt-4o-mini"))
 
+    # Gemini configuration
+    gemini_api_key: str | None = field(default_factory=lambda: os.environ.get("GEMINI_API_KEY"))
+    gemini_live_model: str = field(
+        default_factory=lambda: os.environ.get("GEMINI_LIVE_MODEL", "gemini-3.8-live")
+    )
+
+    # LiveKit configuration
+    livekit_url: str | None = field(default_factory=lambda: os.environ.get("LIVEKIT_URL"))
+    livekit_api_key: str | None = field(default_factory=lambda: os.environ.get("LIVEKIT_API_KEY"))
+    livekit_api_secret: str | None = field(default_factory=lambda: os.environ.get("LIVEKIT_API_SECRET"))
+
     # --- timing ---------------------------------------------------------
     # Token emission delay for the local engine. Slow enough that a human can
     # actually barge in mid-sentence, which is the whole point of the demo.
