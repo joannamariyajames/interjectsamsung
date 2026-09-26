@@ -53,6 +53,12 @@ class Settings:
         default_factory=lambda: os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")
     )
 
+    # Search API configuration
+    search_api_key: str | None = field(default_factory=lambda: os.environ.get("SEARCH_API_KEY"))
+    search_api_url: str | None = field(default_factory=lambda: os.environ.get("SEARCH_API_URL"))
+    search_provider: str = field(default_factory=lambda: os.environ.get("SEARCH_PROVIDER", "serper"))
+    search_timeout_s: float = field(default_factory=lambda: _env_float("SEARCH_TIMEOUT_S", 5.0))
+
     # --- timing ---------------------------------------------------------
     # Token emission delay for the local engine. Slow enough that a human can
     # actually barge in mid-sentence, which is the whole point of the demo.

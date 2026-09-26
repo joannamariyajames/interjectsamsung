@@ -11,7 +11,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Awaitable, Callable
 
+from .config import settings
 from .retrieval import corpus
+from .search_adapter import fetch_external_search
 
 
 class Effect(str, Enum):
@@ -34,12 +36,32 @@ class ToolSpec:
 
 async def _search_corpus(query: str, latency_ms: int = 0, **_: Any) -> dict[str, Any]:
     hits = await corpus.search_async(query, latency_ms=latency_ms, k=3)
+    results = [
+        {"doc_id": h.doc.doc_id, "title": h.doc.title, "snippet": h.doc.snippet, "score": h.score}
+        for h in hits
+    ]
+    if not results:
+        ext_results = await fetch_external_search(
+            query=query,
+            api_key=settings.search_api_key,
+            api_url=settings.search_api_url,
+            provider=settings.search_provider,
+            timeout_s=settings.search_timeout_s,
+        )
+        if ext_results:
+            results = [
+                {
+                    "doc_id": r["doc_id"],
+                    "title": r["title"],
+                    "snippet": r["snippet"],
+                    "score": r.get("score", 1.0),
+                }
+                for r in ext_results
+            ]
+
     return {
         "query": query,
-        "results": [
-            {"doc_id": h.doc.doc_id, "title": h.doc.title, "snippet": h.doc.snippet, "score": h.score}
-            for h in hits
-        ],
+        "results": results,
     }
 
 

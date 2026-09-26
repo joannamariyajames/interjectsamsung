@@ -9,6 +9,7 @@ import asyncio
 from unittest.mock import MagicMock
 
 import pytest
+from app.config import Settings
 from app.providers.base import GenerationRequest
 from app.providers.gemini import SYSTEM, GeminiProvider
 from app.runtime import AgentRuntime
@@ -189,6 +190,7 @@ async def test_gemini_provider_stream_error() -> None:
 
 def test_gemini_provider_missing_key(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.setattr("app.providers.gemini.settings", Settings(gemini_api_key=None))
     provider = GeminiProvider(api_key=None, client=None)
     with pytest.raises(RuntimeError, match="GEMINI_API_KEY is not configured"):
         provider._get_client()
