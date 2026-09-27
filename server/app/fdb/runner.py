@@ -42,6 +42,7 @@ from app.fdb.adapter import FDBBackspaceAdapter
 try:
     from livekit import agents
     from livekit.agents import AgentServer, AgentSession, llm
+    from livekit.plugins import google
     from lk_agent_tool import (
         AssistantFnc,
         LatencyTracker,
@@ -56,6 +57,7 @@ except ImportError as err:
     AgentServer = None
     AgentSession = None
     llm = None
+    google = None
     AssistantFnc = None
     VoiceAgent = None
     get_realtime_model = None
@@ -111,8 +113,6 @@ def resolve_realtime_model() -> Any:
     if provider in {"gemini3_8", "gemini_3_8", "gemini3.8"}:
         if not os.getenv("GOOGLE_API_KEY") and os.getenv("GEMINI_API_KEY"):
             os.environ["GOOGLE_API_KEY"] = os.environ["GEMINI_API_KEY"]
-        from livekit.plugins import google
-
         return google.realtime.RealtimeModel(
             model="gemini-3.8-live",
             voice=os.getenv("GOOGLE_VOICE", "Puck"),
