@@ -7,12 +7,16 @@ Everything has a working default so the demo runs with zero setup. Set
 from __future__ import annotations
 
 import os
+import sys
 from dataclasses import dataclass, field
+from typing import Any
 
 try:
     from dotenv import load_dotenv
 
-    load_dotenv()
+    # Preserve normal application dotenv behavior, but avoid polluting test runs
+    if "pytest" not in sys.modules and "PYTEST_CURRENT_TEST" not in os.environ and "PYTEST_VERSION" not in os.environ:
+        load_dotenv()
 except ImportError:
     pass
 
@@ -38,19 +42,22 @@ def _env_bool(key: str, default: bool) -> bool:
     return raw.strip().lower() in {"1", "true", "yes", "on"}
 
 
+_UNSET = object()
+
+
 @dataclass(frozen=True)
 class Settings:
     # --- provider -------------------------------------------------------
-    llm_api_key: str | None = field(default_factory=lambda: os.environ.get("LLM_API_KEY"))
+    llm_api_key: Any = _UNSET
     llm_base_url: str = field(
         default_factory=lambda: os.environ.get("LLM_BASE_URL", "https://api.openai.com/v1")
     )
     llm_model: str = field(default_factory=lambda: os.environ.get("LLM_MODEL", "gpt-4o-mini"))
 
     # Gemini configuration
-    gemini_api_key: str | None = field(default_factory=lambda: os.environ.get("GEMINI_API_KEY"))
+    gemini_api_key: Any = _UNSET
     gemini_model: str = field(
-        default_factory=lambda: os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+        default_factory=lambda: os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")
     )
     gemini_live_model: str = field(
         default_factory=lambda: os.environ.get("GEMINI_LIVE_MODEL", "gemini-3.8-live")
@@ -97,6 +104,14 @@ class Settings:
         "http://localhost:5174",
         "http://127.0.0.1:5174",
     )
+
+    def __getattribute__(self, name: str) -> Any:
+        val = super().__getattribute__(name)
+        if name == "gemini_api_key" and val is _UNSET:
+            return os.environ.get("GEMINI_API_KEY")
+        if name == "llm_api_key" and val is _UNSET:
+            return os.environ.get("LLM_API_KEY")
+        return val
 
     @property
     def use_gemini(self) -> bool:

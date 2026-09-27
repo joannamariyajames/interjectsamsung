@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import asyncio
 import inspect
+import os
 from typing import TYPE_CHECKING, Any, AsyncIterator
 
 try:
@@ -42,8 +43,8 @@ class GeminiProvider:
         model: str | None = None,
         client: Any = None,
     ) -> None:
-        self.api_key = api_key or settings.gemini_api_key
-        self.model = model or settings.gemini_model
+        self.api_key = api_key or (settings.gemini_api_key if settings is not None else None) or os.environ.get("GEMINI_API_KEY")
+        self.model = model or (settings.gemini_model if settings is not None else None) or os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")
         self._client = client
 
     def _get_client(self) -> Any:

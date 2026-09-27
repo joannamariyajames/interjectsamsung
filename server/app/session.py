@@ -21,7 +21,7 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Any
 
-from .backspace import BackspaceCore
+from .backspace import BackspaceCore, FactUpdate
 from .config import settings
 from .goals import GoalTracker
 
@@ -71,23 +71,49 @@ class Session:
     created_at: float = field(default_factory=time.time)
     interruptions: int = 0
     resumes: int = 0
-    backspace: BackspaceCore = field(default_factory=BackspaceCore)
 
-    def set_fact(self, key: str, value: Any) -> None:
-        """Store or update a session-scoped fact."""
+    def set_fact(
+        self,
+        key: str,
+        value: Any,
+        *,
+        source: str = "session",
+        turn_id: str = "",
+    ) -> FactUpdate:
+        """Store or update a session-scoped fact and reconcile with BackspaceCore."""
         self.facts[key] = value
+        update = self.backspace.assert_fact(
+            key=key,
+            value=value,
+            source=source,
+            turn_id=turn_id,
+        )
+        if update.changeset is not None:
+            self.backspace.invalidate(update.changeset)
+        return update
 
     def get_fact(self, key: str, default: Any = None) -> Any:
         """Retrieve a session-scoped fact by key, returning default if not found."""
-        return self.facts.get(key, default)
+        if key in self.facts:
+            return self.facts[key]
+        f = self.backspace.get_fact(key)
+        if f is not None:
+            return f.value
+        return default
 
     def has_fact(self, key: str) -> bool:
         """Check whether a fact exists in the session ledger."""
-        return key in self.facts
+        return key in self.facts or self.backspace.get_fact(key) is not None
 
     def get_all_facts(self) -> dict[str, Any]:
         """Return a safe copy of all session-scoped facts."""
-        return dict(self.facts)
+        merged = {
+            f.key: f.value
+            for k in self.backspace.snapshot().get("facts", {})
+            if (f := self.backspace.get_fact(k)) is not None
+        }
+        merged.update(self.facts)
+        return merged
 
     def add_turn(self, turn: Turn) -> None:
         self.turns.append(turn)
@@ -132,7 +158,6 @@ class Session:
         self.checkpoint = None
         self.interruptions = 0
         self.resumes = 0
-        self.backspace.reset()
 
     def stats(self) -> dict[str, Any]:
         return {

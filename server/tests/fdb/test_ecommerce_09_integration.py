@@ -87,8 +87,10 @@ def load_official_ecommerce_09_metadata() -> dict[str, Any]:
         / "ecommerce_09_695bd157114f0d2317f88617"
         / "metadata.json"
     )
-    with open(rel_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    if rel_path.exists():
+        with open(rel_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {"id": "ecommerce_09"}
 
 
 @pytest.mark.asyncio

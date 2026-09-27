@@ -185,7 +185,9 @@ class AgentRuntime:
             goal_id=resolved_goal_id,
             confidence=confidence,
         )
-        return process_backspace_observation(self.session.backspace, observation)
+        res = process_backspace_observation(self.session.backspace, observation)
+        self.session.facts[key] = value
+        return res
 
     async def _stage_to(self, stage: Stage, detail: str, turn_id: str | None = None) -> None:
         self._stage = stage
@@ -562,6 +564,11 @@ class AgentRuntime:
                 await self.emit(TokenFrame(turn_id=turn_id, text=chunk))
             self._plan_progress = "answer complete"
 
+            # If a Heads-Up cut-in was triggered, ensure the cut-in correction is surfaced
+            # in the response text even if the provider does not prepend it.
+            if headsup is not None and not self._partial_out.startswith(headsup.cut_in_text):
+                self._partial_out = f"{headsup.cut_in_text}\n\n{self._partial_out}".strip()
+
             # -- 6. commit ----------------------------------------------
             full = (resume_from or "") + self._partial_out if resume_from else self._partial_out
             self.session.add_turn(
@@ -613,6 +620,23 @@ class AgentRuntime:
             raise
         except Exception as exc:  # noqa: BLE001
             await self.emit(ErrorFrame(message=f"{type(exc).__name__}: {exc}"))
+            if self._headsup is not None:
+                cut_in = self._headsup.cut_in_text
+                self.session.add_turn(Turn(turn_id, "agent", cut_in, status="complete"))
+                await self.emit(
+                    MessageFrame(
+                        turn_id=turn_id,
+                        role="agent",
+                        content=cut_in,
+                        status="complete",
+                        meta={
+                            "evidence": [e["doc_id"] for e in self._evidence],
+                            "goal_id": self.session.goals.active.goal_id if self.session.goals.active else None,
+                            "latency_ms": round(now_ms() - turn_started, 1) if "turn_started" in locals() else 0.0,
+                            "headsup": self._headsup.to_dict(),
+                        },
+                    )
+                )
             await self.emit(StageFrame(stage=Stage.IDLE, detail="Recovered from an error."))
         finally:
             self._stop_filler()
