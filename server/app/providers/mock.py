@@ -39,6 +39,8 @@ class MockProvider:
         steps = [f"Read the goal: {request.goal[:60]}"]
         if request.constraints:
             steps.append(f"Honour {len(request.constraints)} constraint(s): {', '.join(request.constraints)}")
+        if request.facts:
+            steps.append(f"Apply {len(request.facts)} known fact(s) from the session")
         if request.resume_from:
             steps.append("Reuse the checkpoint instead of restarting")
         steps.append("Ground the answer in retrieved passages")
@@ -116,6 +118,12 @@ class MockProvider:
                     break
 
         parts.extend(bullets)
+
+        if request.facts:
+            fact_lines = "; ".join(f"{k}: {v}" for k, v in request.facts.items())
+            parts.append(
+                f"\nI am working with these facts from our conversation: {fact_lines}.\n"
+            )
 
         if request.constraints:
             parts.append(

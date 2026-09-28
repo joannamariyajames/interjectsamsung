@@ -9,7 +9,8 @@ export type Stage =
   | "responding"
   | "interrupted"
   | "recovering"
-  | "done";
+  | "done"
+  | "headsup";
 
 export type GoalAction =
   | "push"
@@ -93,7 +94,7 @@ export interface CheckpointRecord {
 
 export interface TimelineEvent {
   id: string;
-  kind: "stage" | "spec" | "tool" | "goal" | "checkpoint" | "metric" | "error";
+  kind: "stage" | "spec" | "tool" | "goal" | "checkpoint" | "metric" | "error" | "headsup";
   label: string;
   detail: string;
   at: number;
@@ -158,6 +159,16 @@ export type ServerFrame =
       kept_tokens: number;
       retrieved_docs: string[];
       plan_progress: string;
+    }
+  | {
+      t: "headsup";
+      ts: number;
+      turn_id: string;
+      claim: string;
+      contradiction: string;
+      confidence: number;
+      source_doc_id: string;
+      cut_in_text: string;
     }
   | { t: "metric"; ts: number; name: string; value: number; unit: string; note: string }
   | { t: "error"; ts: number; message: string; recoverable: boolean };

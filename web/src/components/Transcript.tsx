@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { AudioLines, CornerUpLeft, ImageIcon, Scissors, Sparkles, User } from "lucide-react";
+import { AudioLines, CornerUpLeft, ImageIcon, Scissors, ShieldAlert, Sparkles, User } from "lucide-react";
 import { Badge } from "~/components/ui/primitives";
 import { useSession } from "~/store/session";
 import { cn } from "~/lib/utils";
@@ -59,6 +59,14 @@ function AgentBubble({
   streaming?: boolean;
 }) {
   const interrupted = message.status === "interrupted";
+  const headsup = message.meta?.headsup as {
+    claim?: string;
+    contradiction?: string;
+    confidence?: number;
+    source_doc_id?: string;
+    cut_in_text?: string;
+  } | undefined;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
@@ -69,7 +77,7 @@ function AgentBubble({
       <div
         className={cn(
           "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full",
-          interrupted ? "bg-accent-soft text-accent" : "bg-live-soft text-live",
+          interrupted || headsup ? "bg-accent-soft text-accent" : "bg-live-soft text-live",
         )}
       >
         <Sparkles size={13} />
@@ -84,6 +92,7 @@ function AgentBubble({
             </Badge>
           ) : null}
           {streaming ? <Badge tone="live">streaming</Badge> : null}
+          {headsup ? <Badge tone="accent">heads-up</Badge> : null}
           {message.status === "resumed" ? (
             <Badge tone="warn">resumed from checkpoint</Badge>
           ) : null}
@@ -95,9 +104,23 @@ function AgentBubble({
             "rounded-[var(--radius-card)] rounded-tl-[4px] border px-4 py-3.5",
             interrupted
               ? "cut-stripe border-dashed border-accent/55 bg-accent-soft/35"
-              : "border-line/60 bg-surface/55 backdrop-blur-sm",
+              : headsup
+                ? "border-accent/40 bg-surface/75 shadow-[var(--shadow-soft)]"
+                : "border-line/60 bg-surface/55 backdrop-blur-sm",
           )}
         >
+          {headsup ? (
+            <div className="mb-2.5 flex items-start gap-2 rounded-[var(--radius-item)] border border-accent/40 bg-accent-soft/30 px-3 py-2 text-xs text-accent">
+              <ShieldAlert size={14} className="mt-0.5 shrink-0" />
+              <div>
+                <span className="font-semibold">Contradiction detected:</span>{" "}
+                <span>
+                  &ldquo;{headsup.claim}&rdquo; conflicts with verified evidence ({headsup.source_doc_id}).
+                </span>
+              </div>
+            </div>
+          ) : null}
+
           <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground">
             {message.content}
             {streaming ? <span className="stream-caret" aria-hidden /> : null}

@@ -22,6 +22,7 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Any
 
+from .backspace import WorkItem, WorkStatus
 from .config import settings
 from .tools import REGISTRY, Effect, ToolSpec
 
@@ -101,12 +102,30 @@ class Harness:
         return spec
 
     # -- execution -------------------------------------------------------
-    async def call(self, name: str, budget: TurnBudget, **args: Any) -> ToolOutcome:
+    async def call(
+        self,
+        name: str,
+        budget: TurnBudget,
+        work: WorkItem | None = None,
+        **args: Any,
+    ) -> ToolOutcome:
         call_id = uuid.uuid4().hex[:8]
         started = time.monotonic()
 
         def elapsed() -> float:
             return round((time.monotonic() - started) * 1000, 1)
+
+        if work is not None and work.status in (WorkStatus.STALE, WorkStatus.INVALIDATED):
+            outcome = ToolOutcome(
+                call_id,
+                name,
+                "blocked",
+                f"Work item {work.work_id} is {work.status.value}.",
+                redact(args),
+                elapsed(),
+            )
+            budget.audit.append(outcome)
+            return outcome
 
         try:
             spec = self.admit(name, args, budget)
@@ -142,6 +161,10 @@ class Harness:
             )
             budget.audit.append(outcome)
             return outcome
+
+        if work is not None and work.status == WorkStatus.PENDING:
+            work.output = result
+            work.status = WorkStatus.VALID
 
         outcome = ToolOutcome(
             call_id, name, "ok", f"{spec.effect.value} call completed.",

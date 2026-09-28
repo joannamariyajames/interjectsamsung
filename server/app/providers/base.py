@@ -16,6 +16,10 @@ class GenerationRequest:
     # Set when the harness refused something the user asked for. The answer has
     # to say so rather than quietly pretending the request never happened.
     notice: str | None = None
+    # Phase 2D: canonical session facts from BackspaceCore, keyed by fact key.
+    # Providers use these to ground answers in what the user has actually said
+    # across the conversation, not just the current utterance.
+    facts: dict[str, object] = field(default_factory=dict)
 
 
 class Provider(Protocol):
