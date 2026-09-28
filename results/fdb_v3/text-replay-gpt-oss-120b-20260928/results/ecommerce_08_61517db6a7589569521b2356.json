@@ -1,0 +1,30 @@
+{
+  "example_id": "ecommerce_08",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-ecommerce_08-ea5794",
+  "actual_tool_calls": [
+    {
+      "function": "search_products",
+      "args": {
+        "query": "mechanical keyboard",
+        "max_price": 200.0
+      },
+      "timestamp_start": 1790618299.0663197,
+      "timestamp_end": 1790618299.0663197
+    },
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "PROD1",
+        "quantity": 1
+      },
+      "timestamp_start": 1790618299.593329,
+      "timestamp_end": 1790618299.593329
+    }
+  ],
+  "transcript": "I found a mechanical keyboard for $190. Let me add it to your cart. Added a mechanical keyboard under $200 to your cart. Let me know if you need anything else.",
+  "error": null,
+  "duration_s": 1.44
+}

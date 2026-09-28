@@ -1,0 +1,21 @@
+{
+  "example_id": "ecommerce_11",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-ecommerce_11-24a632",
+  "actual_tool_calls": [
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "B7",
+        "quantity": 1
+      },
+      "timestamp_start": 1790618333.8795042,
+      "timestamp_end": 1790618333.8795042
+    }
+  ],
+  "transcript": "Added one of product B7 to your cart. Let me know if you need anything else.",
+  "error": null,
+  "duration_s": 1.01
+}

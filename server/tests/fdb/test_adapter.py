@@ -220,10 +220,13 @@ def test_valid_call_buffered_with_official_telemetry_schema(adapter: FDBBackspac
     assert call["timestamp_end"] >= call["timestamp_start"]
 
 
-def test_stale_call_omitted_during_flush(
+def test_executed_call_stays_reported_after_it_goes_stale(
     adapter: FDBBackspaceAdapter, core: BackspaceCore, telemetry_file: Path
 ):
-    """9. Stale call is omitted during flush."""
+    """9. A call that executed is reported even if a later correction makes it stale.
+
+    Hiding it would misreport what the agent did to the benchmark's evaluator.
+    """
     adapter.execute_tool(
         func_name="search_flights",
         args={"destination": "Rome"},
@@ -237,15 +240,15 @@ def test_stale_call_omitted_during_flush(
     core.invalidate(update.changeset)
     assert work.status == WorkStatus.STALE
 
-    written = adapter.flush()
-    assert written == 0
-    assert not telemetry_file.exists()
+    assert adapter.flush() == 0  # nothing new: it was written when it ran
+    records = [json.loads(line) for line in telemetry_file.read_text(encoding="utf-8").splitlines()]
+    assert [r["call"]["args"] for r in records] == [{"destination": "Rome"}]
 
 
-def test_valid_call_emitted_during_flush(
+def test_valid_call_written_when_it_executes(
     adapter: FDBBackspaceAdapter, telemetry_file: Path
 ):
-    """10. Valid call is emitted during flush."""
+    """10. A valid call is in the telemetry log as soon as it executes, like the official agent."""
     adapter.execute_tool(
         func_name="get_card_benefits",
         args={"card_type": "platinum"},
@@ -253,9 +256,8 @@ def test_valid_call_emitted_during_flush(
         turn_id="t1",
     )
 
-    written = adapter.flush()
-    assert written == 1
     assert telemetry_file.exists()
+    assert adapter.flush() == 0
 
     lines = telemetry_file.read_text(encoding="utf-8").strip().splitlines()
     assert len(lines) == 1
@@ -357,7 +359,7 @@ def test_calling_flush_twice_does_not_duplicate_records(
     count1 = adapter.flush()
     count2 = adapter.flush()
 
-    assert count1 == 1
+    assert count1 == 0  # already written when it executed
     assert count2 == 0
 
     lines = telemetry_file.read_text(encoding="utf-8").strip().splitlines()
@@ -381,8 +383,8 @@ def test_resolve_realtime_model_gemini3_8(monkeypatch: pytest.MonkeyPatch):
     assert os.environ.get("GOOGLE_API_KEY") == "mock_key_value"
 
 
-def test_flush_creates_parent_directory_if_missing(core: BackspaceCore, tmp_path: Path):
-    """16. flush creates parent directory if it does not already exist."""
+def test_telemetry_write_creates_parent_directory_if_missing(core: BackspaceCore, tmp_path: Path):
+    """16. Writing telemetry creates the parent directory if it does not already exist."""
     nested_path = tmp_path / "deeply" / "nested" / "dir" / "agent_tool_calls.log"
     assert not nested_path.parent.exists()
 
@@ -398,6 +400,5 @@ def test_flush_creates_parent_directory_if_missing(core: BackspaceCore, tmp_path
         turn_id="t1",
     )
 
-    count = adapter.flush()
-    assert count == 1
-    assert nested_path.exists()
+    assert nested_path.exists()  # written as the call executed
+    assert adapter.flush() == 0

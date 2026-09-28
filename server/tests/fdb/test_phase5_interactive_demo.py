@@ -10,7 +10,7 @@ Guarantees:
 - Gemini Realtime's 12 tools remain static (no update_tools() or mutation).
 - Site-packages and official Full-Duplex-Bench files remain untouched.
 - Stale work items are cleanly blocked at the Phase 3 gate.
-- Only valid final calls are buffered and flushed to official telemetry.
+- Every executed call is reported to official telemetry; blocked stale calls never run.
 """
 
 from __future__ import annotations
@@ -202,18 +202,18 @@ async def test_phase5_interactive_flow_user_request_to_updated_response(tmp_path
     # -----------------------------------------------------------------------
     # Step 8: Telemetry Flush & Invariant Validation
     # -----------------------------------------------------------------------
-    flushed = runner_ctx.adapter.flush()
-    assert flushed == 1
+    # Both executed searches are reported, each when it ran; the blocked
+    # re-invocations of the stale work never executed and are not reported.
+    assert runner_ctx.adapter.flush() == 0
     assert telemetry_file.exists()
 
     records = [
         json.loads(line)
         for line in telemetry_file.read_text(encoding="utf-8").strip().splitlines()
     ]
-    assert len(records) == 1
-    assert records[0]["call"]["function"] == "search_products"
-    assert records[0]["call"]["args"]["query"] == "hiking boots"
-    assert records[0]["call"]["args"]["max_price"] == 100.0
+    assert [r["call"]["args"]["query"] for r in records] == ["running shoes", "hiking boots"]
+    assert records[1]["call"]["function"] == "search_products"
+    assert records[1]["call"]["args"]["max_price"] == 100.0
 
     # Verify Gemini tools remained 100% static
     assert len(tools) == 12
@@ -306,11 +306,10 @@ async def test_phase5_livekit_session_event_pipeline(tmp_path: Path):
         tracker.log_breakdown(tool_name="search_products", room_name="livekit_event_room")
         tracker.reset()
 
-    # Flush telemetry
-    written = adapter.flush()
-    assert written == 1
-    record = json.loads(telemetry_file.read_text(encoding="utf-8").strip())
-    assert record["call"]["args"]["query"] == "hiking boots"
+    # Telemetry reports both searches that executed, in order
+    assert adapter.flush() == 0
+    records = [json.loads(line) for line in telemetry_file.read_text(encoding="utf-8").splitlines()]
+    assert [r["call"]["args"]["query"] for r in records] == ["running shoes", "hiking boots"]
 
 
 # ===========================================================================
@@ -378,14 +377,14 @@ async def test_phase5_multidomain_cart_followup_after_correction(tmp_path: Path)
     assert cart_work.status == WorkStatus.VALID
     assert search_w2.work_id in cart_work.depends_on_work
 
-    # 5. Flush telemetry: contains both revised search and cart addition
-    flushed = runner_ctx.adapter.flush()
-    assert flushed == 2
+    # 5. Telemetry reports every executed call in order: the superseded
+    # search, the revised search, and the cart addition
+    assert runner_ctx.adapter.flush() == 0
 
     records = [
         json.loads(line)
         for line in telemetry_file.read_text(encoding="utf-8").strip().splitlines()
     ]
     functions = [r["call"]["function"] for r in records]
-    assert functions == ["search_products", "add_to_cart"]
-    assert records[0]["call"]["args"]["query"] == "tablet"
+    assert functions == ["search_products", "search_products", "add_to_cart"]
+    assert [r["call"]["args"].get("query") for r in records[:2]] == ["laptop", "tablet"]

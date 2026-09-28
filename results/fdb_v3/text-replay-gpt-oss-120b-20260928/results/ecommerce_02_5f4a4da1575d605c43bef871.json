@@ -1,0 +1,21 @@
+{
+  "example_id": "ecommerce_02",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-ecommerce_02-dd3c62",
+  "actual_tool_calls": [
+    {
+      "function": "search_products",
+      "args": {
+        "query": "wireless headphones",
+        "max_price": 100.0
+      },
+      "timestamp_start": 1790618229.7783215,
+      "timestamp_end": 1790618229.7783215
+    }
+  ],
+  "transcript": "I found wireless headphones under $100. The Premium model is $90. Let me know if you’d like to add it to your cart.",
+  "error": null,
+  "duration_s": 1.04
+}

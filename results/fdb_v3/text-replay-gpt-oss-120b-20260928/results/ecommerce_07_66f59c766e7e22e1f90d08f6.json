@@ -1,0 +1,20 @@
+{
+  "example_id": "ecommerce_07",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-ecommerce_07-6a670d",
+  "actual_tool_calls": [
+    {
+      "function": "track_order",
+      "args": {
+        "order_id": "FAST99"
+      },
+      "timestamp_start": 1790618275.3476293,
+      "timestamp_end": 1790618275.3476293
+    }
+  ],
+  "transcript": "Your order FAST99 is out for delivery.",
+  "error": null,
+  "duration_s": 1.16
+}

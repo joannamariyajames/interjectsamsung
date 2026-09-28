@@ -1,0 +1,30 @@
+{
+  "example_id": "ecommerce_05",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-ecommerce_05-615238",
+  "actual_tool_calls": [
+    {
+      "function": "search_products",
+      "args": {
+        "query": "desk",
+        "max_price": 300.0
+      },
+      "timestamp_start": 1790618252.4041464,
+      "timestamp_end": 1790618252.4041464
+    },
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "PROD1",
+        "quantity": 1
+      },
+      "timestamp_start": 1790618252.9711623,
+      "timestamp_end": 1790618252.9711623
+    }
+  ],
+  "transcript": "I found a desk under $300: the Premium Desk for $290. Let me add it to your cart. Your desk has been added to the cart.",
+  "error": null,
+  "duration_s": 1.76
+}

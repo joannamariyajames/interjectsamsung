@@ -1,0 +1,154 @@
+{
+  "benchmark_name": "In-the-Wild Speech & Multi-Step Tool Calling",
+  "evaluated_at": "2026-09-29T01:38:16.894575",
+  "total_scenarios": 3,
+  "overall_pass_rate": 1.0,
+  "passed": 3,
+  "failed": 0,
+  "failure_breakdown": {
+    "wrong_tools": 0,
+    "wrong_arguments": 0
+  },
+  "by_domain": {
+    "ecommerce_support": 1.0
+  },
+  "by_difficulty": {
+    "easy": 1.0
+  },
+  "by_num_tools": {
+    "1": 1.0
+  },
+  "by_disfluency_feature": {
+    "PAUSE": 1.0
+  },
+  "by_state_rollback": {
+    "with_rollback": null,
+    "without_rollback": 1.0
+  },
+  "scenario_results": [
+    {
+      "scenario_id": "ecommerce_01",
+      "domain": "ecommerce_support",
+      "difficulty": "easy",
+      "title": "Simple Order Tracking",
+      "num_tools": 1,
+      "disfluency": [],
+      "state_rollback": false,
+      "passed": true,
+      "checks": {
+        "tool_selection": {
+          "passed": true,
+          "expected": [
+            "track_order"
+          ],
+          "actual": [
+            "track_order"
+          ],
+          "missing": [],
+          "unexpected": []
+        },
+        "argument_accuracy": {
+          "passed": true,
+          "details": [
+            {
+              "function": "track_order",
+              "passed": true,
+              "expected_args": {
+                "order_id": "ABC123"
+              },
+              "actual_args": {
+                "order_id": "ABC123"
+              },
+              "explanation": "All arguments match"
+            }
+          ]
+        }
+      },
+      "failure_reason": ""
+    },
+    {
+      "scenario_id": "ecommerce_02",
+      "domain": "ecommerce_support",
+      "difficulty": "easy",
+      "title": "Simple Product Search",
+      "num_tools": 1,
+      "disfluency": [],
+      "state_rollback": false,
+      "passed": true,
+      "checks": {
+        "tool_selection": {
+          "passed": true,
+          "expected": [
+            "search_products"
+          ],
+          "actual": [
+            "search_products"
+          ],
+          "missing": [],
+          "unexpected": []
+        },
+        "argument_accuracy": {
+          "passed": true,
+          "details": [
+            {
+              "function": "search_products",
+              "passed": true,
+              "expected_args": {
+                "query": "wireless headphones",
+                "max_price": 100
+              },
+              "actual_args": {
+                "query": "wireless headphones",
+                "max_price": 100.0
+              },
+              "explanation": "All arguments match"
+            }
+          ]
+        }
+      },
+      "failure_reason": ""
+    },
+    {
+      "scenario_id": "ecommerce_04",
+      "domain": "ecommerce_support",
+      "difficulty": "easy",
+      "title": "Order Tracking with Pause",
+      "num_tools": 1,
+      "disfluency": [
+        "PAUSE"
+      ],
+      "state_rollback": false,
+      "passed": true,
+      "checks": {
+        "tool_selection": {
+          "passed": true,
+          "expected": [
+            "track_order"
+          ],
+          "actual": [
+            "track_order"
+          ],
+          "missing": [],
+          "unexpected": []
+        },
+        "argument_accuracy": {
+          "passed": true,
+          "details": [
+            {
+              "function": "track_order",
+              "passed": true,
+              "expected_args": {
+                "order_id": "XYZ88"
+              },
+              "actual_args": {
+                "order_id": "XYZ88"
+              },
+              "explanation": "All arguments match"
+            }
+          ]
+        }
+      },
+      "failure_reason": ""
+    }
+  ]
+}

@@ -24,11 +24,14 @@ from lk_agent_tool import AssistantFnc, LatencyTracker
 
 
 @pytest.fixture
-def fdb_environment():
+def fdb_environment(tmp_path: Path):
     tracker = LatencyTracker()
     fnc_ctx = AssistantFnc(tracker, "test_runner_room")
     core = BackspaceCore()
-    adapter = FDBBackspaceAdapter(core=core, room_name="test_runner_room")
+    # Never the default /tmp/agent_tool_calls.log: that is the live file the
+    # benchmark reads, and executed calls are written to it immediately.
+    telemetry_file = tmp_path / "agent_tool_calls.log"
+    adapter = FDBBackspaceAdapter(core=core, room_name="test_runner_room", telemetry_path=str(telemetry_file))
     tools = wrap_assistant_tools(adapter, fnc_ctx)
     tool_map = {t.info.name: t for t in tools}
     return {
@@ -38,10 +41,11 @@ def fdb_environment():
         "adapter": adapter,
         "tools": tools,
         "tool_map": tool_map,
+        "telemetry_file": telemetry_file,
     }
 
 
-def test_tool_signatures_and_schemas_preserved():
+def test_tool_signatures_and_schemas_preserved(tmp_path: Path):
     """Verify tool signatures and Gemini declarations match official unwrapped tools."""
     tracker_raw = LatencyTracker()
     fnc_raw = AssistantFnc(tracker_raw, "raw_room")
@@ -51,7 +55,7 @@ def test_tool_signatures_and_schemas_preserved():
     tracker_wrap = LatencyTracker()
     fnc_wrap = AssistantFnc(tracker_wrap, "wrap_room")
     core = BackspaceCore()
-    adapter = FDBBackspaceAdapter(core=core, room_name="wrap_room")
+    adapter = FDBBackspaceAdapter(core=core, room_name="wrap_room", telemetry_path=str(tmp_path / "wrap.log"))
     wrapped_tools = wrap_assistant_tools(adapter, fnc_wrap)
     wrapped_cfg = create_tools_config(ToolContext(wrapped_tools))
 
@@ -250,9 +254,8 @@ async def test_phase3_valid_tool_call_executes_and_buffers_telemetry(tmp_path: P
     assert res["status"] == "success"
     assert "running shoes" in res["products"][0]["name"]
 
-    flushed = adapter.flush()
-    assert flushed == 1
-    assert telemetry_file.exists()
+    assert telemetry_file.exists()  # written when the call executed
+    assert adapter.flush() == 0
 
     record = json.loads(telemetry_file.read_text(encoding="utf-8").strip())
     assert record["room"] == "phase3_room"
@@ -332,10 +335,11 @@ async def test_phase3_chained_parent_work_staleness_blocks_child_tool(fdb_enviro
 
     assert child_res == {"status": "cancelled", "reason": "superseded"}
 
-    # 4. Invalidation prevents stale calls from reaching flushed telemetry
-    flushed = adapter.flush()
-    # Parent work was invalidated, child work was cancelled -> 0 calls written to telemetry
-    assert flushed == 0
+    # 4. The blocked child never executed, so it is never reported; the parent
+    # did execute, so it stays reported even though it is now stale
+    assert adapter.flush() == 0
+    records = [json.loads(line) for line in env["telemetry_file"].read_text(encoding="utf-8").splitlines()]
+    assert [r["call"]["function"] for r in records] == ["search_products"]
 
 
 def test_runner_session_start_explicitly_disables_recording():

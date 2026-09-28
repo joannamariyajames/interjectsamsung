@@ -1,0 +1,41 @@
+{
+  "example_id": "housing_24",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_24-01c17c",
+  "actual_tool_calls": [
+    {
+      "function": "update_search_filter",
+      "args": {
+        "filter_name": "max_price",
+        "value": "1500"
+      },
+      "timestamp_start": 1790619145.6927824,
+      "timestamp_end": 1790619145.7868748
+    },
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Dallas",
+        "bedrooms": 1,
+        "max_price": 1500.0
+      },
+      "timestamp_start": 1790619146.6144762,
+      "timestamp_end": 1790619147.2487023
+    },
+    {
+      "function": "calculate_commute",
+      "args": {
+        "origin_address": "APT1",
+        "destination_address": "grocery store",
+        "mode": "driving"
+      },
+      "timestamp_start": 1790619147.9475136,
+      "timestamp_end": 1790619148.6417584
+    }
+  ],
+  "transcript": "Your budget filter is set to $1,500. I found a one‑bedroom apartment in Dallas for $1,400, and the drive to the grocery store takes about 25 minutes.",
+  "error": null,
+  "duration_s": 6.07
+}

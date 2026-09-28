@@ -1,0 +1,21 @@
+{
+  "example_id": "travel_01",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-travel_01-99c7a1",
+  "actual_tool_calls": [
+    {
+      "function": "search_flights",
+      "args": {
+        "destination": "Tokyo",
+        "date": "July 15"
+      },
+      "timestamp_start": 1790619215.936256,
+      "timestamp_end": 1790619216.1588173
+    }
+  ],
+  "transcript": "I found a flight to Tokyo on July 15th. It’s flight FL123 and costs $450.",
+  "error": null,
+  "duration_s": 3.27
+}

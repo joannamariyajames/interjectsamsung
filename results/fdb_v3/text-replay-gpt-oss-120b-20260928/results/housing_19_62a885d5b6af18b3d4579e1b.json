@@ -1,0 +1,22 @@
+{
+  "example_id": "housing_19",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_19-07510a",
+  "actual_tool_calls": [
+    {
+      "function": "calculate_commute",
+      "args": {
+        "origin_address": "my house",
+        "destination_address": "the gym",
+        "mode": "driving"
+      },
+      "timestamp_start": 1790619086.112914,
+      "timestamp_end": 1790619086.6063342
+    }
+  ],
+  "transcript": "Your drive to the gym from home will take about 25 minutes.",
+  "error": null,
+  "duration_s": 1.68
+}

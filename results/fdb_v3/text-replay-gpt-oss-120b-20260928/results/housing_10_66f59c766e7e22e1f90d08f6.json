@@ -1,0 +1,31 @@
+{
+  "example_id": "housing_10",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_10-d04508",
+  "actual_tool_calls": [
+    {
+      "function": "calculate_commute",
+      "args": {
+        "origin_address": "500 Central Ave",
+        "destination_address": "University",
+        "mode": "driving"
+      },
+      "timestamp_start": 1790618959.503532,
+      "timestamp_end": 1790618960.247321
+    },
+    {
+      "function": "update_search_filter",
+      "args": {
+        "filter_name": "neighborhood",
+        "value": "Northside"
+      },
+      "timestamp_start": 1790618960.9936948,
+      "timestamp_end": 1790618961.160466
+    }
+  ],
+  "transcript": "The drive takes about 25 minutes, and your search filter is now set to the Northside neighborhood.",
+  "error": null,
+  "duration_s": 3.43
+}

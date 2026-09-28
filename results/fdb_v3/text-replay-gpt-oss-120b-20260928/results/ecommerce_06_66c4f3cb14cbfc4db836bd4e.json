@@ -1,0 +1,21 @@
+{
+  "example_id": "ecommerce_06",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-ecommerce_06-e689e8",
+  "actual_tool_calls": [
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "K2",
+        "quantity": 2
+      },
+      "timestamp_start": 1790618264.218752,
+      "timestamp_end": 1790618264.218752
+    }
+  ],
+  "transcript": "Added two of item K‑2 to your cart.",
+  "error": null,
+  "duration_s": 1.04
+}

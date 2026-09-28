@@ -88,13 +88,47 @@ against the live socket, using the same public actions a human would.
 
 ### Using a real model
 
-Everything works the same; only the token source changes.
+Everything works the same; only the token source changes. With a real model
+the agent answers general questions too, using and citing the knowledge base
+only where it is relevant. Answers are streamed at the **Speaking pace** set in
+the sidebar whatever the model's own speed, so there is always time to cut in.
+
+Groq (free tier, fast; any OpenAI-compatible endpoint works the same way).
+In PowerShell, from `server/`, with `GROQ_API_KEY=gsk_...` in the root `.env`:
+
+```powershell
+Remove-Item Env:GEMINI_API_KEY -ErrorAction SilentlyContinue   # Gemini would take precedence
+$env:LLM_API_KEY  = (Select-String -Path ..\.env -Pattern '^GROQ_API_KEY=(.+)$').Matches[0].Groups[1].Value
+$env:LLM_BASE_URL = "https://api.groq.com/openai/v1"
+$env:LLM_MODEL    = "qwen/qwen3.8-27b"
+.\.venv\Scripts\python -m uvicorn app.main:app --reload --port 8000
+```
+
+Or OpenAI and others:
 
 ```bash
 export LLM_API_KEY=sk-...
-export LLM_BASE_URL=https://api.openai.com/v1   # or Groq, Together, vLLM, Ollama
+export LLM_BASE_URL=https://api.openai.com/v1   # or Together, vLLM, Ollama
 export LLM_MODEL=gpt-4o-mini
 ```
+
+A rate limit (429) or transient server error (5xx) is retried before any text
+is shown, honouring the provider's `Retry-After`; a long wait (a spent daily
+quota) fails the turn at once with the provider's message.
+
+Or Gemini (takes precedence over `LLM_API_KEY` when both are set):
+
+```bash
+export GEMINI_API_KEY=...
+export GEMINI_MODEL=gemini-3.8-flash   # the default
+```
+
+Set these in the shell that runs the server. The agent server does not read
+the repository-root `.env`: that file holds the LiveKit worker's credentials
+(see `.env.example`) and does not switch the browser agent off the offline
+engine. `GET /api/health` reports which provider is active. If a real model
+call fails (a spent quota, a bad key), the turn ends with the error in the
+stage line and the full traceback in the server log.
 
 Streaming stays cancellable chunk by chunk, so interruption behaves identically.
 
@@ -130,6 +164,98 @@ immediately and falls through to a normal retrieval. Speculation can only ever
 remove latency from the critical path, never add it.
 
 Full write-up: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+---
+
+## Benchmark: Full-Duplex-Bench v3
+
+**Declared agent:** a custom LiveKit voice agent (`server/app/fdb/runner.py`,
+`LK_PROVIDER=groq`), a cascaded pipeline on Groq's hosted APIs:
+
+```mermaid
+flowchart LR
+    U[caller audio<br/>LiveKit room] --> V[Silero VAD]
+    V --> S[STT<br/>Groq whisper-large-v3-turbo]
+    S --> L[LLM + 12 benchmark tools<br/>Groq openai/gpt-oss-120b]
+    L -->|tool call| B{BACKSPACE adapter}
+    B -->|current: execute + log| M[official mock APIs]
+    B -->|stale: blocked, never runs| X[ ]
+    M --> L
+    L --> T[TTS<br/>Groq canopylabs/orpheus-v1-english]
+    T --> U
+    S -. final transcript .-> R[AgentRuntime<br/>fact tracking]
+    R -. facts .-> B
+```
+
+- **Tools:** the benchmark's own 12 tools (`lk_agent_tool.AssistantFnc`), unmodified,
+  dispatched through the BACKSPACE adapter. A call whose inputs were superseded by a
+  correction is blocked *before* it runs, so a state-changing action is never performed
+  on stale intent or twice. Every call that does execute is written to the official
+  telemetry log immediately, exactly like the official agent; nothing that ran is
+  ever hidden from the evaluator.
+- **Instructions:** the benchmark's own agent instructions, unchanged, plus general
+  rules for disfluent speech and multi-step tool use (`ARGUMENT_RULES` in
+  `runner.py`): act on the final intent after a self-correction, copy values as
+  spoken, join spelled-out codes, never invent results or claim an unperformed
+  action, make every call a request needs. No rule names or encodes a benchmark item.
+- **Fresh state per scenario:** every LiveKit room gets a new session, BACKSPACE
+  graph and runtime; nothing is cached across scenarios.
+- `LK_PROVIDER=gemini3_8` runs the same tools with Gemini Live instead.
+
+**Keys** (environment variables; never committed):
+
+| Variable | Needed for | Where to get it |
+|---|---|---|
+| `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` | the agent and the inference script | LiveKit Cloud project -> Settings -> Keys |
+| `GROQ_API_KEY` | STT, LLM and TTS | console.groq.com. Orpheus TTS needs its terms accepted once by the org admin |
+| `OPENAI_API_KEY` (optional) | the official gpt-4o LLM judge (`--use-llm`) | platform.openai.com |
+
+**Run it** (Linux/macOS/Git Bash; Python 3.11, git; ffmpeg is fetched if missing):
+
+```bash
+./scripts/run_fdb_v3.sh              # full run: 100 recordings
+./scripts/run_fdb_v3.sh --subset 3   # smoke run
+```
+
+The script clones Full-Duplex-Bench at the pinned commit next to this repo,
+downloads the benchmark data, installs `server/requirements-fdb.txt` (all versions
+pinned) into `server/.venv-fdb`, checks Groq access, starts the agent and waits for
+it to register with LiveKit, runs the **official** inference and evaluation scripts
+unmodified, and writes reports, per-scenario results, telemetry, `pip freeze` and the
+exact configuration to `results/fdb_v3/<label>-<timestamp>/`. On a machine without an
+NVIDIA GPU the official ASR model is kept on the CPU (`scripts/fdb_official_inference.py`);
+on a GPU machine the official path runs as is. LLM temperature is 0.
+
+**Iterating without LiveKit:** `python -m app.fdb.replay` (from `server/`) feeds each
+scenario's spoken words to the same agent - instructions, tools, BACKSPACE, LLM - with
+STT/TTS skipped, and writes result files the official evaluators score unchanged. It
+reads only the user's utterance from `metadata.json`, never the expected calls.
+
+**Results so far** - official `evaluate_pass_rate.py`, exact argument matching (the
+official LLM judge is more lenient on formatting such as dates), text replay on a
+24-scenario sample (6 per domain):
+
+| Configuration | Strict pass rate |
+|---|---|
+| Groq `qwen/qwen3.8-27b`, benchmark instructions only | 45.8% |
+| Groq `openai/gpt-oss-120b` + tool-use rules (final) | 66.7% |
+
+Final configuration over **all 100 recordings** (text replay, exact matching,
+[`results/fdb_v3/text-replay-gpt-oss-120b-20260928`](results/fdb_v3/text-replay-gpt-oss-120b-20260928)):
+**63.0%** (51/81) on the recordings that ran cleanly (finance 100%, ecommerce 52%,
+housing 38%), **52.0%** on all 100 per the official report, where the 19 that hit
+Groq's free-tier daily token cap count as failures.
+The full audio run through LiveKit is recorded in `results/fdb_v3/` once completed.
+
+**Rate limits:** Groq's free tier is not enough for a full run: Orpheus TTS allows
+100 requests per day (the agent uses about 2 per recording, one per spoken
+sentence) and `openai/gpt-oss-120b` 200k tokens per day. Use a Groq Dev Tier key
+(pay-as-you-go); on a free key, run `--subset N`. A full run takes about 1h45m
+and about 100 LiveKit agent-session minutes.
+
+**Smoke run** (`--subset 3`, full audio pipeline through LiveKit, exact matching):
+3/3 passed, turn-taking 100%, tool selection and argument accuracy 100%, mean
+perceived latency 4.8 s - see `results/fdb_v3/interject_groq_smoke-*`.
 
 ---
 

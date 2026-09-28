@@ -1,0 +1,816 @@
+🔧 API Backend running with 'instant' latency profile.
+replaying 100 scenario(s) as result_interject_groq_replay.json (telemetry: D:\Samsung_Hackathon\Full-Duplex-Bench\v3\replay_tool_calls_interject_groq_replay.log)
+[1/100] ecommerce_01            1.54s  track_order({"order_id": "ABC123"})
+[2/100] ecommerce_01            1.35s  track_order({"order_id": "ABC123"})
+[3/100] ecommerce_02            1.04s  search_products({"query": "wireless headphones", "max_price": 100.0})
+[4/100] ecommerce_04            0.94s  track_order({"order_id": "XYZ88"})
+[5/100] ecommerce_05            1.76s  search_products({"query": "desk", "max_price": 300.0}), add_to_cart({"product_id": "PROD1", "quantity": 1})
+[6/100] ecommerce_06            1.04s  add_to_cart({"product_id": "K2", "quantity": 2})
+[7/100] ecommerce_07            1.16s  track_order({"order_id": "FAST99"})
+[8/100] ecommerce_08             2.1s  search_products({"query": "mechanical keyboard", "max_price": 200.0}), add_to_cart({"product_id": "PROD1", "quantity": 1})
+[9/100] ecommerce_08            1.44s  search_products({"query": "mechanical keyboard", "max_price": 200.0}), add_to_cart({"product_id": "PROD1", "quantity": 1})
+[10/100] ecommerce_09             1.3s  search_products({"query": "hiking boots"})
+[11/100] ecommerce_10            1.84s  track_order({"order_id": "1-2-3-A-B-C"}), search_products({"query": "winter jackets", "max_price": 150.0})
+[12/100] ecommerce_11            1.01s  add_to_cart({"product_id": "B7", "quantity": 1})
+[13/100] ecommerce_12            1.05s  search_products({"query": "electronics"})
+[14/100] ecommerce_13            1.48s  add_to_cart({"product_id": "K2", "quantity": 1}), track_order({"order_id": "D-E-L-I-V"})
+[15/100] ecommerce_13            2.26s  add_to_cart({"product_id": "K2", "quantity": 1}), track_order({"order_id": "D-E-L-I-V"})
+[16/100] ecommerce_14            1.15s  add_to_cart({"product_id": "P52", "quantity": 2})
+[17/100] ecommerce_14             0.7s  add_to_cart({"product_id": "P52", "quantity": 2})
+[18/100] ecommerce_15            1.62s  track_order({"order_id": "BOB12"})
+[19/100] ecommerce_15            1.37s  track_order({"order_id": "BOB12"})
+[20/100] ecommerce_16            1.73s  search_products({"query": "coffee maker", "max_price": 50.0}), add_to_cart({"product_id": "PROD1", "quantity": 1})
+[21/100] ecommerce_17            1.01s  track_order({"order_id": "GG5"})
+[22/100] ecommerce_18             2.3s  search_products({"query": "gaming mouse"}), add_to_cart({"product_id": "PROD1", "quantity": 1}), track_order({"order_id": "P-O-9-9-9"})
+[23/100] ecommerce_19            1.84s  search_products({"query": "tablet"}), add_to_cart({"product_id": "PROD1", "quantity": 1})
+[24/100] ecommerce_20             1.7s  search_products({"query": "coffee maker", "max_price": 50.0}), add_to_cart({"product_id": "PROD1", "quantity": 2})
+[25/100] ecommerce_21             2.7s  track_order({"order_id": "B-O-B"}), search_products({"query": "watch", "max_price": 200.0}), add_to_cart({"product_id": "PROD1", "quantity": 1})
+[26/100] ecommerce_21            1.54s  track_order({"order_id": "B-O-B"}), search_products({"query": "watch", "max_price": 200.0})
+[27/100] ecommerce_23            2.27s  track_order({"order_id": "G-G-5"}), add_to_cart({"product_id": "X-1", "quantity": 1})
+[28/100] ecommerce_25            6.17s  track_order({"order_id": "C-A-T"}), search_products({"query": "cat food"}), add_to_cart({"product_id": "PROD1", "quantity": 3})
+[29/100] ecommerce_25            3.31s  track_order({"order_id": "C-A-T"}), search_products({"query": "cat food"}), add_to_cart({"product_id": "PROD1", "quantity": 3})
+[30/100] finance_01              1.41s  get_exchange_rate({"amount": 500.0, "from_currency": "USD", "to_currency": "EUR"})
+[31/100] finance_01               1.2s  get_exchange_rate({"amount": 500.0, "from_currency": "USD", "to_currency": "EUR"})
+[32/100] finance_02              2.75s  get_card_benefits({"card_type": "platinum"})
+[33/100] finance_03              1.16s  modify_autopay({"bill_type": "mortgage", "source_account": "savings"})
+[34/100] finance_03              0.94s  modify_autopay({"bill_type": "mortgage", "source_account": "savings"})
+[35/100] finance_04              3.24s  get_exchange_rate({"amount": 1000.0, "from_currency": "USD", "to_currency": "GBP"})
+[36/100] finance_06              1.06s  get_card_benefits({"card_type": "travel"})
+[37/100] finance_07              1.76s  modify_autopay({"bill_type": "mortgage", "source_account": "savings"})
+[38/100] finance_07              1.28s  modify_autopay({"bill_type": "mortgage", "source_account": "savings"})
+[39/100] finance_08              1.17s  get_exchange_rate({"amount": 200.0, "from_currency": "EUR", "to_currency": "USD"})
+[40/100] finance_08              0.74s  get_exchange_rate({"amount": 200.0, "from_currency": "EUR", "to_currency": "USD"})
+[41/100] finance_10              2.93s  get_card_benefits({"card_type": "travel"}), get_exchange_rate({"amount": 200.0, "from_currency": "GBP", "to_currency": "JPY"})
+[42/100] finance_11              1.16s  modify_autopay({"bill_type": "credit_card", "source_account": "savings"})
+[43/100] finance_12              1.43s  get_exchange_rate({"amount": 150.0, "from_currency": "EUR", "to_currency": "USD"})
+[44/100] finance_12              1.16s  get_exchange_rate({"amount": 150.0, "from_currency": "EUR", "to_currency": "USD"})
+[45/100] finance_14              1.34s  get_exchange_rate({"amount": 50.0, "from_currency": "USD", "to_currency": "EUR"}), get_exchange_rate({"amount": 100.0, "from_currency": "CAD", "to_currency": "USD"})
+[46/100] finance_15              1.04s  modify_autopay({"bill_type": "mortgage", "source_account": "savings"})
+[47/100] finance_16              1.92s  get_exchange_rate({"amount": 500.0, "from_currency": "JPY", "to_currency": "USD"})
+[48/100] finance_17              0.92s  get_card_benefits({"card_type": "gold"})
+[49/100] finance_18               2.7s  get_exchange_rate({"amount": 1000.0, "from_currency": "USD", "to_currency": "EUR"}), modify_autopay({"bill_type": "credit_card", "source_account": "savings"}), get_card_benefits({"card_type": "premium"})
+[50/100] finance_19              1.31s  get_exchange_rate({"amount": 300.0, "from_currency": "EUR", "to_currency": "GBP"})
+[51/100] finance_20               2.3s  get_exchange_rate({"amount": 1000.0, "from_currency": "USD", "to_currency": "EUR"}), modify_autopay({"bill_type": "mortgage", "source_account": "checking"})
+[52/100] finance_21               1.9s  get_card_benefits({"card_type": "gold"}), get_exchange_rate({"amount": 500.0, "from_currency": "USD", "to_currency": "JPY"})
+[53/100] finance_22              2.93s  modify_autopay({"bill_type": "mortgage", "source_account": "savings"}), modify_autopay({"bill_type": "credit_card", "source_account": "checking"})
+[54/100] finance_23              1.58s  modify_autopay({"bill_type": "mortgage", "source_account": "savings"})
+[55/100] housing_01              2.42s  search_apartments({"city": "Seattle", "bedrooms": 2, "max_price": 2500.0})
+[56/100] housing_02              2.07s  calculate_commute({"origin_address": "101 Main Street", "destination_address": "Downtown Office", "mode": "driving"})
+[57/100] housing_03              1.44s  update_search_filter({"filter_name": "max_price", "value": "1800"})
+[58/100] housing_04              1.38s  search_apartments({"city": "Denver", "bedrooms": 1, "max_price": 2000.0})
+[59/100] housing_05               1.9s  search_apartments({"city": "Miami", "bedrooms": 1, "max_price": 1500.0})
+[60/100] housing_05              4.35s  search_apartments({"city": "Miami", "bedrooms": 1, "max_price": 1500.0})
+[61/100] housing_06              1.62s  calculate_commute({"origin_address": "Oak Street", "destination_address": "Gym", "mode": "walking"})
+[62/100] housing_08              1.59s  update_search_filter({"filter_name": "pet_friendly", "value": "true"})
+[63/100] housing_09              2.24s  search_apartments({"city": "Chicago", "bedrooms": 2, "max_price": 2000.0})
+[64/100] housing_10              3.43s  calculate_commute({"origin_address": "500 Central Ave", "destination_address": "University", "mode": "driving"}), update_search_filter({"filter_name": "neighborhood", "value": "Northside"})
+[65/100] housing_11              2.58s  search_apartments({"city": "Seattle", "bedrooms": 2, "max_price": 1600.0})
+[66/100] housing_13              3.23s  update_search_filter({"filter_name": "max_price", "value": "3000"}), update_search_filter({"filter_name": "bedrooms", "value": "3"})
+[67/100] housing_14               2.0s  search_apartments({"city": "Portland", "bedrooms": 1, "max_price": 1800.0})
+[68/100] housing_14               2.6s  search_apartments({"city": "Portland", "bedrooms": 1, "max_price": 1800.0})
+[69/100] housing_15               1.5s  search_apartments({"city": "Atlanta", "bedrooms": 3, "max_price": 2500.0})
+[70/100] housing_15              1.91s  search_apartments({"city": "Atlanta", "bedrooms": 3, "max_price": 2500.0})
+[71/100] housing_17              1.32s  calculate_commute({"origin_address": "my house", "destination_address": "the office", "mode": "driving"})
+[72/100] housing_17              2.33s  calculate_commute({"origin_address": "my house", "destination_address": "the office", "mode": "driving"})
+[73/100] housing_18              4.26s  search_apartments({"city": "Portland", "bedrooms": 1, "max_price": 1800.0}), calculate_commute({"origin_address": "APT1", "destination_address": "coffee shop on 5th Street", "mode": "biking"})
+[74/100] housing_19              1.68s  calculate_commute({"origin_address": "my house", "destination_address": "the gym", "mode": "driving"})
+[75/100] housing_20              4.29s  search_apartments({"city": "Austin", "bedrooms": 1, "max_price": 2000.0}), calculate_commute({"origin_address": "my office", "destination_address": "APT1", "mode": "driving"}), search_apartments({"city": "Austin", "bedrooms": 1, "max_price": 2500.0})
+[76/100] housing_21              3.43s  search_apartments({"city": "my place", "bedrooms": 3, "max_price": 0.0}), calculate_commute({"origin_address": "my place", "destination_address": "train station", "mode": "walking"})
+failed to generate LLM completion: Connection error. (caused by APIError: Tool call validation failed: tool call validation failed: parameters for tool search_apartments did not match schema: errors: [`/max_price`: expected number, but got null]), retrying in 0.1s
+failed to generate LLM completion: Connection error. (caused by APIError: Tool call validation failed: tool call validation failed: parameters for tool search_apartments did not match schema: errors: [`/max_price`: expected number, but got null]), retrying in 2.0s
+failed to generate LLM completion: Connection error. (caused by APIError: Tool call validation failed: tool call validation failed: parameters for tool search_apartments did not match schema: errors: [`/max_price`: expected number, but got null]), retrying in 2.0s
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 447, in _run
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\openai\_streaming.py", line 158, in __aiter__
+    async for item in self._iterator:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\openai\_streaming.py", line 205, in __stream__
+    raise APIError(
+openai.APIError: Tool call validation failed: tool call validation failed: parameters for tool search_apartments did not match schema: errors: [`/max_price`: expected number, but got null]
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 492, in _run
+    raise APIConnectionError(retryable=retryable) from e
+livekit.agents._exceptions.APIConnectionError: Connection error. (caused by APIError: Tool call validation failed: tool call validation failed: parameters for tool search_apartments did not match schema: errors: [`/max_price`: expected number, but got null])
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIError: Tool call validation failed: tool call validation failed: parameters for tool search_apartments did not match schema: errors: [`/max_price`: expected number, but got null])
+[77/100] housing_22              8.52s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIError: Tool call validation failed:
+[78/100] housing_24              6.07s  update_search_filter({"filter_name": "max_price", "value": "1500"}), search_apartments({"city": "Dallas", "bedrooms": 1, "max_price": 1500.0}), calculate_commute({"origin_address": "APT1", "destination_address": "grocery store", "mode": "driving"})
+[79/100] housing_24               5.5s  update_search_filter({"filter_name": "max_price", "value": "1500"}), search_apartments({"city": "Dallas", "bedrooms": 1, "max_price": 1500.0}), calculate_commute({"origin_address": "APT1", "destination_address": "grocery store", "mode": "driving"})
+failed to generate LLM completion: Connection error. (caused by APIError: Failed to parse tool call arguments as JSON), retrying in 0.1s
+failed to generate LLM completion: Connection error. (caused by APIError: Failed to parse tool call arguments as JSON), retrying in 2.0s
+failed to generate LLM completion: Connection error. (caused by APIError: Failed to parse tool call arguments as JSON), retrying in 2.0s
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 447, in _run
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\openai\_streaming.py", line 158, in __aiter__
+    async for item in self._iterator:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\openai\_streaming.py", line 205, in __stream__
+    raise APIError(
+openai.APIError: Failed to parse tool call arguments as JSON
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 492, in _run
+    raise APIConnectionError(retryable=retryable) from e
+livekit.agents._exceptions.APIConnectionError: Connection error. (caused by APIError: Failed to parse tool call arguments as JSON)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIError: Failed to parse tool call arguments as JSON)
+[80/100] housing_25             27.21s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIError: Failed to parse tool call ar
+[81/100] travel_01               3.27s  search_flights({"destination": "Tokyo", "date": "July 15"})
+[82/100] travel_02              16.62s  update_identity_doc({"doc_type": "passport", "doc_number": "P88990011"})
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198373, Requested 1818. Please try again in 1m22.512s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkga19e9g8mseyq95x8g4h, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198373, Requested 1818. Please try again in 1m22.512s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198373, Requested 1818. Please try again in 1m22.512s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkga6he9k82g16rm7ntw99, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198373, Requested 1818. Please try again in 1m22.512s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198368, Requested 1818. Please try again in 1m20.352s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkgc7ne62rw76s5k91654b, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198368, Requested 1818. Please try again in 1m20.352s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 484, in _run
+    raise APIStatusError(
+livekit.agents._exceptions.APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198363, Requested 1818. Please try again in 1m18.192s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkge8den1t6ryy28kgm64b, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198363, Requested 1818. Please try again in 1m18.192s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198363, Requested 1818. Please try again in 1m18.192s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkge8den1t6ryy28kgm64b, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198363, Requested 1818. Please try again in 1m18.192s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'})
+[83/100] travel_03              25.93s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 4
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198379, Requested 1841. Please try again in 1m35.04s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkj3g9e5jaqv7s5gh51b5s, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198379, Requested 1841. Please try again in 1m35.04s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198378, Requested 1841. Please try again in 1m34.608s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkj3p1eqmsxfw2sy33dqjt, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198378, Requested 1841. Please try again in 1m34.608s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198374, Requested 1818. Please try again in 1m22.944s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkj5phep7v3an71283vg2e, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198374, Requested 1818. Please try again in 1m22.944s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 484, in _run
+    raise APIStatusError(
+livekit.agents._exceptions.APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198369, Requested 1841. Please try again in 1m30.72s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkj7qpexctbn1y1jfvravb, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198369, Requested 1841. Please try again in 1m30.72s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198369, Requested 1841. Please try again in 1m30.72s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkj7qpexctbn1y1jfvravb, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198369, Requested 1841. Please try again in 1m30.72s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'})
+[84/100] travel_03              48.68s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 4
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198421, Requested 1843. Please try again in 1m54.048s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkm0g8em2ssbwvacy014bf, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198421, Requested 1843. Please try again in 1m54.048s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198421, Requested 1820. Please try again in 1m44.112s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkm0ngetwav9ws1jnhyazx, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198421, Requested 1820. Please try again in 1m44.112s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198416, Requested 1847. Please try again in 1m53.616s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkm2p1eystxbf98a5tmts6, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198416, Requested 1847. Please try again in 1m53.616s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 484, in _run
+    raise APIStatusError(
+livekit.agents._exceptions.APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198411, Requested 1843. Please try again in 1m49.728s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkm4ppe40t98jf421scvfa, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198411, Requested 1843. Please try again in 1m49.728s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198411, Requested 1843. Please try again in 1m49.728s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkm4ppe40t98jf421scvfa, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198411, Requested 1843. Please try again in 1m49.728s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'})
+[85/100] travel_05              52.24s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 4
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198428, Requested 1828. Please try again in 1m50.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkpdctebsvb1xcesc8cnx0, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198428, Requested 1828. Please try again in 1m50.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198427, Requested 1828. Please try again in 1m50.16s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkpdkce1msh28sx229ddd6, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198427, Requested 1828. Please try again in 1m50.16s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198423, Requested 1824. Please try again in 1m46.704s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkpfm3etss0dmgjja17kr6, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198423, Requested 1824. Please try again in 1m46.704s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 484, in _run
+    raise APIStatusError(
+livekit.agents._exceptions.APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198418, Requested 1789. Please try again in 1m29.424s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkphmjeg7bzk70bmvk11j9, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198418, Requested 1789. Please try again in 1m29.424s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198418, Requested 1789. Please try again in 1m29.424s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkphmjeg7bzk70bmvk11j9, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198418, Requested 1789. Please try again in 1m29.424s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'})
+[86/100] travel_07               68.6s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 4
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198452, Requested 1817. Please try again in 1m56.208s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkre7be35rx3ckdr73st7n, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198452, Requested 1817. Please try again in 1m56.208s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198452, Requested 1782. Please try again in 1m41.088s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkrecqeptsqtchtcb4gxhe, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198452, Requested 1782. Please try again in 1m41.088s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198447, Requested 1817. Please try again in 1m54.048s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkrgdbegk8gye0b6r0xmbs, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198447, Requested 1817. Please try again in 1m54.048s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 484, in _run
+    raise APIStatusError(
+livekit.agents._exceptions.APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198442, Requested 1817. Please try again in 1m51.887999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkrje8e5rvse42v5qqd1zh, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198442, Requested 1817. Please try again in 1m51.887999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198442, Requested 1817. Please try again in 1m51.887999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkrje8e5rvse42v5qqd1zh, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198442, Requested 1817. Please try again in 1m51.887999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'})
+[87/100] travel_07              56.19s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 4
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198418, Requested 2159. Please try again in 4m9.264s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkrwh3e8vt1jchw0pag3bh, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198418, Requested 2159. Please try again in 4m9.264s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198418, Requested 2159. Please try again in 4m9.264s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkrwpfess9nb5mh0qcxmq6, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198418, Requested 2159. Please try again in 4m9.264s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198413, Requested 1754. Please try again in 1m12.144s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkrypze2gsne61b4896cg8, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198413, Requested 1754. Please try again in 1m12.144s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198461, Requested 1837. Please try again in 2m8.735999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mktqxbea5r9mtk2qt2fwb2, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198461, Requested 1837. Please try again in 2m8.735999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198460, Requested 1802. Please try again in 1m53.184s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mktr2nee4aafd85awtfvm5, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198460, Requested 1802. Please try again in 1m53.184s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198455, Requested 1837. Please try again in 2m6.143999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mktt3eecrvx4k6qxpy8a93, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198455, Requested 1837. Please try again in 2m6.143999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 484, in _run
+    raise APIStatusError(
+livekit.agents._exceptions.APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198451, Requested 1802. Please try again in 1m49.296s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mktw3xeh08y4kv3c3c8cn5, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198451, Requested 1802. Please try again in 1m49.296s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198451, Requested 1802. Please try again in 1m49.296s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mktw3xeh08y4kv3c3c8cn5, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198451, Requested 1802. Please try again in 1m49.296s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'})
+[88/100] travel_08              65.25s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 4
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198427, Requested 1730. Please try again in 1m7.824s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkv64pe54rfp95t9v7cjtf, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198427, Requested 1730. Please try again in 1m7.824s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198426, Requested 2092. Please try again in 3m43.775999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkv69sep2tmzctne1t5ddw, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198426, Requested 2092. Please try again in 3m43.775999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198422, Requested 2092. Please try again in 3m42.047999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkv8ane5bt7g7tda06672b, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198422, Requested 2092. Please try again in 3m42.047999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 484, in _run
+    raise APIStatusError(
+livekit.agents._exceptions.APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198417, Requested 2092. Please try again in 3m39.888s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkvabkeydtrv2pxp7bwrzb, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198417, Requested 2092. Please try again in 3m39.888s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198417, Requested 2092. Please try again in 3m39.888s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkvabkeydtrv2pxp7bwrzb, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198417, Requested 2092. Please try again in 3m39.888s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'})
+[89/100] travel_10               4.41s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 4
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198393, Requested 1768. Please try again in 1m9.552s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkvmcne838mqg9kht82n6d, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198393, Requested 1768. Please try again in 1m9.552s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198149, Requested 2063. Please try again in 1m31.584s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkyv9wejmbk4rbp0bwat4e, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198149, Requested 2063. Please try again in 1m31.584s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198144, Requested 2035. Please try again in 1m17.328s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkyxa7e25sfztgnkzhz29b, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198144, Requested 2035. Please try again in 1m17.328s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 484, in _run
+    raise APIStatusError(
+livekit.agents._exceptions.APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198140, Requested 2136. Please try again in 1m59.232s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkyzb7evmb16mc69vmvpsy, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198140, Requested 2136. Please try again in 1m59.232s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198140, Requested 2136. Please try again in 1m59.232s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkyzb7evmb16mc69vmvpsy, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198140, Requested 2136. Please try again in 1m59.232s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'})
+[90/100] travel_11              109.62s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 4
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198116, Requested 2070. Please try again in 1m20.352s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkz9c0e37tj7mqr54s654p, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198116, Requested 2070. Please try again in 1m20.352s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198115, Requested 2070. Please try again in 1m19.92s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkz9hdetabdzp2d2dv3g9w, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198115, Requested 2070. Please try again in 1m19.92s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198111, Requested 2143. Please try again in 1m49.728s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkzbj2ezeby4yns1kjnye5, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198111, Requested 2143. Please try again in 1m49.728s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 484, in _run
+    raise APIStatusError(
+livekit.agents._exceptions.APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198106, Requested 2143. Please try again in 1m47.568s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkzdjjeygte7gqe2set47w, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198106, Requested 2143. Please try again in 1m47.568s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198106, Requested 2143. Please try again in 1m47.568s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkzdjjeygte7gqe2set47w, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198106, Requested 2143. Please try again in 1m47.568s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'})
+[91/100] travel_14                4.4s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 4
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198082, Requested 2136. Please try again in 1m34.176s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkzqknejstvjq338vb84k3, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198082, Requested 2136. Please try again in 1m34.176s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198082, Requested 2098. Please try again in 1m17.759999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkzqrwe7vrfp65xte6fg84, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198082, Requested 2098. Please try again in 1m17.759999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198077, Requested 2098. Please try again in 1m15.6s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkzsspe2y9t0zb58arns1f, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198077, Requested 2098. Please try again in 1m15.6s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 484, in _run
+    raise APIStatusError(
+livekit.agents._exceptions.APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198072, Requested 2107. Please try again in 1m17.328s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkzvv0ect966g08a9qf0zh, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198072, Requested 2107. Please try again in 1m17.328s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198072, Requested 2107. Please try again in 1m17.328s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mkzvv0ect966g08a9qf0zh, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198072, Requested 2107. Please try again in 1m17.328s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'})
+[92/100] travel_16               4.41s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 4
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198048, Requested 2123. Please try again in 1m13.872s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm05vwedfbgr5ehewvwvyc, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198048, Requested 2123. Please try again in 1m13.872s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198048, Requested 2136. Please try again in 1m19.488s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm061ge96rxqt0yvm7pxf6, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198048, Requested 2136. Please try again in 1m19.488s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198043, Requested 2187. Please try again in 1m39.36s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm0820ejgs2n2v9s5ygx4a, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198043, Requested 2187. Please try again in 1m39.36s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 484, in _run
+    raise APIStatusError(
+livekit.agents._exceptions.APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198038, Requested 2136. Please try again in 1m15.168s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm0a33ennscazzd2p3p93t, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198038, Requested 2136. Please try again in 1m15.168s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198038, Requested 2136. Please try again in 1m15.168s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm0a33ennscazzd2p3p93t, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198038, Requested 2136. Please try again in 1m15.168s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'})
+[93/100] travel_18               4.42s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 4
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198008, Requested 2227. Please try again in 1m41.52s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm2swretr9jnwwk9wjt36g, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198008, Requested 2227. Please try again in 1m41.52s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+[94/100] travel_19              72.76s  search_flights({"destination": "Milan", "date": "June 3"})
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198188, Requested 2167. Please try again in 2m33.36s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm353ke9wr36na62f2bc8x, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198188, Requested 2167. Please try again in 2m33.36s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198187, Requested 2167. Please try again in 2m32.928s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm3594ee1bw7kd560xr3kk, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198187, Requested 2167. Please try again in 2m32.928s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198183, Requested 2167. Please try again in 2m31.2s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm379xej89xeq2bn03hwf9, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198183, Requested 2167. Please try again in 2m31.2s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198357, Requested 1790. Please try again in 1m3.504s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm3ahee2b8sk67npan86zg, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198357, Requested 1790. Please try again in 1m3.504s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198357, Requested 1790. Please try again in 1m3.504s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm3apve1x8trnvfxdrr31w, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198357, Requested 1790. Please try again in 1m3.504s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198352, Requested 1790. Please try again in 1m1.344s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm3cqhes7stfbf964vajec, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198352, Requested 1790. Please try again in 1m1.344s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 484, in _run
+    raise APIStatusError(
+livekit.agents._exceptions.APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198347, Requested 1794. Please try again in 1m0.912s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm3eraewe9ctg035m0qhta, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198347, Requested 1794. Please try again in 1m0.912s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198347, Requested 1794. Please try again in 1m0.912s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm3eraewe9ctg035m0qhta, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198347, Requested 1794. Please try again in 1m0.912s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'})
+[95/100] travel_20               9.99s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 4
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198528, Requested 1798. Please try again in 2m20.832s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm4apqenhbq42bw4d2bs00, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198528, Requested 1798. Please try again in 2m20.832s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198527, Requested 2191. Please try again in 5m10.176s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm4avveh5bxytha8ea3ndt, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198527, Requested 2191. Please try again in 5m10.176s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198523, Requested 1798. Please try again in 2m18.672s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm4cwfe88sch0bcbb7eawr, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198523, Requested 1798. Please try again in 2m18.672s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 484, in _run
+    raise APIStatusError(
+livekit.agents._exceptions.APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198518, Requested 2191. Please try again in 5m6.288s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm4ex8ef69nmre6xw4hsba, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198518, Requested 2191. Please try again in 5m6.288s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198518, Requested 2191. Please try again in 5m6.288s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm4ex8ef69nmre6xw4hsba, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198518, Requested 2191. Please try again in 5m6.288s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'})
+[96/100] travel_21              22.75s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 4
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198494, Requested 2128. Please try again in 4m28.704s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm4rysea9t5xk983nsnzcn, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198494, Requested 2128. Please try again in 4m28.704s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198494, Requested 1782. Please try again in 1m59.232s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm4s3tem4ttw72ny2bh02h, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198494, Requested 1782. Please try again in 1m59.232s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198489, Requested 1782. Please try again in 1m57.072s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm4v42er291zwasxzd96cr, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198489, Requested 1782. Please try again in 1m57.072s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 484, in _run
+    raise APIStatusError(
+livekit.agents._exceptions.APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198484, Requested 2163. Please try again in 4m39.504s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm4x4ve75v2ae11j94zyxe, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198484, Requested 2163. Please try again in 4m39.504s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198484, Requested 2163. Please try again in 4m39.504s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm4x4ve75v2ae11j94zyxe, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198484, Requested 2163. Please try again in 4m39.504s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'})
+[97/100] travel_21               4.38s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 4
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198460, Requested 2162. Please try again in 4m28.704s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm5762es8sjk03py1wsd8h, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198460, Requested 2162. Please try again in 4m28.704s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198460, Requested 2104. Please try again in 4m3.648s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm57bxek2s9582k31gvvfh, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198460, Requested 2104. Please try again in 4m3.648s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198455, Requested 1781. Please try again in 1m41.952s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm59csettsmgx1dg782r42, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198455, Requested 1781. Please try again in 1m41.952s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 484, in _run
+    raise APIStatusError(
+livekit.agents._exceptions.APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198450, Requested 2162. Please try again in 4m24.383999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm5bddezfrgppc7z91yex3, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198450, Requested 2162. Please try again in 4m24.383999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198450, Requested 2162. Please try again in 4m24.383999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm5bddezfrgppc7z91yex3, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198450, Requested 2162. Please try again in 4m24.383999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'})
+[98/100] travel_23               4.42s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 4
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198426, Requested 2197. Please try again in 4m29.136s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm5neaebz8w7k33qytj5hs, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198426, Requested 2197. Please try again in 4m29.136s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198426, Requested 2162. Please try again in 4m14.016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm5nkvez6reb5mmtk92h1h, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198426, Requested 2162. Please try again in 4m14.016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198421, Requested 1781. Please try again in 1m27.264s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm5qmtehcvtrq552mhbs1r, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198421, Requested 1781. Please try again in 1m27.264s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 484, in _run
+    raise APIStatusError(
+livekit.agents._exceptions.APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198416, Requested 1781. Please try again in 1m25.104s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm5snfe6ytmg3q5ma1h9gx, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198416, Requested 1781. Please try again in 1m25.104s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198416, Requested 1781. Please try again in 1m25.104s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm5snfe6ytmg3q5ma1h9gx, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198416, Requested 1781. Please try again in 1m25.104s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'})
+[99/100] travel_23               4.42s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 4
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198393, Requested 1785. Please try again in 1m16.896s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm63p1e7e839vmep814h95, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198393, Requested 1785. Please try again in 1m16.896s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 0.1s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198392, Requested 2216. Please try again in 4m22.656s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm63v5eq3rwqpg39b3ydzp, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198392, Requested 2216. Please try again in 4m22.656s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+failed to generate LLM completion: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198387, Requested 1785. Please try again in 1m14.304s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm65vtejg9qm19y44f452h, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198387, Requested 1785. Please try again in 1m14.304s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}, retrying in 2.0s
+LLM request rate limited by inference gateway
+Error in _llm_inference_task
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 313, in _main_task
+    await self._run()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\inference\llm.py", line 484, in _run
+    raise APIStatusError(
+livekit.agents._exceptions.APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198383, Requested 1785. Please try again in 1m12.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm67wbe9xbt1j4mnjeksak, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198383, Requested 1785. Please try again in 1m12.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\utils\log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\opentelemetry\util\_decorator.py", line 61, in async_wrapper
+    return await func(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\generation.py", line 253, in _llm_inference_task
+    async for chunk in llm_node:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\voice\agent.py", line 579, in llm_node
+    async for chunk in stream:
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 485, in __anext__
+    raise exc  # noqa: B904
+    ^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 276, in _traceable_main_task
+    await self._main_task()
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv\Lib\site-packages\livekit\agents\llm\llm.py", line 335, in _main_task
+    raise APIConnectionError(
+livekit.agents._exceptions.APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198383, Requested 1785. Please try again in 1m12.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}", status_code=429, retryable=True, request_id=req_01m3mm67wbe9xbt1j4mnjeksak, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198383, Requested 1785. Please try again in 1m12.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'})
+[100/100] travel_24               4.39s  ERROR APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message="Error code: 4
+done: 81 ok, 19 errored
+exit=1

@@ -1,0 +1,22 @@
+{
+  "example_id": "housing_02",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_02-8a038c",
+  "actual_tool_calls": [
+    {
+      "function": "calculate_commute",
+      "args": {
+        "origin_address": "101 Main Street",
+        "destination_address": "Downtown Office",
+        "mode": "driving"
+      },
+      "timestamp_start": 1790618861.073621,
+      "timestamp_end": 1790618861.854934
+    }
+  ],
+  "transcript": "It’ll take about 25 minutes to drive from 101 Main Street to the Downtown Office.",
+  "error": null,
+  "duration_s": 2.07
+}

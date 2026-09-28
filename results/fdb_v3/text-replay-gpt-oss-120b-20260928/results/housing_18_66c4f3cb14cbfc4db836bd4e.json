@@ -1,0 +1,32 @@
+{
+  "example_id": "housing_18",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_18-8ae500",
+  "actual_tool_calls": [
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Portland",
+        "bedrooms": 1,
+        "max_price": 1800.0
+      },
+      "timestamp_start": 1790619071.5715165,
+      "timestamp_end": 1790619071.9488666
+    },
+    {
+      "function": "calculate_commute",
+      "args": {
+        "origin_address": "APT1",
+        "destination_address": "coffee shop on 5th Street",
+        "mode": "biking"
+      },
+      "timestamp_start": 1790619073.7565365,
+      "timestamp_end": 1790619074.4909189
+    }
+  ],
+  "transcript": "The cheapest 1‑bedroom under $1,800 in Portland is the $1,700 unit (ID APT1). Biking from there to the coffee shop on 5th Street takes about 25 minutes.",
+  "error": null,
+  "duration_s": 4.26
+}

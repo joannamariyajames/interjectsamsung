@@ -1,0 +1,22 @@
+{
+  "example_id": "housing_17",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_17-5ae511",
+  "actual_tool_calls": [
+    {
+      "function": "calculate_commute",
+      "args": {
+        "origin_address": "my house",
+        "destination_address": "the office",
+        "mode": "driving"
+      },
+      "timestamp_start": 1790619059.6394246,
+      "timestamp_end": 1790619060.0681093
+    }
+  ],
+  "transcript": "The drive from your house to the office takes about 25 minutes.",
+  "error": null,
+  "duration_s": 2.33
+}

@@ -1,0 +1,30 @@
+{
+  "example_id": "ecommerce_16",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-ecommerce_16-d4b03d",
+  "actual_tool_calls": [
+    {
+      "function": "search_products",
+      "args": {
+        "query": "coffee maker",
+        "max_price": 50.0
+      },
+      "timestamp_start": 1790618425.9269843,
+      "timestamp_end": 1790618425.9269843
+    },
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "PROD1",
+        "quantity": 1
+      },
+      "timestamp_start": 1790618426.8126838,
+      "timestamp_end": 1790618426.8126838
+    }
+  ],
+  "transcript": "I found a coffee maker for $40. Let me add it to your cart. Your coffee maker has been added to the cart.",
+  "error": null,
+  "duration_s": 1.73
+}

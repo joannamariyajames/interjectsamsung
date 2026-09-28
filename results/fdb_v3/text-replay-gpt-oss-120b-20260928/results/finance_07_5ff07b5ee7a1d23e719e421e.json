@@ -1,0 +1,21 @@
+{
+  "example_id": "finance_07",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-finance_07-556913",
+  "actual_tool_calls": [
+    {
+      "function": "modify_autopay",
+      "args": {
+        "bill_type": "mortgage",
+        "source_account": "savings"
+      },
+      "timestamp_start": 1790618636.2848308,
+      "timestamp_end": 1790618636.2848308
+    }
+  ],
+  "transcript": "Your mortgage autopay has been updated to pull from your savings account.",
+  "error": null,
+  "duration_s": 1.76
+}

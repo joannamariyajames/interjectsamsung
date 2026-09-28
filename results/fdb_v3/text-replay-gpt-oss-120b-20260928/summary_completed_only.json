@@ -1,0 +1,26 @@
+{
+  "completed_recordings": 81,
+  "passed": 51,
+  "pass_rate_completed": 0.6296,
+  "errored_recordings": 19,
+  "errored_reason": "Groq free tier daily token cap (TPD 200k) for openai/gpt-oss-120b",
+  "method": "official evaluate_pass_rate.evaluate_scenario_pass per recording, use_llm=False",
+  "by_domain_completed": {
+    "ecommerce": {
+      "passed": 15,
+      "total": 29
+    },
+    "finance": {
+      "passed": 25,
+      "total": 25
+    },
+    "housing": {
+      "passed": 9,
+      "total": 24
+    },
+    "travel": {
+      "passed": 2,
+      "total": 3
+    }
+  }
+}

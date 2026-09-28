@@ -1,0 +1,32 @@
+{
+  "example_id": "housing_21",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_21-23a020",
+  "actual_tool_calls": [
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "my place",
+        "bedrooms": 3,
+        "max_price": 0.0
+      },
+      "timestamp_start": 1790619112.4649906,
+      "timestamp_end": 1790619112.9138355
+    },
+    {
+      "function": "calculate_commute",
+      "args": {
+        "origin_address": "my place",
+        "destination_address": "train station",
+        "mode": "walking"
+      },
+      "timestamp_start": 1790619113.8397498,
+      "timestamp_end": 1790619114.400414
+    }
+  ],
+  "transcript": "I found a three‑bedroom place and the walk to the train station takes about 25 minutes.",
+  "error": null,
+  "duration_s": 3.43
+}

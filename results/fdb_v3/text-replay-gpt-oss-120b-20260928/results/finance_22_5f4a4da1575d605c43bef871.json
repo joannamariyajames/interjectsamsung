@@ -1,0 +1,30 @@
+{
+  "example_id": "finance_22",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-finance_22-fb2e4f",
+  "actual_tool_calls": [
+    {
+      "function": "modify_autopay",
+      "args": {
+        "bill_type": "mortgage",
+        "source_account": "savings"
+      },
+      "timestamp_start": 1790618823.5406768,
+      "timestamp_end": 1790618823.5406768
+    },
+    {
+      "function": "modify_autopay",
+      "args": {
+        "bill_type": "credit_card",
+        "source_account": "checking"
+      },
+      "timestamp_start": 1790618825.1347823,
+      "timestamp_end": 1790618825.1347823
+    }
+  ],
+  "transcript": "Your mortgage autopay is now set to pull from savings, and your credit‑card autopay is set to pull from checking.",
+  "error": null,
+  "duration_s": 2.93
+}

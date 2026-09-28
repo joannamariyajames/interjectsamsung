@@ -1,0 +1,43 @@
+📖 Loading benchmark data from benchmark_data_v2.json...
+📁 Scanning fdb_v3_data_released for provider 'interject_groq_replay'...
+🔍 Found 100 valid result files matching benchmark scenarios.
+
+📊 PASS RATE REPORT — INTERJECT_GROQ_REPLAY
+========================================================
+  Total Scenarios : 100
+  ✅ Passed       : 52
+  ❌ Failed       : 48
+  📈 Pass Rate    : 52.0%
+
+  Failure Breakdown:
+    Wrong Tools     : 19
+    Wrong Arguments : 29
+
+  By Domain:
+    ecommerce_support: 51.7%
+    finance_billing: 100.0%
+    housing_location: 34.6%
+    travel_identity: 15.0%
+
+  By Difficulty:
+    easy: 63.9%
+    medium: 52.9%
+    hard: 36.7%
+
+  By Num Tool Calls:
+    1 tools: 65.2%
+    2 tools: 44.4%
+    3 tools: 6.2%
+
+  By Disfluency Feature:
+    PAUSE: 38.9%
+    FILLER: 34.5%
+    HESITATION: 30.0%
+    FALSE_START: 50.0%
+    SELF_CORRECTION: 82.4%
+
+  State Rollback:
+    With rollback:    82.4%
+    Without rollback: 45.8%
+
+  📄 Report saved: D:/Samsung_Hackathon/interjectsamsung/results/fdb_v3/text-replay-gpt-oss-120b-20260928/interject_groq_replay_pass_rate_report.json

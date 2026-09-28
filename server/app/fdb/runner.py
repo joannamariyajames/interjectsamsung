@@ -16,7 +16,7 @@ import sys
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Awaitable, Callable
+from typing import Any, Awaitable, Callable, Optional
 
 # Resolve Full-Duplex-Bench/v3 path as read-only external dependency
 _REPO_ROOT = Path(__file__).resolve().parents[3]  # interjectsamsung
@@ -29,6 +29,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[3]  # interjectsamsung
 # (unchanged behaviour wherever that was already correct), then one level
 # higher, and use whichever actually exists.
 _FDB_V3_CANDIDATES = [
+    *([Path(os.environ["FDB_V3_DIR"])] if os.environ.get("FDB_V3_DIR") else []),
     _REPO_ROOT.parent / "Full-Duplex-Bench" / "v3",
     _REPO_ROOT.parent.parent / "Full-Duplex-Bench" / "v3",
 ]
@@ -44,7 +45,7 @@ if _SERVER_DIR.exists() and str(_SERVER_DIR) not in sys.path:
 try:
     from dotenv import load_dotenv
 
-    # Same guard as app/config.py: importing this module during a test run
+    # Same guard as app/livekit_worker.py: importing this module during a test run
     # (e.g. via a test that exercises resolve_realtime_model()) must never
     # reload real credentials from .env.local into os.environ - conftest.py
     # deliberately strips GEMINI_API_KEY once, at collection time, so tests
@@ -54,12 +55,16 @@ try:
     # process), for every test that imports this module afterwards.
     _ENV_LOCAL = _REPO_ROOT / ".env.local"
     if (
-        _ENV_LOCAL.exists()
-        and "pytest" not in sys.modules
+        "pytest" not in sys.modules
         and "PYTEST_CURRENT_TEST" not in os.environ
         and "PYTEST_VERSION" not in os.environ
     ):
-        load_dotenv(_ENV_LOCAL)
+        if _ENV_LOCAL.exists():
+            load_dotenv(_ENV_LOCAL)
+        # The repository-root .env (LIVEKIT_* / GEMINI_API_KEY), which
+        # app/config.py used to load for every process. Loaded after
+        # .env.local, which therefore still takes precedence.
+        load_dotenv()
 except ImportError:
     pass
 
@@ -68,7 +73,8 @@ from app.fdb.adapter import FDBBackspaceAdapter
 
 try:
     from livekit import agents
-    from livekit.agents import AgentServer, AgentSession, llm
+    from livekit.agents import Agent, AgentServer, AgentSession, APIConnectOptions, llm
+    from livekit.agents.voice.agent_session import SessionConnectOptions
     from livekit.plugins import google
     from lk_agent_tool import (
         AssistantFnc,
@@ -83,6 +89,7 @@ except ImportError as err:
     agents = None
     AgentServer = None
     AgentSession = None
+    Agent = None
     llm = None
     google = None
     AssistantFnc = None
@@ -91,9 +98,43 @@ except ImportError as err:
     LatencyTracker = None
     registry = None
 
+# LiveKit requires plugins to be registered on the main thread, i.e. imported
+# when the worker starts - importing them inside a job's entrypoint fails with
+# "Plugins must be registered on the main thread" and the job never answers.
+try:
+    from livekit.plugins import groq as groq_plugin
+    from livekit.plugins import silero
+except ImportError:  # the Groq pipeline is optional (requirements-fdb.txt)
+    groq_plugin = None
+    silero = None
 
-def wrap_assistant_tools(adapter: FDBBackspaceAdapter, fnc_ctx: AssistantFnc) -> list[Any]:
-    """Connect existing AssistantFnc tool dispatch through FDBBackspaceAdapter."""
+
+def _nullable_optionals(sig: inspect.Signature) -> inspect.Signature:
+    """Declare parameters that default to None as nullable (``float = None`` -> ``float | None``).
+
+    The official tools annotate some optional arguments as plain types with a
+    None default (``search_products(max_price: float = None)``), so the schema
+    says "a number is required". A model that honestly omits it by sending null
+    fails validation and then invents a value (``max_price: 0.0``) the user never
+    asked for. Nulls are dropped before the call, so the tool sees no argument.
+    """
+    params = [
+        p.replace(annotation=Optional[p.annotation])
+        if p.default is None and p.annotation is not inspect.Parameter.empty
+        else p
+        for p in sig.parameters.values()
+    ]
+    return sig.replace(parameters=params)
+
+
+def wrap_assistant_tools(
+    adapter: FDBBackspaceAdapter, fnc_ctx: AssistantFnc, *, nullable_optionals: bool = False
+) -> list[Any]:
+    """Connect existing AssistantFnc tool dispatch through FDBBackspaceAdapter.
+
+    ``nullable_optionals`` (used by the Groq pipeline) marks None-defaulted
+    parameters nullable in the tool schema; off, the schema is the official one.
+    """
     # Suppress immediate file logging from AssistantFnc so only the adapter buffers & flushes
     fnc_ctx.log_tool_call = lambda *args, **kwargs: None
 
@@ -101,6 +142,8 @@ def wrap_assistant_tools(adapter: FDBBackspaceAdapter, fnc_ctx: AssistantFnc) ->
     for tool in tools:
         fn_name = tool.info.name
         tool_sig = inspect.signature(tool)
+        if nullable_optionals:
+            tool_sig = _nullable_optionals(tool_sig)
         orig_func = getattr(tool, "_func", None)
 
         def _make_wrapper(name: str, sig: inspect.Signature, orig: Any = None):
@@ -153,18 +196,111 @@ def wrap_assistant_tools(adapter: FDBBackspaceAdapter, fnc_ctx: AssistantFnc) ->
                 _adapted_tool.__annotations__ = {
                     k: v for k, v in getattr(orig, "__annotations__", {}).items() if k != "self"
                 }
+                # The schema is built from these hints: keep them in step with sig
+                for pname, param in sig.parameters.items():
+                    if param.annotation is not inspect.Parameter.empty:
+                        _adapted_tool.__annotations__[pname] = param.annotation
             _adapted_tool.__signature__ = sig
             return _adapted_tool
 
         tool._func = _make_wrapper(fn_name, tool_sig, orig_func)
         tool.__signature__ = tool_sig
+        if nullable_optionals:
+            # LiveKit builds the argument schema from the tool's own type hints,
+            # which it shares with the official method: give this tool a fresh
+            # dict rather than mutating that one (the Gemini path keeps the
+            # official schema).
+            tool.__annotations__ = {
+                **getattr(tool, "__annotations__", {}),
+                **{n: p.annotation for n, p in tool_sig.parameters.items() if p.annotation is not inspect.Parameter.empty},
+            }
         setattr(fnc_ctx, fn_name, tool)
 
     return tools
 
 
+from app.providers.mock import MockProvider
 from app.runtime import AgentRuntime
 from app.session import Session
+
+# Added to the benchmark's own agent instructions. General rules for disfluent,
+# self-correcting speech and multi-step tool use - none of them names a
+# benchmark item, and the examples are made up.
+ARGUMENT_RULES = (
+    "\n\nHOW TO USE THE TOOLS:\n"
+    "1. People think out loud: fillers, pauses, false starts and self-corrections "
+    "(\"X - actually no, Y\"). Act only on the user's final intent. Ignore values they "
+    "abandoned and never call a tool for something they took back.\n"
+    "2. Copy argument values the way the user said them. Do not add details they did not "
+    "give: no year on a date given as a month and day - pass \"May 4\", not \"2026-05-04\", "
+    "even where a tool's example shows another format - and no city or qualifier on a place "
+    "they named without one.\n"
+    "3. A code spoken character by character (\"Q-7-X-2\", \"Q 7 X 2\", \"B-4\") is one code: "
+    "join it without spaces or dashes (\"Q7X2\", \"B4\").\n"
+    "4. If the user refers to something without its details (\"my place\", \"the office\"), "
+    "pass their words as the value instead of asking a question.\n"
+    "5. A request can need several calls. Make every call it needs, in order; when a later "
+    "call needs a value an earlier call returned (an ID, an address), use that exact "
+    "returned value.\n"
+    "6. Never describe results you did not get from a tool in this conversation. If you "
+    "have not called the tool yet, call it; do not invent products, prices or listings.\n"
+    "7. Never say something is done (booked, updated, added, changed) unless its tool call "
+    "succeeded in this conversation. Before you reply, check that every action the user asked "
+    "for has had its own tool call; if one has not, make that call first.\n"
+    "8. A required argument can never be null. If the user did not give it, use a sensible "
+    "typical value rather than leaving it empty.\n"
+    "9. Your reply is spoken aloud: plain sentences, no markdown or lists, and keep it short."
+)
+
+
+class InterjectVoiceAgent(Agent if Agent is not None else object):  # type: ignore[misc]
+    """The benchmark's VoiceAgent instructions, unchanged, plus ARGUMENT_RULES."""
+
+    def __init__(self) -> None:
+        super().__init__(instructions=VoiceAgent().instructions + ARGUMENT_RULES)
+
+
+GROQ_PROVIDERS = {"groq", "groq_cascaded", "cascaded_groq"}
+
+
+def resolve_session_components() -> dict[str, Any]:
+    """AgentSession components for the configured ``LK_PROVIDER``.
+
+    ``groq`` (alias ``groq_cascaded``): a cascaded pipeline on Groq -
+    Whisper STT -> tool-calling LLM -> Orpheus TTS, with Silero VAD. Needs only
+    ``GROQ_API_KEY``. Anything else: a native realtime speech model, see
+    ``resolve_realtime_model``.
+    """
+    provider = os.getenv("LK_PROVIDER", "gemini3_8").strip().lower()
+    if provider in GROQ_PROVIDERS:
+        if groq_plugin is None or silero is None:
+            raise RuntimeError("LK_PROVIDER=groq needs livekit-plugins-groq/-silero (server/requirements-fdb.txt)")
+        # The declared provider is Groq alone: drop any Gemini key a .env
+        # supplied, so no background component quietly calls Gemini either.
+        for key in ("GEMINI_API_KEY", "GOOGLE_API_KEY"):
+            os.environ.pop(key, None)
+        return {
+            "stt": groq_plugin.STT(model=os.getenv("GROQ_STT_MODEL", "whisper-large-v3-turbo"), language="en"),
+            "llm": build_groq_llm(),
+            "tts": groq_plugin.TTS(
+                model=os.getenv("GROQ_TTS_MODEL", "canopylabs/orpheus-v1-english"),
+                voice=os.getenv("GROQ_TTS_VOICE", "autumn"),
+            ),
+            "vad": silero.VAD.load(),
+        }
+    return {"llm": resolve_realtime_model()}
+
+
+def build_groq_llm() -> Any:
+    """The tool-calling LLM of the Groq pipeline (also used by the text replay)."""
+    if groq_plugin is None:
+        raise RuntimeError("the Groq LLM needs livekit-plugins-groq (server/requirements-fdb.txt)")
+    return groq_plugin.LLM(
+        # gpt-oss-120b: of the Groq models tried, the one that reliably calls the
+        # tool instead of describing made-up results or asking for confirmation.
+        model=os.getenv("GROQ_LLM_MODEL", "openai/gpt-oss-120b"),
+        temperature=float(os.getenv("GROQ_LLM_TEMPERATURE", "0")),
+    )
 
 
 def resolve_realtime_model() -> Any:
@@ -204,6 +340,8 @@ def create_fdb_runner_context(
     room_name: str,
     *,
     model: Any = None,
+    components: dict[str, Any] | None = None,
+    nullable_optionals: bool | None = None,
     telemetry_path: str = "/tmp/agent_tool_calls.log",
     emit: Callable[[Any], Awaitable[None]] | None = None,
 ) -> FDBRunnerContext:
@@ -219,6 +357,10 @@ def create_fdb_runner_context(
 
     actual_emit = emit if emit is not None else _default_emit
     runtime = AgentRuntime(session_state, emit=actual_emit)
+    # The runtime here only tracks facts for BACKSPACE; its generated text goes
+    # to emitted_frames and is never spoken (the voice model answers). Keep it
+    # on the offline engine so it never spends a hosted model's quota.
+    runtime.provider = MockProvider()
     adapter = FDBBackspaceAdapter(
         core=core,
         room_name=room_name,
@@ -227,12 +369,34 @@ def create_fdb_runner_context(
     )
     tracker = LatencyTracker() if LatencyTracker is not None else None
     fnc_ctx = AssistantFnc(tracker, room_name) if AssistantFnc is not None else None
-    tools = wrap_assistant_tools(adapter, fnc_ctx) if fnc_ctx is not None else []
+    if nullable_optionals is None:
+        nullable_optionals = os.getenv("LK_PROVIDER", "").strip().lower() in GROQ_PROVIDERS
+    tools = (
+        wrap_assistant_tools(adapter, fnc_ctx, nullable_optionals=nullable_optionals)
+        if fnc_ctx is not None
+        else []
+    )
     tool_map = {t.info.name: t for t in tools}
 
     session = None
-    if model is not None and AgentSession is not None:
-        session = AgentSession(llm=model, tools=tools)
+    if components is None and model is not None:
+        components = {"llm": model}
+    if components and AgentSession is not None:
+        # Hard scenarios chain three dependent calls and still need a final
+        # spoken answer; LiveKit's default of 3 tool steps can cut that short.
+        max_steps = int(os.getenv("FDB_MAX_TOOL_STEPS", "5"))
+        # Hosted per-minute token limits answer 429 with a short Retry-After;
+        # give the LLM a few more spaced retries than LiveKit's default of 3
+        # before a turn is given up. (The plugin's HTTP client does not retry
+        # on its own - LiveKit owns the retry policy.)
+        conn = SessionConnectOptions(
+            llm_conn_options=APIConnectOptions(
+                max_retry=int(os.getenv("FDB_LLM_MAX_RETRY", "5")),
+                retry_interval=2.0,
+                timeout=float(os.getenv("FDB_LLM_TIMEOUT", "20")),
+            )
+        )
+        session = AgentSession(**components, tools=tools, max_tool_steps=max_steps, conn_options=conn)
 
     return FDBRunnerContext(
         room_name=room_name,
@@ -256,8 +420,7 @@ if server is not None:
 
     @server.rtc_session()
     async def entrypoint(ctx: agents.JobContext) -> None:
-        model = resolve_realtime_model()
-        runner_ctx = create_fdb_runner_context(ctx.room.name, model=model)
+        runner_ctx = create_fdb_runner_context(ctx.room.name, components=resolve_session_components())
         adapter = runner_ctx.adapter
         tracker = runner_ctx.tracker
         runtime = runner_ctx.runtime
@@ -301,7 +464,7 @@ if server is not None:
 
         try:
             if session is not None:
-                await session.start(room=ctx.room, agent=VoiceAgent(), record=False)
+                await session.start(room=ctx.room, agent=InterjectVoiceAgent(), record=False)
             await session_done.wait()
         finally:
             adapter.flush()

@@ -1,0 +1,32 @@
+{
+  "example_id": "finance_14",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-finance_14-5820e5",
+  "actual_tool_calls": [
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 50.0,
+        "from_currency": "USD",
+        "to_currency": "EUR"
+      },
+      "timestamp_start": 1790618728.3668997,
+      "timestamp_end": 1790618728.3668997
+    },
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 100.0,
+        "from_currency": "CAD",
+        "to_currency": "USD"
+      },
+      "timestamp_start": 1790618728.879035,
+      "timestamp_end": 1790618728.879035
+    }
+  ],
+  "transcript": "Sure thing! Fifty US dollars is about 45 euros, and one hundred Canadian dollars is roughly 90 US dollars.",
+  "error": null,
+  "duration_s": 1.34
+}

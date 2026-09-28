@@ -1,0 +1,22 @@
+{
+  "example_id": "housing_09",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_09-1acb02",
+  "actual_tool_calls": [
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Chicago",
+        "bedrooms": 2,
+        "max_price": 2000.0
+      },
+      "timestamp_start": 1790618946.371116,
+      "timestamp_end": 1790618947.1250603
+    }
+  ],
+  "transcript": "I found a 2‑bedroom apartment in Chicago for $1,900 a month.",
+  "error": null,
+  "duration_s": 2.24
+}

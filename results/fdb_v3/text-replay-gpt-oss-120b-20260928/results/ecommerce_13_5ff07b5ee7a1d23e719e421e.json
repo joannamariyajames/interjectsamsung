@@ -1,0 +1,29 @@
+{
+  "example_id": "ecommerce_13",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-ecommerce_13-f6a038",
+  "actual_tool_calls": [
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "K2",
+        "quantity": 1
+      },
+      "timestamp_start": 1790618356.4400275,
+      "timestamp_end": 1790618356.4400275
+    },
+    {
+      "function": "track_order",
+      "args": {
+        "order_id": "D-E-L-I-V"
+      },
+      "timestamp_start": 1790618356.7970586,
+      "timestamp_end": 1790618356.7970586
+    }
+  ],
+  "transcript": "Your cart now has one of item K‑2, and your order D‑E‑L‑I‑V is currently out for delivery.",
+  "error": null,
+  "duration_s": 1.48
+}

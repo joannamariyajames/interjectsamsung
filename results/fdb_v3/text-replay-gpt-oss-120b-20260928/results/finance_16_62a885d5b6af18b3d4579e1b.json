@@ -1,0 +1,22 @@
+{
+  "example_id": "finance_16",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-finance_16-952c57",
+  "actual_tool_calls": [
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 500.0,
+        "from_currency": "JPY",
+        "to_currency": "USD"
+      },
+      "timestamp_start": 1790618751.3438735,
+      "timestamp_end": 1790618751.3438735
+    }
+  ],
+  "transcript": "500 yen is about $450 US dollars.",
+  "error": null,
+  "duration_s": 1.92
+}

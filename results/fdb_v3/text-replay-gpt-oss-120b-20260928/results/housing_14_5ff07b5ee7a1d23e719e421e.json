@@ -1,0 +1,22 @@
+{
+  "example_id": "housing_14",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_14-66f8de",
+  "actual_tool_calls": [
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Portland",
+        "bedrooms": 1,
+        "max_price": 1800.0
+      },
+      "timestamp_start": 1790618998.9055948,
+      "timestamp_end": 1790618999.5625741
+    }
+  ],
+  "transcript": "I found a pet‑friendly one‑bedroom place in Portland for $1,700 a month. Let me know if you’d like more details or want to move forward.",
+  "error": null,
+  "duration_s": 2.0
+}

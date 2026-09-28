@@ -1,0 +1,30 @@
+{
+  "example_id": "housing_25",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_25-181ed3",
+  "actual_tool_calls": [
+    {
+      "function": "update_search_filter",
+      "args": {
+        "filter_name": "pets",
+        "value": "allowed"
+      },
+      "timestamp_start": 1790619176.5514328,
+      "timestamp_end": 1790619176.6449916
+    },
+    {
+      "function": "update_search_filter",
+      "args": {
+        "filter_name": "max_price",
+        "value": "3500"
+      },
+      "timestamp_start": 1790619177.3235517,
+      "timestamp_end": 1790619177.5012872
+    }
+  ],
+  "transcript": "",
+  "error": "APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIError: Failed to parse tool call arguments as JSON)",
+  "duration_s": 27.21
+}

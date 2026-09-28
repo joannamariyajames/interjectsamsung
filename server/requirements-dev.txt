@@ -1,3 +1,5 @@
 -r requirements.txt
 pytest==8.3.4
 pytest-asyncio==0.25.0
+livekit-plugins-groq==1.8.3
+livekit-plugins-silero==1.8.3

@@ -1,0 +1,31 @@
+{
+  "example_id": "finance_20",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-finance_20-d4cf10",
+  "actual_tool_calls": [
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 1000.0,
+        "from_currency": "USD",
+        "to_currency": "EUR"
+      },
+      "timestamp_start": 1790618799.1205988,
+      "timestamp_end": 1790618799.1205988
+    },
+    {
+      "function": "modify_autopay",
+      "args": {
+        "bill_type": "mortgage",
+        "source_account": "checking"
+      },
+      "timestamp_start": 1790618799.828798,
+      "timestamp_end": 1790618799.828798
+    }
+  ],
+  "transcript": "Your mortgage autopay has been switched to pull from your checking account, and the conversion rate is about 0.90 euros per dollar.",
+  "error": null,
+  "duration_s": 2.3
+}

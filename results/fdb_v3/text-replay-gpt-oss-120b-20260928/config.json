@@ -1,0 +1,16 @@
+{
+  "label": "interject_groq_replay",
+  "collected_at": "2026-09-28T23:58:54+0530",
+  "interject_commit": "1a801ac4f6714bdaf8edcced9fae5e9ea816f8fb",
+  "full_duplex_bench_commit": "3e799c45a045256f47d5f1c9cda90157e2d2ec9e",
+  "python": "3.12.0",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "lk_provider": "groq",
+  "groq_stt_model": "whisper-large-v3-turbo",
+  "groq_llm_model": "openai/gpt-oss-120b",
+  "groq_llm_temperature": "0",
+  "groq_tts_model": "canopylabs/orpheus-v1-english",
+  "fdb_max_tool_steps": "5",
+  "llm_judge": "gpt-4o (--use-llm)",
+  "scenarios_collected": 100
+}

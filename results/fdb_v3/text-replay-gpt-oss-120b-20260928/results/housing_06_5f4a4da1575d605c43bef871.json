@@ -1,0 +1,22 @@
+{
+  "example_id": "housing_06",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_06-334b41",
+  "actual_tool_calls": [
+    {
+      "function": "calculate_commute",
+      "args": {
+        "origin_address": "Oak Street",
+        "destination_address": "Gym",
+        "mode": "walking"
+      },
+      "timestamp_start": 1790618923.118746,
+      "timestamp_end": 1790618923.3901954
+    }
+  ],
+  "transcript": "It should take about 25 minutes to walk from Oak Street to the gym.",
+  "error": null,
+  "duration_s": 1.62
+}

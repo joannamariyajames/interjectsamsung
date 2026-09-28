@@ -1,0 +1,22 @@
+{
+  "example_id": "finance_08",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-finance_08-edce7a",
+  "actual_tool_calls": [
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 200.0,
+        "from_currency": "EUR",
+        "to_currency": "USD"
+      },
+      "timestamp_start": 1790618658.882127,
+      "timestamp_end": 1790618658.882127
+    }
+  ],
+  "transcript": "About 200 euros converts to roughly 220 US dollars at the current rate.",
+  "error": null,
+  "duration_s": 1.17
+}

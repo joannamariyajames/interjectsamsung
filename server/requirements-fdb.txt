@@ -1,0 +1,13 @@
+# Full-Duplex-Bench v3 run: the agent (LK_PROVIDER=groq) plus the official
+# inference/evaluation scripts. Installed by scripts/run_fdb_v3.sh.
+-r requirements.txt
+
+# Cascaded Groq voice pipeline (Whisper STT -> LLM -> Orpheus TTS, Silero VAD)
+livekit-plugins-groq==1.8.3
+livekit-plugins-silero==1.8.3
+
+# Official FDB-v3 scripts: NeMo ASR (agent speech -> transcript), audio I/O,
+# benchmark data download. ffmpeg must be on PATH as well.
+nemo_toolkit[asr]==3.0.0
+pydub==0.25.1
+gdown==6.4.0

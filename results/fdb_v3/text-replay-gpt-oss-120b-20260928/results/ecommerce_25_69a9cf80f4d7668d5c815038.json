@@ -1,0 +1,37 @@
+{
+  "example_id": "ecommerce_25",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-ecommerce_25-4b1d76",
+  "actual_tool_calls": [
+    {
+      "function": "track_order",
+      "args": {
+        "order_id": "C-A-T"
+      },
+      "timestamp_start": 1790618539.537312,
+      "timestamp_end": 1790618539.537312
+    },
+    {
+      "function": "search_products",
+      "args": {
+        "query": "cat food"
+      },
+      "timestamp_start": 1790618540.6634521,
+      "timestamp_end": 1790618540.6634521
+    },
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "PROD1",
+        "quantity": 3
+      },
+      "timestamp_start": 1790618541.1654623,
+      "timestamp_end": 1790618541.1654623
+    }
+  ],
+  "transcript": "Your order C‑A‑T is out for delivery. I’ve added three units of the premium cat food to your cart.",
+  "error": null,
+  "duration_s": 3.31
+}

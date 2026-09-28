@@ -1,0 +1,21 @@
+{
+  "example_id": "travel_19",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-travel_19-b495dd",
+  "actual_tool_calls": [
+    {
+      "function": "search_flights",
+      "args": {
+        "destination": "Milan",
+        "date": "June 3"
+      },
+      "timestamp_start": 1790619880.2729113,
+      "timestamp_end": 1790619880.9829204
+    }
+  ],
+  "transcript": "I found a flight to Milan on June 3. It’s flight FL123 and costs $450.",
+  "error": null,
+  "duration_s": 72.76
+}

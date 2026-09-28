@@ -1,0 +1,37 @@
+{
+  "example_id": "ecommerce_18",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-ecommerce_18-62235e",
+  "actual_tool_calls": [
+    {
+      "function": "search_products",
+      "args": {
+        "query": "gaming mouse"
+      },
+      "timestamp_start": 1790618449.2161195,
+      "timestamp_end": 1790618449.2161195
+    },
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "PROD1",
+        "quantity": 1
+      },
+      "timestamp_start": 1790618449.7921178,
+      "timestamp_end": 1790618449.7921178
+    },
+    {
+      "function": "track_order",
+      "args": {
+        "order_id": "P-O-9-9-9"
+      },
+      "timestamp_start": 1790618450.3271825,
+      "timestamp_end": 1790618450.3271825
+    }
+  ],
+  "transcript": "The gaming mouse has been added to your cart, and your order P‑O‑9‑9‑9 is currently out for delivery.",
+  "error": null,
+  "duration_s": 2.3
+}
