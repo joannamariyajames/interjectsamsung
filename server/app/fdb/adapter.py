@@ -7,6 +7,7 @@ Member 1's Core or the official Full-Duplex-Bench repository.
 from __future__ import annotations
 
 import json
+from pathlib import Path
 import time
 import uuid
 from typing import TYPE_CHECKING, Any, Callable
@@ -220,6 +221,7 @@ class FDBBackspaceAdapter:
         if not to_write:
             return 0
 
+        Path(self.telemetry_path).parent.mkdir(parents=True, exist_ok=True)
         with open(self.telemetry_path, "a", encoding="utf-8") as f:
             for work_id, record in to_write:
                 f.write(json.dumps(record) + "\n")

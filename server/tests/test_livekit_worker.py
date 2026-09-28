@@ -40,3 +40,24 @@ async def test_create_agent_session(monkeypatch: pytest.MonkeyPatch) -> None:
     agent, session = create_agent_session(instructions="Test instructions")
     assert isinstance(agent, Agent)
     assert isinstance(session, AgentSession)
+
+
+@pytest.mark.asyncio
+async def test_entrypoint_disables_audio_recording(monkeypatch: pytest.MonkeyPatch) -> None:
+    from unittest.mock import AsyncMock, MagicMock
+    from app.livekit_worker import entrypoint
+
+    mock_ctx = MagicMock()
+    mock_ctx.room.name = "test-safety-room"
+    mock_ctx.connect = AsyncMock()
+
+    mock_session = MagicMock()
+    mock_session.start = AsyncMock()
+    mock_agent = MagicMock()
+
+    monkeypatch.setattr("app.livekit_worker.create_agent_session", lambda: (mock_agent, mock_session))
+
+    await entrypoint(mock_ctx)
+
+    mock_ctx.connect.assert_awaited_once()
+    mock_session.start.assert_awaited_once_with(mock_agent, room=mock_ctx.room, record=False)

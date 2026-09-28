@@ -336,3 +336,24 @@ async def test_phase3_chained_parent_work_staleness_blocks_child_tool(fdb_enviro
     flushed = adapter.flush()
     # Parent work was invalidated, child work was cancelled -> 0 calls written to telemetry
     assert flushed == 0
+
+
+def test_runner_session_start_explicitly_disables_recording():
+    """Verify that runner.py explicitly passes record=False to session.start."""
+    import ast
+    from pathlib import Path
+
+    runner_py = Path(__file__).resolve().parents[2] / "app" / "fdb" / "runner.py"
+    tree = ast.parse(runner_py.read_text(encoding="utf-8"))
+
+    start_calls = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call):
+            if isinstance(node.func, ast.Attribute) and node.func.attr == "start":
+                kw_names = {kw.arg: kw.value for kw in node.keywords}
+                start_calls.append(kw_names)
+
+    assert len(start_calls) >= 1
+    for kw in start_calls:
+        assert "record" in kw
+        assert isinstance(kw["record"], ast.Constant) and kw["record"].value is False

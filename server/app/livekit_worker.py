@@ -53,7 +53,7 @@ async def entrypoint(ctx: JobContext) -> None:
     logger.info("Connected to room %s. Initializing agent session...", ctx.room.name)
 
     agent, session = create_agent_session()
-    await session.start(agent, room=ctx.room)
+    await session.start(agent, room=ctx.room, record=False)
     logger.info("Agent session active in room %s.", ctx.room.name)
 
 

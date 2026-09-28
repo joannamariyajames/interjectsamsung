@@ -276,7 +276,7 @@ if server is not None:
 
         try:
             if session is not None:
-                await session.start(room=ctx.room, agent=VoiceAgent())
+                await session.start(room=ctx.room, agent=VoiceAgent(), record=False)
             await session_done.wait()
         finally:
             adapter.flush()

@@ -380,3 +380,24 @@ def test_resolve_realtime_model_gemini3_8(monkeypatch: pytest.MonkeyPatch):
     import os
     assert os.environ.get("GOOGLE_API_KEY") == "mock_key_value"
 
+
+def test_flush_creates_parent_directory_if_missing(core: BackspaceCore, tmp_path: Path):
+    """16. flush creates parent directory if it does not already exist."""
+    nested_path = tmp_path / "deeply" / "nested" / "dir" / "agent_tool_calls.log"
+    assert not nested_path.parent.exists()
+
+    adapter = FDBBackspaceAdapter(
+        core=core,
+        room_name="test-room-dir",
+        telemetry_path=str(nested_path),
+    )
+    adapter.execute_tool(
+        func_name="search_products",
+        args={"query": "laptop"},
+        call_fn=lambda **kw: {"status": "success"},
+        turn_id="t1",
+    )
+
+    count = adapter.flush()
+    assert count == 1
+    assert nested_path.exists()
