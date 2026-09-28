@@ -135,23 +135,38 @@ class GeminiProvider:
             temperature=0.3,
         )
 
-        try:
-            stream_or_coro = client.aio.models.generate_content_stream(
-                model=self.model,
-                contents=contents,
-                config=config,
-            )
-            if inspect.iscoroutine(stream_or_coro):
-                response_stream = await stream_or_coro
-            else:
-                response_stream = stream_or_coro
+        # Gemini's 429 (RESOURCE_EXHAUSTED) carries a short RetryInfo delay for
+        # its per-minute rate-limit component, distinct from a genuinely
+        # exhausted daily quota (which this cannot fix, and still raises once
+        # the retry budget is spent). Retried only while no chunk of THIS
+        # attempt has been yielded yet, so a mid-stream failure never
+        # re-sends already-delivered text.
+        max_attempts = 3
+        for attempt in range(1, max_attempts + 1):
+            yielded_any = False
+            try:
+                stream_or_coro = client.aio.models.generate_content_stream(
+                    model=self.model,
+                    contents=contents,
+                    config=config,
+                )
+                if inspect.iscoroutine(stream_or_coro):
+                    response_stream = await stream_or_coro
+                else:
+                    response_stream = stream_or_coro
 
-            async for chunk in response_stream:
-                text = getattr(chunk, "text", None)
-                if text:
-                    yield text
-        except asyncio.CancelledError:
-            # Re-raise cancellation immediately so AgentRuntime can save checkpoint
-            raise
-        except Exception as exc:
-            raise RuntimeError(f"Gemini streaming error: {exc}") from exc
+                async for chunk in response_stream:
+                    text = getattr(chunk, "text", None)
+                    if text:
+                        yielded_any = True
+                        yield text
+                return
+            except asyncio.CancelledError:
+                # Re-raise cancellation immediately so AgentRuntime can save checkpoint
+                raise
+            except Exception as exc:
+                rate_limited = not yielded_any and getattr(exc, "code", None) == 429
+                if rate_limited and attempt < max_attempts:
+                    await asyncio.sleep(2 * attempt)
+                    continue
+                raise RuntimeError(f"Gemini streaming error: {exc}") from exc

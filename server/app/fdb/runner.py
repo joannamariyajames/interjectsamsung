@@ -20,7 +20,19 @@ from typing import Any, Awaitable, Callable
 
 # Resolve Full-Duplex-Bench/v3 path as read-only external dependency
 _REPO_ROOT = Path(__file__).resolve().parents[3]  # interjectsamsung
-_FDB_V3_DIR = _REPO_ROOT.parent / "Full-Duplex-Bench" / "v3"
+# Full-Duplex-Bench is expected as a sibling checkout, but how many
+# directory levels up that sibling sits depends on whether this repo was
+# checked out directly (Full-Duplex-Bench next to "interjectsamsung") or
+# nested one level deeper inside an extracted folder (e.g.
+# "interjectsamsung-main/interjectsamsung", with Full-Duplex-Bench next to
+# "interjectsamsung-main" instead). Try the direct-sibling location first
+# (unchanged behaviour wherever that was already correct), then one level
+# higher, and use whichever actually exists.
+_FDB_V3_CANDIDATES = [
+    _REPO_ROOT.parent / "Full-Duplex-Bench" / "v3",
+    _REPO_ROOT.parent.parent / "Full-Duplex-Bench" / "v3",
+]
+_FDB_V3_DIR = next((p for p in _FDB_V3_CANDIDATES if p.exists()), _FDB_V3_CANDIDATES[0])
 if _FDB_V3_DIR.exists() and str(_FDB_V3_DIR) not in sys.path:
     sys.path.insert(0, str(_FDB_V3_DIR))
 
@@ -32,8 +44,21 @@ if _SERVER_DIR.exists() and str(_SERVER_DIR) not in sys.path:
 try:
     from dotenv import load_dotenv
 
+    # Same guard as app/config.py: importing this module during a test run
+    # (e.g. via a test that exercises resolve_realtime_model()) must never
+    # reload real credentials from .env.local into os.environ - conftest.py
+    # deliberately strips GEMINI_API_KEY once, at collection time, so tests
+    # exercise MockProvider; an unconditional load_dotenv() here would load
+    # them straight back (and, unlike a per-test monkeypatch, that load is
+    # never reverted - it persists in os.environ for the rest of the
+    # process), for every test that imports this module afterwards.
     _ENV_LOCAL = _REPO_ROOT / ".env.local"
-    if _ENV_LOCAL.exists():
+    if (
+        _ENV_LOCAL.exists()
+        and "pytest" not in sys.modules
+        and "PYTEST_CURRENT_TEST" not in os.environ
+        and "PYTEST_VERSION" not in os.environ
+    ):
         load_dotenv(_ENV_LOCAL)
 except ImportError:
     pass
