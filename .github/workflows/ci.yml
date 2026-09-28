@@ -10,15 +10,25 @@ jobs:
     name: agent runtime tests
     runs-on: ubuntu-latest
     steps:
+      # The FDB tests and app/fdb/runner.py import lk_agent_tool,
+      # evaluate_tool_calls and mock_apis from a sibling Full-Duplex-Bench
+      # checkout (../Full-Duplex-Bench/v3), so lay both repos out side by side.
       - uses: actions/checkout@v4
+        with:
+          path: interjectsamsung
+      - uses: actions/checkout@v4
+        with:
+          repository: DanielLin94144/Full-Duplex-Bench
+          ref: 3e799c45a045256f47d5f1c9cda90157e2d2ec9e
+          path: Full-Duplex-Bench
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
-          cache-dependency-path: server/requirements-dev.txt
-      - run: pip install -r server/requirements-dev.txt
+          cache-dependency-path: interjectsamsung/server/requirements-dev.txt
+      - run: pip install -r interjectsamsung/server/requirements-dev.txt
       - run: python -m pytest tests -q
-        working-directory: server
+        working-directory: interjectsamsung/server
 
   web:
     name: web build
