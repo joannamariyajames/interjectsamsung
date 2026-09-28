@@ -51,6 +51,7 @@ const STAGE_TONE: Record<Stage, TimelineEvent["tone"]> = {
   interrupted: "accent",
   recovering: "warn",
   done: "neutral",
+  headsup: "accent",
 };
 
 export interface SessionState {
