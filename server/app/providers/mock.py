@@ -1,9 +1,10 @@
 """Deterministic local engine.
 
-The demo has to run with no API key and no network, and it has to be *slow
-enough to interrupt*. This engine composes a grounded answer out of the
-retrieved evidence and emits it token by token, with a real ``await`` between
-tokens so a barge-in lands between two words rather than after the whole turn.
+The demo has to run with no API key and no network. This engine composes a
+grounded answer out of the retrieved evidence and emits it token by token, with
+an ``await`` between tokens. Pacing - being *slow enough to interrupt* - is the
+runtime's job, applied the same way to every provider (see
+``AgentRuntime._paced``), so it is not repeated here.
 """
 
 from __future__ import annotations
@@ -12,7 +13,6 @@ import asyncio
 import re
 from typing import AsyncIterator
 
-from ..config import settings
 from ..retrieval import tokenize
 from .base import GenerationRequest
 
@@ -49,11 +49,8 @@ class MockProvider:
 
     async def stream(self, request: GenerationRequest) -> AsyncIterator[str]:
         body = self._compose(request)
-        delay = settings.token_delay_ms / 1000.0
         for token in re.findall(r"\S+\s*|\n", body):
-            # The await is the cancellation point that makes barge-in possible.
-            if delay:
-                await asyncio.sleep(delay)
+            await asyncio.sleep(0)  # cooperative: never hog the loop between tokens
             yield token
 
     # -- composition -----------------------------------------------------

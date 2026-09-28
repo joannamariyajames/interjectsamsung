@@ -2,23 +2,20 @@
 
 Everything has a working default so the demo runs with zero setup. Set
 ``LLM_API_KEY`` to swap the deterministic local engine for a real model.
+
+This module deliberately does not load a ``.env`` file. The repository-root
+``.env`` is the LiveKit worker's credential file (see ``.env.example``);
+loading it here, where the web backend imports it too, silently switched the
+browser agent from the offline engine to Gemini whenever that file held a
+``GEMINI_API_KEY``. Entry points that need it (``app.livekit_worker``,
+``app.fdb.runner``) load it themselves before importing this module.
 """
 
 from __future__ import annotations
 
 import os
-import sys
 from dataclasses import dataclass, field
 from typing import Any
-
-try:
-    from dotenv import load_dotenv
-
-    # Preserve normal application dotenv behavior, but avoid polluting test runs
-    if "pytest" not in sys.modules and "PYTEST_CURRENT_TEST" not in os.environ and "PYTEST_VERSION" not in os.environ:
-        load_dotenv()
-except ImportError:
-    pass
 
 
 def _env_int(key: str, default: int) -> int:

@@ -21,17 +21,7 @@ except ImportError:
     types = None  # type: ignore[assignment]
 
 from ..config import settings
-from .base import GenerationRequest
-
-SYSTEM = (
-    "You are a real-time assistant that can be interrupted at any moment. "
-    "Answer briefly and concretely, grounded in the evidence provided. "
-    "Cite evidence inline as [doc_id]. If you are resuming after an interruption, "
-    "continue from where you stopped instead of restarting. Never invent facts "
-    "that are not in the evidence. When session facts are provided, treat them "
-    "as the canonical user context — they reflect what the user has told you "
-    "across the conversation so far."
-)
+from .base import SYSTEM, GenerationRequest
 
 
 class GeminiProvider:

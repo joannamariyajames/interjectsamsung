@@ -34,10 +34,17 @@ app.add_middleware(
 
 @app.get("/api/health")
 async def health() -> dict[str, Any]:
+    # Same precedence as providers.build_provider().
+    if settings.use_gemini:
+        provider, model = "gemini", settings.gemini_model
+    elif settings.use_real_llm:
+        provider, model = "openai-compatible", settings.llm_model
+    else:
+        provider, model = "local-deterministic", "deterministic"
     return {
         "status": "ok",
-        "provider": "openai-compatible" if settings.use_real_llm else "local-deterministic",
-        "model": settings.llm_model if settings.use_real_llm else "deterministic",
+        "provider": provider,
+        "model": model,
         "corpus_documents": len(corpus.docs),
         "active_sessions": len(store),
         "speculation": settings.speculation_enabled,
