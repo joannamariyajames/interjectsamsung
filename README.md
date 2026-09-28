@@ -259,6 +259,73 @@ perceived latency 4.8 s - see `results/fdb_v3/interject_groq_smoke-*`.
 
 ---
 
+## Use-case extension: Drive - an in-car voice assistant
+
+> **This is the Theme 05 extension beyond the benchmark's domains.** A hands-free,
+> voice-native driving assistant for anywhere in India: say where you're going,
+> change your mind mid-sentence, add stops, ask how long it'll take, cut in while
+> it talks. It is exactly the guide's example - an in-car assistant that drops a
+> stale route when the destination changes and never double-starts navigation.
+
+**Run it:** `make api` and `make web`, then open <http://localhost:5174/#drive> in
+**Chrome or Edge** (or click **Drive** in the header). Tap the mic and allow the
+microphone once; after that it listens hands-free. It needs no API key and makes
+no Groq or LiveKit calls: voice uses the browser's own speech engines, places and
+routes are offline. The **Try it** buttons replay scripted, disfluent requests
+through the same partial -> final path as the microphone.
+
+What it does, in the guide's terms:
+
+| Capability | How Drive does it |
+|---|---|
+| **Stay responsive** | Every request gets a spoken acknowledgement in under 5 ms server-side ("Checking the route to Jaipur..."), never a premature "done"; questions are answered even while a route is still being planned. |
+| **Work asynchronously** | Route planning runs in the background and **starts from partial speech**, before you finish talking; the next utterance is never blocked behind it. Speech is streamed sentence by sentence as it is produced. |
+| **Recover cleanly** | Destination, origin, stops and preferences are BACKSPACE facts; the route is a work item that depends on them. "Agra - actually no, Jaipur" acts only on Jaipur. A change while a route is still being planned marks it stale and **its late result is discarded**; the route is recomputed with the new arguments; starting guidance goes through BACKSPACE's at-most-once commit, so asking twice never starts navigation twice. |
+| **Barge-in** | Talking over the agent stops its voice at once (its own echo is ignored). The server checkpoints exactly what you heard - the browser reports the spoken character offset - and "go on" resumes from there instead of restarting. |
+
+```mermaid
+flowchart LR
+    M[mic: browser SpeechRecognition<br/>interim + final] -->|partial| U[understanding<br/>disfluency + self-correction]
+    M -->|final| U
+    U -->|partial: speculative plan| P[route planner<br/>offline India gazetteer]
+    U -->|facts: destination, stops, prefs| B{BACKSPACE}
+    B -->|stale -> recompute, late result dropped| P
+    P --> B
+    B -->|at-most-once commit| N[start guidance]
+    U --> R[reply] --> S[speaker: browser speechSynthesis<br/>sentence by sentence]
+    M -. cut-in: stop + heard offset .-> S
+```
+
+- **Understanding** (`server/app/drive/understanding.py`): rule-based and offline -
+  fillers, false starts and "actually/no wait/instead/not X, Y" corrections; origin
+  vs destination; stops added, corrected or dropped; route preferences; saved places
+  ("my office is in Noida", "take me to the office"); ETA/distance/status questions.
+  Single-word town names are only accepted in a place slot, because many are also
+  English words ("Got", "May").
+- **Places and routes** (`server/app/drive/geo.py`): every Indian city and town with
+  1,000+ people, with alternate names (Bombay, Poona, Bangalore, Cochin) and
+  near-miss spellings; road distance and time estimated from coordinates, a "via"
+  town from the corridor, stops placed near a real town on the way.
+- **Runtime** (`server/app/drive/runtime.py`), socket `/ws/drive`, UI `web/src/drive/`.
+- Questions outside driving go to the configured LLM (e.g. Groq) if one is set, and
+  get an honest "I'm your driving assistant" answer otherwise.
+
+**Settings:** `DRIVE_START_CITY` (the car's position, default Delhi - or say
+"I'm in Pune"), `DRIVE_ROUTE_LATENCY_MS` (simulated routing-service latency,
+default 1200), `DRIVE_TOKEN_DELAY_MS` (text streaming pace, default 70).
+
+**Honest limits:** city- and town-level, not street addresses; distances and times
+are estimates from coordinates, not live traffic; stops are "fuel near <town>", not
+named businesses; a routing service's latency is simulated so the asynchronous
+behaviour is visible. Chrome's speech recognition runs in Google's cloud (free, no
+key); headphones avoid the agent hearing itself.
+
+**Tests:** `tests/drive/` (65 tests: gazetteer, understanding, runtime guarantees and
+the `/ws/drive` socket). Place data: [GeoNames](https://www.geonames.org), CC BY 4.0
+(`server/app/drive/data/`).
+
+---
+
 ## Layout
 
 ```
@@ -269,12 +336,16 @@ server/          FastAPI + asyncio agent runtime
   app/harness.py     admission control, budgets, timeouts, redaction
   app/retrieval.py   dependency-free BM25 over the corpus
   app/providers/     deterministic local engine + OpenAI-compatible streaming
+  app/drive/         use-case extension: in-car voice assistant (/ws/drive)
+  app/fdb/           Full-Duplex-Bench v3 agent (LiveKit), replay, run helpers
   corpus/            the provided corpus (travel: fares, hotels, policy, support)
   tests/             19 tests, including the interruption behaviours
 web/             React + Vite + Tailwind v4
   src/components/MindRail.tsx    live stages, latency, harness audit, timeline
   src/components/Transcript.tsx  streaming, interrupted and resumed messages
   src/store/session.ts           socket frames -> UI state
+  src/drive/                     Drive view: browser speech in/out, barge-in, trip card
+scripts/run_fdb_v3.sh  one-command Full-Duplex-Bench v3 run
 ```
 
 ## Tests

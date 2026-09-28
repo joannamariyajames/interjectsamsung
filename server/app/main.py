@@ -11,6 +11,8 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import settings
+from .drive.runtime import DriveRuntime
+from .providers import build_provider
 from .retrieval import corpus
 from .runtime import AgentRuntime
 from .schemas import ErrorFrame, ServerFrame, Stage, StageFrame
@@ -240,3 +242,54 @@ async def websocket_endpoint(socket: WebSocket) -> None:
         await runtime.shutdown()
         # Session-scoped memory: the socket closing is the end of it.
         store.drop(session.session_id)
+
+
+@app.websocket("/ws/drive")
+async def drive_socket(socket: WebSocket) -> None:
+    """The in-car voice assistant (use-case extension): same framing as /ws."""
+    await socket.accept()
+    send_lock = asyncio.Lock()
+    closed = False
+
+    async def emit(frame: ServerFrame) -> None:
+        nonlocal closed
+        if closed:
+            return
+        try:
+            async with send_lock:
+                await socket.send_text(frame.model_dump_json())
+        except (WebSocketDisconnect, RuntimeError):
+            closed = True
+
+    provider = build_provider()  # only consulted for questions outside driving
+    runtime = DriveRuntime(emit, provider=provider)
+    await socket.send_text(json.dumps({"t": "ready", "mode": "drive", "provider": provider.name,
+                                       "origin": runtime.origin.label}))
+    await runtime.start()
+    try:
+        while True:
+            raw = await socket.receive_text()
+            try:
+                event = json.loads(raw)
+            except json.JSONDecodeError:
+                await emit(ErrorFrame(message="Malformed frame ignored."))
+                continue
+            kind = event.get("t")
+            if kind == "interrupt":  # handled first: a barge-in never waits behind a turn
+                heard = event.get("heard_chars")
+                await runtime.interrupt(int(heard) if isinstance(heard, (int, float)) else None)
+            elif kind == "partial":
+                await runtime.on_partial(str(event.get("text", "")))
+            elif kind == "final":
+                await runtime.on_final(str(event.get("text", "")), modality=str(event.get("modality", "voice")))
+            elif kind == "resume":
+                await runtime.on_final("go on", modality="text")
+            elif kind == "ping":
+                await emit(StageFrame(stage=Stage.IDLE, detail="pong"))
+            else:
+                await emit(ErrorFrame(message=f"Unknown frame {kind!r}."))
+    except WebSocketDisconnect:
+        pass
+    finally:
+        closed = True
+        await runtime.shutdown()

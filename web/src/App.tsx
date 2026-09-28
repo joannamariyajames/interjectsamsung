@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Menu, PanelRightClose, PanelRightOpen, Wifi, WifiOff, X } from "lucide-react";
+import { Car, Menu, PanelRightClose, PanelRightOpen, Wifi, WifiOff, X } from "lucide-react";
 import { Badge, Button, Panel } from "~/components/ui/primitives";
 import { Composer } from "~/components/Composer";
 import { MindRail } from "~/components/MindRail";
 import { Sidebar } from "~/components/Sidebar";
 import { Transcript } from "~/components/Transcript";
+import { DriveView } from "~/drive/DriveView";
 import { useSession } from "~/store/session";
 
 function ConnectionBadge() {
@@ -30,6 +31,13 @@ export default function App() {
   const stage = useSession((s) => s.stage);
   const [railOpen, setRailOpen] = useState(() => window.innerWidth >= 1280);
   const [navOpen, setNavOpen] = useState(false);
+  // The in-car assistant (use-case extension) lives at #drive.
+  const [drive, setDrive] = useState(() => window.location.hash === "#drive");
+  useEffect(() => {
+    const onHash = () => setDrive(window.location.hash === "#drive");
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
 
   useEffect(() => {
     connect();
@@ -44,6 +52,10 @@ export default function App() {
     query.addEventListener("change", onChange);
     return () => query.removeEventListener("change", onChange);
   }, []);
+
+  if (drive) {
+    return <DriveView onExit={() => (window.location.hash = "")} />;
+  }
 
   return (
     <div className="flex h-full gap-3 p-3">
@@ -108,6 +120,9 @@ export default function App() {
           </div>
 
           <div className="ml-auto flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => (window.location.hash = "drive")} aria-label="Open drive mode">
+              <Car size={13} /> Drive
+            </Button>
             <ConnectionBadge />
             {stage === "interrupted" ? <Badge tone="accent">interrupted</Badge> : null}
             <Button
