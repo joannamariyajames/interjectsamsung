@@ -52,6 +52,11 @@ def describe() -> dict[str, Any]:
         desc["llm_seed"] = int(os.getenv("FDB_LLM_SEED", "7"))
     if "gpt-oss" in model:
         desc["llm_reasoning_effort"] = os.getenv("FDB_REASONING_EFFORT", "low") if nvidia else "low"
+    desc["spoken_ack"] = (
+        {"text": os.getenv("FDB_ACK_TEXT", "Sure, one moment."), "lead_in_s": float(os.getenv("FDB_ACK_DELAY_S", "1.0"))}
+        if os.getenv("FDB_ACK", "0") == "1"
+        else "off"
+    )
     if tts_choice() == "orpheus":
         desc["tts"] = f"groq {os.getenv('GROQ_TTS_MODEL', 'canopylabs/orpheus-v1-english')}"
     else:

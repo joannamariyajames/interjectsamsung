@@ -73,7 +73,7 @@ from app.fdb.adapter import FDBBackspaceAdapter
 from app.fdb.arguments import normalize_arguments
 
 try:
-    from livekit import agents
+    from livekit import agents, rtc
     from livekit.agents import Agent, AgentServer, AgentSession, APIConnectOptions, llm
     from livekit.agents.voice.agent_session import SessionConnectOptions
     from livekit.plugins import google
@@ -88,6 +88,7 @@ except ImportError as err:
     # Allow module import even when livekit dependencies are not in environment
     logging.warning("LiveKit / FDB dependencies unavailable in runner: %s", err)
     agents = None
+    rtc = None
     AgentServer = None
     AgentSession = None
     Agent = None
@@ -280,11 +281,52 @@ ARGUMENT_RULES = (
 )
 
 
+ACK_FRAME_MS = 20
+
+
 class InterjectVoiceAgent(Agent if Agent is not None else object):  # type: ignore[misc]
-    """The benchmark's VoiceAgent instructions, unchanged, plus ARGUMENT_RULES."""
+    """The benchmark's VoiceAgent instructions, unchanged, plus ARGUMENT_RULES.
+
+    Optional, off by default (``FDB_ACK=1`` turns it on): when the user's turn
+    ends, a short spoken acknowledgement ("Sure, one moment.") is queued ahead of
+    the answer, after a silent lead-in (``FDB_ACK_DELAY_S``), while the model
+    and the tools work in parallel. It never enters the chat context and claims
+    nothing. First measurement (10 recordings) was inconclusive: typical
+    perceived latency fell to ~1 s, but twice it played in a mid-sentence pause
+    and several replies were lost - at a time when the NVIDIA endpoint itself was
+    stalling (a control run without it did worse). It stays off until measured
+    on a healthy endpoint. Without a TTS (the text replay) it is skipped.
+    """
 
     def __init__(self) -> None:
         super().__init__(instructions=VoiceAgent().instructions + ARGUMENT_RULES)
+        self._ack_frames: list[Any] | None = None
+
+    async def on_user_turn_completed(self, turn_ctx: Any, new_message: Any) -> None:
+        text = os.getenv("FDB_ACK_TEXT", "Sure, one moment.").strip()
+        if os.getenv("FDB_ACK", "0") != "1" or not text or not (new_message.text_content or "").strip():
+            return
+        tts = self.session.tts
+        if tts is None:
+            return
+        if self._ack_frames is None:
+            # rendered once per conversation and reused (a local voice takes ~0.1 s)
+            self._ack_frames = [ev.frame async for ev in tts.synthesize(text)]
+        frames = self._ack_frames
+        if not frames:
+            return
+        delay_s = float(os.getenv("FDB_ACK_DELAY_S", "1.0"))
+        rate, channels = frames[0].sample_rate, frames[0].num_channels
+        per_frame = rate * ACK_FRAME_MS // 1000
+        silence = rtc.AudioFrame(bytes(per_frame * channels * 2), rate, channels, per_frame)
+
+        async def audio():
+            for _ in range(int(delay_s * 1000 / ACK_FRAME_MS)):
+                yield silence
+            for frame in frames:
+                yield frame
+
+        self.session.say(text, audio=audio(), add_to_chat_ctx=False, allow_interruptions=True)
 
 
 # The default, free pipeline (LK_PROVIDER=nvidia): Groq Whisper hears, a
