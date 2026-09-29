@@ -79,6 +79,9 @@ _REFINE_MARKERS = (
     "narrow", "only the", "just the", "cheaper", "earlier", "later", "add",
     "without", "under", "more", "less", "prefer",
 )
+_AFFIRMATION = re.compile(
+    r"^(?:yes|yeah|yep|yup|sure|ok|okay|alright|all right|sounds good|that works|go ahead)\b"
+)
 _CONTINUE_MARKERS = ("go on", "keep going", "and then", "carry on", "finish", "continue")
 
 _CONSTRAINT = re.compile(
@@ -146,6 +149,14 @@ class GoalTracker:
                 GoalAction.SWITCH,
                 "Explicit course-correction marker; parking the current goal.",
                 0.9,
+            )
+
+        # "Yes please, tell me the rules" answers the question the agent just
+        # asked about the active goal; it is not a new topic, and shares too
+        # few words with the goal for the overlap rules below to see that.
+        if _AFFIRMATION.match(text) and len(tokenize(utterance)) <= 8:
+            return Classification(
+                GoalAction.CONTINUE, "Short reply agreeing to the agent's offer; same goal.", 0.75
             )
 
         if any(m in text for m in _CONTINUE_MARKERS) and len(text) < 40:

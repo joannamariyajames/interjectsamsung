@@ -259,6 +259,7 @@ def test_the_prompt_keeps_spoken_answers_short_and_honest() -> None:
     lowered = SYSTEM.lower()
     assert "two to four sentences" in lowered and "at most five short items" in lowered
     assert "never attach interject travel's fare names" in lowered
+    assert "the airline's or hotel's own rules apply on the day" in lowered
     assert "no booking system, portal, account or live fares" in lowered
     assert "say briefly that you have no live data" in lowered
     assert "never name a specific business, building, office or project unless" in lowered
