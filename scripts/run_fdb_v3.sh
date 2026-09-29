@@ -145,13 +145,27 @@ if provider.startswith("nvidia"):
     base = os.getenv("FDB_LLM_BASE_URL", "https://integrate.api.nvidia.com/v1").rstrip("/")
     model = os.getenv("FDB_LLM_MODEL", "openai/gpt-oss-20b")
     key = os.environ[os.getenv("FDB_LLM_API_KEY_ENV", "NVIDIA_API_KEY")]
-    # one tiny request: proves the key works and the model is served (a few tokens of a free quota)
-    r = httpx.post(f"{base}/chat/completions", timeout=90, headers={"Authorization": f"Bearer {key}"},
-                   json={"model": model, "messages": [{"role": "user", "content": "Reply with the word ready."}],
-                         "max_tokens": 64, "temperature": 0})
-    if r.status_code != 200:
-        sys.exit(f"LLM {model} at {base} unavailable ({r.status_code}): {r.text[:300]}")
-    print(f"LLM OK: {model} at {base}")
+    # one tiny request: proves the key works and the model is served (a few tokens of a free quota);
+    # a free endpoint can stall for a while, so a timeout is retried before the run is abandoned
+    problem = ""
+    for attempt in range(1, 4):
+        try:
+            r = httpx.post(f"{base}/chat/completions", timeout=60, headers={"Authorization": f"Bearer {key}"},
+                           json={"model": model, "messages": [{"role": "user", "content": "Reply with the word ready."}],
+                                 "max_tokens": 64, "temperature": 0})
+        except httpx.TransportError as exc:
+            problem = f"{type(exc).__name__} (attempt {attempt}/3)"
+            print(f"LLM check: {problem}, retrying")
+            continue
+        if r.status_code == 200:
+            print(f"LLM OK: {model} at {base}")
+            break
+        if r.status_code not in (429, 500, 502, 503, 504):
+            sys.exit(f"LLM {model} at {base} unavailable ({r.status_code}): {r.text[:300]}")
+        problem = f"HTTP {r.status_code} (attempt {attempt}/3)"
+        print(f"LLM check: {problem}, retrying")
+    else:
+        sys.exit(f"LLM {model} at {base} did not answer: {problem}")
 PYCHECK
 fi
 if [[ "$FDB_TTS" == piper ]]; then
