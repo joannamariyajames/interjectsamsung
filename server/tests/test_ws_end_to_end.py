@@ -20,7 +20,10 @@ import sys
 from pathlib import Path
 from typing import Any, AsyncIterator
 
+import app.main as main_module
 import app.runtime as runtime_module
+import pytest
+from app.auth import AuthStore
 from app.main import app
 from app.providers.base import GenerationRequest
 from app.providers.mock import MockProvider
@@ -45,7 +48,17 @@ def _run_turn(ws: Any, text: str) -> list[dict[str, Any]]:
     raise AssertionError(f"turn for {text!r} never returned to idle")
 
 
+@pytest.fixture(autouse=True)
+def _accounts(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The app is behind a login: every test gets a throwaway account store."""
+    monkeypatch.setattr(main_module, "_auth", AuthStore(":memory:"))
+
+
 def _connect(client: TestClient) -> tuple[Any, dict[str, Any]]:
+    if client.get("/api/auth/me").status_code != 200:  # log in, as the browser does
+        account = {"email": "test@example.com", "password": "test-password"}
+        if client.post("/api/auth/signup", json={"name": "Test", **account}).status_code == 409:
+            assert client.post("/api/auth/login", json=account).status_code == 200
     ws = client.websocket_connect("/ws")
     ws.__enter__()
     ready = ws.receive_json()

@@ -178,8 +178,13 @@ async def test_off_topic_questions_use_a_configured_llm() -> None:
     assert car.reply(await car.say("what's the weather like")) == "It looks sunny today."
 
 
-def test_drive_websocket_end_to_end() -> None:
+def test_drive_websocket_end_to_end(monkeypatch: pytest.MonkeyPatch) -> None:
+    import app.main as main_module
+    from app.auth import AuthStore
+
+    monkeypatch.setattr(main_module, "_auth", AuthStore(":memory:"))  # the app is behind a login
     with TestClient(app) as client:
+        client.post("/api/auth/signup", json={"name": "Test", "email": "test@example.com", "password": "test-password"})
         with client.websocket_connect("/ws/drive") as ws:
             ready = ws.receive_json()
             assert ready["t"] == "ready" and ready["mode"] == "drive"
@@ -270,3 +275,13 @@ async def test_a_misheard_fragment_gets_a_short_question_not_the_help_text() -> 
     assert car.reply(await car.say("thank you")) == "You're welcome."
     assert car.reply(await car.say("okay")) == "Okay."
     assert car.reply(await car.say("go on")) == "That was everything. Where to next?"
+
+
+async def test_a_from_city_counts_even_when_the_destination_is_unknown() -> None:
+    car = Car()
+    reply = car.reply(await car.say("I want to go from Bangalore to Zzyzx"))
+    assert reply.startswith("Starting from Bengaluru") and "couldn't find zzyzx" in reply
+    assert car.rt.origin.name == "Bengaluru"
+    assert car.of(car.frames, "drive")[-1]["state"]["origin"]["name"] == "Bengaluru"
+    # the next request routes from there
+    assert "Bengaluru" in car.reply(await car.say("take me to Mysore")) or car.rt.route.origin.name == "Bengaluru"

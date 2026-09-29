@@ -1,3 +1,4 @@
+import { useAuth } from "./auth";
 import type { ClientFrame, ServerFrame } from "./types";
 
 type Handler = (frame: ServerFrame) => void;
@@ -45,8 +46,13 @@ export class AgentSocket {
         /* a malformed frame is not worth tearing the session down for */
       }
     };
-    socket.onclose = () => {
+    socket.onclose = (event) => {
       this.onStatus("closed");
+      if (event.code === 4401) {
+        // no valid session: stop retrying and send the user back to log in
+        this.closedByUs = true;
+        useAuth.getState().expired();
+      }
       if (this.closedByUs) return;
       const delay = Math.min(800 * 2 ** this.retries++, 8000);
       setTimeout(() => this.connect(), delay);

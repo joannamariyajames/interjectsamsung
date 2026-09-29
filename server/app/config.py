@@ -98,6 +98,10 @@ class Settings:
     max_tool_calls_per_turn: int = field(default_factory=lambda: _env_int("MAX_TOOL_CALLS", 4))
     strict_harness: bool = field(default_factory=lambda: _env_bool("STRICT_HARNESS", True))
 
+    # --- accounts -------------------------------------------------------
+    # The assistant and Drive need a logged-in user (app/auth.py); 0 opens them.
+    auth_required: bool = field(default_factory=lambda: _env_bool("AUTH_REQUIRED", True))
+
     # --- session --------------------------------------------------------
     # Session-scoped memory only; no cross-session user profile is ever built.
     session_ttl_s: int = field(default_factory=lambda: _env_int("SESSION_TTL_S", 3600))

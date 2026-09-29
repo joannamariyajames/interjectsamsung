@@ -239,11 +239,18 @@ class DriveRuntime:
 
         new_origin = self._resolve_origin(u)
         target = self._resolve_destination(u)
-        if u.destination is not None and target is None:  # "take me to the office" with no office saved
-            label = u.destination.saved_label or u.destination.text
-            return f"I don't know where your {label} is yet. Say 'my {label} is in' followed by the city."
-        if u.unresolved and target is None:
-            return (f"I couldn't find {u.unresolved} on my India map. Which city or town is it in, or near? "
+        if target is None and (u.destination is not None or u.unresolved):
+            # The destination is unknown, but a "from" city the user gave still counts.
+            moved = ""
+            if new_origin and new_origin.place_id != self.origin.place_id:
+                self.origin = new_origin
+                await self._facts("origin", new_origin.place_id, turn_id)
+                await self._state()
+                moved = f"Starting from {new_origin.label}. "
+            if u.destination is not None:  # "take me to the office" with no office saved
+                label = u.destination.saved_label or u.destination.text
+                return f"{moved}I don't know where your {label} is yet. Say 'my {label} is in' followed by the city."
+            return (f"{moved}I couldn't find {u.unresolved} on my India map. Which city or town is it in, or near? "
                     "I route between cities and towns, not street addresses.")
         for gone in u.abandoned:
             if gone.place and (target is None or gone.place.place_id != target.place_id):

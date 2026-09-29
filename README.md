@@ -55,7 +55,17 @@ make api
 make web
 ```
 
-Open <http://localhost:5174>.
+Open <http://localhost:5174>: the landing page. **Sign up** (top right) with any
+email - Gmail works - and a new password of at least 8 characters; you land in the
+live session. The assistant (`#app`) and Drive (`#drive`) need a login.
+
+**Accounts** (`server/app/auth.py`): stored locally in SQLite
+(`server/data/users.sqlite3`, git-ignored; `AUTH_DB_PATH` moves it), passwords
+hashed with scrypt and a per-user salt, sessions as random tokens in an HttpOnly,
+SameSite cookie whose SHA-256 is all the server keeps. Repeated wrong passwords
+are throttled. The server refuses the app's APIs and both voice sockets without
+a session (`AUTH_REQUIRED=0` opens them for local development); `/api/health`
+stays public. No external service or key is involved.
 
 <details>
 <summary>Without make</summary>
@@ -406,7 +416,7 @@ named businesses; a routing service's latency is simulated so the asynchronous
 behaviour is visible. Chrome's speech recognition runs in Google's cloud (free, no
 key); headphones avoid the agent hearing itself.
 
-**Tests:** `tests/drive/` (65 tests: gazetteer, understanding, runtime guarantees and
+**Tests:** `tests/drive/` (71 tests: gazetteer, understanding, runtime guarantees and
 the `/ws/drive` socket). Place data: [GeoNames](https://www.geonames.org), CC BY 4.0
 (`server/app/drive/data/`).
 
@@ -422,11 +432,13 @@ server/          FastAPI + asyncio agent runtime
   app/harness.py     admission control, budgets, timeouts, redaction
   app/retrieval.py   dependency-free BM25 over the corpus
   app/providers/     deterministic local engine + OpenAI-compatible streaming
+  app/auth.py        accounts: sign-up / log-in, scrypt hashes, session cookies (SQLite)
   app/drive/         use-case extension: in-car voice assistant (/ws/drive)
   app/fdb/           Full-Duplex-Bench v3 agent (LiveKit), replay, run helpers
   corpus/            demo knowledge base of Interject Travel, a fictional agency (sample data)
-  tests/             19 tests, including the interruption behaviours
+  tests/             849 tests: interruption behaviours, accounts, Drive, benchmark agent
 web/             React + Vite + Tailwind v4
+  src/landing/                   landing page and the log-in / sign-up dialog
   src/components/MindRail.tsx    live stages, latency, harness audit, timeline
   src/components/Transcript.tsx  streaming, interrupted and resumed messages
   src/store/session.ts           socket frames -> UI state
