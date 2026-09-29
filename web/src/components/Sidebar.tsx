@@ -7,7 +7,7 @@ import { useScenarios } from "~/lib/scenarios";
 import { useSession } from "~/store/session";
 import { cn } from "~/lib/utils";
 
-function useTheme() {
+export function useTheme() {
   const [dark, setDark] = useState(() => {
     const stored = localStorage.getItem("interject-theme");
     if (stored) return stored === "dark";

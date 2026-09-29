@@ -8,13 +8,16 @@ import {
   LogOut,
   MapPin,
   Mic,
+  Moon,
   RotateCcw,
   Route,
   ShieldCheck,
   Sparkles,
+  Sun,
   Workflow,
 } from "lucide-react";
 import { Logo } from "~/components/Logo";
+import { useTheme } from "~/components/Sidebar";
 import { useAuth } from "~/lib/auth";
 import { cn } from "~/lib/utils";
 
@@ -147,14 +150,14 @@ const STEPS = [
 ];
 
 const STATS = [
-  { value: "69%", label: "strict pass rate", note: "Full-Duplex-Bench v3, text replay of all 100 recordings" },
-  { value: "97%", label: "right tool chosen", note: "same run, official evaluator, exact matching" },
-  { value: "12", label: "benchmark tools", note: "travel, finance, housing and shopping" },
-  { value: "0", label: "API keys for voice", note: "speech runs in your browser" },
+  { value: "97%", label: "right tool chosen", note: "Full-Duplex-Bench v3, official evaluator" },
+  { value: "12", label: "tools, 4 domains", note: "travel, finance, housing and shopping" },
+  { value: "100", label: "real recordings tested", note: "fillers, pauses and self-corrections" },
 ];
 
 export function Landing({ onAuth }: { onAuth: (mode: "login" | "signup") => void }) {
   const { status, user, logout } = useAuth();
+  const { dark, toggle } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const signedIn = status === "user";
   const openApp = (hash = "app") => (signedIn ? go(hash) : onAuth("signup"));
@@ -182,6 +185,14 @@ export function Landing({ onAuth }: { onAuth: (mode: "login" | "signup") => void
             <a href="#drive-section" onClick={(e) => { e.preventDefault(); document.getElementById("drive-section")?.scrollIntoView({ behavior: "smooth" }); }} className="hover:text-foreground">Drive</a>
           </div>
           <div className="ml-auto flex items-center gap-2">
+            <button
+              onClick={toggle}
+              aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+              title={dark ? "Light mode" : "Dark mode"}
+              className="flex h-9 w-9 items-center justify-center rounded-full text-muted hover:bg-subtle hover:text-foreground"
+            >
+              {dark ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
             {signedIn ? (
               <>
                 <span className="hidden text-xs text-muted sm:inline">Hi, {user?.name.split(" ")[0]}</span>
@@ -260,7 +271,7 @@ export function Landing({ onAuth }: { onAuth: (mode: "login" | "signup") => void
 
       {/* -------------------------------------------------------- stats */}
       <section className="mx-auto max-w-6xl px-5">
-        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-[var(--radius-panel)] border border-line/70 bg-line/70 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-[var(--radius-panel)] border border-line/70 bg-line/70 sm:grid-cols-3">
           {STATS.map((s) => (
             <div key={s.label} className="bg-panel/90 p-6">
               <div className="display text-[2.6rem] leading-none text-foreground">{s.value}</div>
