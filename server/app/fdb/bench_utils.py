@@ -20,7 +20,25 @@ from pathlib import Path
 
 from app.fdb import pipeline_config
 
-TELEMETRY_FILES = (Path("/tmp/agent_tool_calls.log"), Path("/tmp/agent_heartbeat.log"))
+TELEMETRY_FILES = (
+    Path("/tmp/agent_tool_calls.log"),
+    Path("/tmp/agent_heartbeat.log"),
+    Path("/tmp/agent_llm_served.log"),  # which model answered each request (FDB_LLM_FALLBACK)
+)
+
+
+def llm_served_counts(log: Path) -> dict[str, int]:
+    """Requests answered per model, from the runner's served-model log."""
+    counts: dict[str, int] = {}
+    if not log.exists():
+        return counts
+    for line in log.read_text(encoding="utf-8").splitlines():
+        try:
+            model = json.loads(line)["model"]
+        except (ValueError, KeyError, TypeError):
+            continue
+        counts[model] = counts.get(model, 0) + 1
+    return counts
 
 
 def subset(data_dir: str, out_dir: str, n: str) -> None:
@@ -91,6 +109,9 @@ def collect(data_dir: str, label: str, run_dir: str) -> None:
         "llm_judge": "gpt-4o (--use-llm)" if os.getenv("FDB_JUDGE") == "1" else "none (exact argument matching)",
         "scenarios_collected": copied,
     }
+    served = llm_served_counts(TELEMETRY_FILES[2])
+    if served:
+        config["llm_requests_served"] = served
     (run / "config.json").write_text(json.dumps(config, indent=2), encoding="utf-8")
     print(f"collected {copied} result file(s) into {run}")
 

@@ -165,7 +165,10 @@ powershell -ExecutionPolicy Bypass -File scripts\start-backend-groq.ps1
 
 Check <http://localhost:8000/api/health>: `"provider": "openai-compatible"`
 means Groq, `"local-deterministic"` means the offline engine. The sidebar shows
-the same badge. By hand instead, in PowerShell from `server/`:
+the same badge. With `NVIDIA_API_KEY` in `.env` too, NVIDIA's free
+`openai/gpt-oss-20b` is the backup (`"fallback_model"` in the health check):
+it answers a turn whenever Groq's free rate limit is reached, so a demo keeps
+talking. By hand instead, in PowerShell from `server/`:
 
 ```powershell
 Remove-Item Env:GEMINI_API_KEY -ErrorAction SilentlyContinue   # Gemini would take precedence
@@ -286,6 +289,7 @@ flowchart LR
 |---|---|---|
 | Speech-to-text | Groq `whisper-large-v3-turbo` (hosted) | fast; the free tier's 8 h of audio a day covers a run |
 | LLM + tools | `openai/gpt-oss-20b` on NVIDIA's free API catalog (`FDB_LLM_MODEL`; OpenAI-compatible) | tool calling; free endpoint with no daily token cap on a run's scale |
+| Backup LLM | Groq `openai/gpt-oss-120b`, only for a request NVIDIA fails or leaves silent for 10 s (`FDB_LLM_FALLBACK=1`, the script's default) | a stalled free endpoint costs one switch, not a failed turn; the bulk of a run stays off Groq's free quota |
 | Text-to-speech | Piper, local on the CPU, `en_US-ljspeech-medium` pinned by SHA-256 | no key, no quota; about 0.1 s to the first audio of a sentence |
 | Turn detection | Silero VAD, local | |
 
@@ -295,7 +299,9 @@ OpenAI-compatible endpoint can stand in via `FDB_LLM_BASE_URL`,
 `FDB_LLM_API_KEY_ENV` and `FDB_LLM_MODEL` (for example
 `nvidia/nemotron-3-super-120b-a12b`). `LK_PROVIDER=groq` keeps the all-Groq
 pipeline (`gpt-oss-120b` + Orpheus TTS), which needs a paid Groq tier for a full
-run.
+run; with the backup on it is Groq first, NVIDIA second - the order the web app
+uses. Which model served each request is logged (`agent_llm_served.log` in the
+run folder), and `config.json` counts them under `llm_requests_served`.
 
 - **Tools:** the benchmark's own 12 tools (`lk_agent_tool.AssistantFnc`), unmodified,
   dispatched through the BACKSPACE adapter. A call whose inputs were superseded by a

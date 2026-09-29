@@ -23,10 +23,41 @@ def provider() -> str:
     return os.getenv("LK_PROVIDER", "gemini3_8").strip().lower()
 
 
-def llm_model() -> str:
-    if provider() in NVIDIA_PROVIDERS:
-        return os.getenv("FDB_LLM_MODEL", NVIDIA_DEFAULT_MODEL)
+def nvidia_model() -> str:
+    return os.getenv("FDB_LLM_MODEL", NVIDIA_DEFAULT_MODEL)
+
+
+def groq_model() -> str:
     return os.getenv("GROQ_LLM_MODEL", GROQ_DEFAULT_MODEL)
+
+
+def llm_model() -> str:
+    """The primary model: NVIDIA's for ``nvidia``, Groq's otherwise."""
+    return nvidia_model() if provider() in NVIDIA_PROVIDERS else groq_model()
+
+
+def fallback_enabled() -> bool:
+    """``FDB_LLM_FALLBACK=1``: the other provider's model answers when the primary fails.
+
+    ``nvidia`` -> NVIDIA first, Groq when NVIDIA stalls or errors (the benchmark:
+    the bulk of the requests stay off the Groq free quota). ``groq`` -> Groq
+    first, NVIDIA once Groq's rate limit is reached (demos). The one-command
+    script turns it on; without it a single model answers, as before.
+    """
+    return provider() in CASCADED_PROVIDERS and os.getenv("FDB_LLM_FALLBACK", "0") == "1"
+
+
+def fallback_attempt_timeout() -> float:
+    """Seconds an attempt may go without a response chunk before the next model is tried."""
+    return float(os.getenv("FDB_LLM_ATTEMPT_TIMEOUT", "10"))
+
+
+def llm_order() -> list[str]:
+    """The models in the order they are tried (one entry without a fallback)."""
+    nvidia = f"nvidia {nvidia_model()}"
+    groq = f"groq {groq_model()}"
+    first, second = (nvidia, groq) if provider() in NVIDIA_PROVIDERS else (groq, nvidia)
+    return [first, second] if fallback_enabled() else [first]
 
 
 def tts_choice() -> str:
@@ -48,6 +79,9 @@ def describe() -> dict[str, Any]:
         "llm_endpoint": os.getenv("FDB_LLM_BASE_URL", NVIDIA_BASE_URL) if nvidia else "https://api.groq.com/openai/v1",
         "llm_temperature": float(os.getenv("FDB_LLM_TEMPERATURE" if nvidia else "GROQ_LLM_TEMPERATURE", "0")),
     }
+    desc["llm_fallback"] = (
+        {"order": llm_order(), "attempt_timeout_s": fallback_attempt_timeout()} if fallback_enabled() else "off"
+    )
     if nvidia:
         desc["llm_seed"] = int(os.getenv("FDB_LLM_SEED", "7"))
     if "gpt-oss" in model:

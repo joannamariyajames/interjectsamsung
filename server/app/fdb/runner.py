@@ -337,7 +337,11 @@ from app.fdb.pipeline_config import (  # noqa: E402
     GROQ_PROVIDERS,
     NVIDIA_BASE_URL,
     NVIDIA_PROVIDERS,
-    llm_model,
+    fallback_attempt_timeout,
+    fallback_enabled,
+    groq_model,
+    llm_order,
+    nvidia_model,
     tts_choice,
 )
 from app.fdb.pipeline_config import provider as _provider  # noqa: E402
@@ -375,9 +379,62 @@ def resolve_session_components() -> dict[str, Any]:
     return {"llm": resolve_realtime_model()}
 
 
+LLM_SERVED_LOG = Path("/tmp/agent_llm_served.log")
+
+
 def build_llm() -> Any:
-    """The tool-calling LLM of the configured cascaded pipeline (also used by the text replay)."""
-    return build_nvidia_llm() if _provider() in NVIDIA_PROVIDERS else build_groq_llm()
+    """The tool-calling LLM of the configured cascaded pipeline (also used by the text replay).
+
+    With ``FDB_LLM_FALLBACK=1`` it is a LiveKit ``FallbackAdapter`` over the
+    primary and the other provider's model (see ``pipeline_config.fallback_enabled``):
+    an attempt that errors, is rate-limited or sends nothing for
+    ``FDB_LLM_ATTEMPT_TIMEOUT`` seconds goes to the next model, and a failed
+    model is re-checked in the background and used again once it recovers.
+    Every answered request is logged with the model that served it.
+    """
+    nvidia_first = _provider() in NVIDIA_PROVIDERS
+    primary = build_nvidia_llm() if nvidia_first else build_groq_llm()
+    if not fallback_enabled():
+        return primary
+    try:
+        backup = build_groq_llm() if nvidia_first else build_nvidia_llm()
+    except RuntimeError as err:  # the backup's key is missing: run on the primary alone
+        logging.warning("LLM fallback unavailable, using the primary only: %s", err)
+        return primary
+    instances = [(primary, llm_order()[0]), (backup, llm_order()[1])]
+    for instance, name in instances:
+        instance.on("metrics_collected", functools.partial(_log_llm_served, name))
+    adapter = llm.FallbackAdapter(
+        [primary, backup],
+        attempt_timeout=fallback_attempt_timeout(),
+        max_retry_per_llm=0,
+        retry_interval=0.5,
+    )
+
+    def _on_availability(ev: Any) -> None:
+        name = next((n for i, n in instances if i is ev.llm), "?")
+        logging.warning("LLM fallback: %s is now %s", name, "available" if ev.available else "unavailable")
+
+    adapter.on("llm_availability_changed", _on_availability)
+    return adapter
+
+
+def _log_llm_served(model: str, metrics: Any) -> None:
+    """One line per answered LLM request: which model served it (FDB_LLM_FALLBACK runs)."""
+    record = {
+        "t": round(getattr(metrics, "timestamp", time.time()), 3),
+        "model": model,
+        "ttft_s": round(getattr(metrics, "ttft", -1.0), 3),
+        "duration_s": round(getattr(metrics, "duration", -1.0), 3),
+        "cancelled": bool(getattr(metrics, "cancelled", False)),
+    }
+    logging.info("LLM served by %s (ttft %.2fs)", model, record["ttft_s"])
+    try:
+        LLM_SERVED_LOG.parent.mkdir(parents=True, exist_ok=True)
+        with LLM_SERVED_LOG.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(record) + "\n")
+    except OSError:
+        pass
 
 
 def build_nvidia_llm() -> Any:
@@ -392,7 +449,7 @@ def build_nvidia_llm() -> Any:
     api_key = os.getenv(key_env)
     if not api_key:
         raise RuntimeError(f"{key_env} is not set - add it to the repository-root .env")
-    model = llm_model()
+    model = nvidia_model()
     options: dict[str, Any] = {}
     if "gpt-oss" in model:
         # Same effort the Groq pipeline was tuned with (the Groq plugin's own
@@ -431,7 +488,7 @@ def build_groq_llm() -> Any:
     return groq_plugin.LLM(
         # gpt-oss-120b: of the Groq models tried, the one that reliably calls the
         # tool instead of describing made-up results or asking for confirmation.
-        model=llm_model(),
+        model=groq_model(),
         temperature=float(os.getenv("GROQ_LLM_TEMPERATURE", "0")),
     )
 

@@ -58,6 +58,16 @@ class Settings:
     llm_reasoning_effort: str = field(
         default_factory=lambda: os.environ.get("LLM_REASONING_EFFORT", "low")
     )
+    # Optional backup model (another OpenAI-compatible endpoint), asked when the
+    # primary fails before sending any text - e.g. Groq's free rate limit is
+    # reached and NVIDIA answers instead. Unset: the primary alone, as before.
+    llm_fallback_api_key: str = field(default_factory=lambda: os.environ.get("LLM_FALLBACK_API_KEY", ""))
+    llm_fallback_base_url: str = field(
+        default_factory=lambda: os.environ.get("LLM_FALLBACK_BASE_URL", "https://integrate.api.nvidia.com/v1")
+    )
+    llm_fallback_model: str = field(
+        default_factory=lambda: os.environ.get("LLM_FALLBACK_MODEL", "openai/gpt-oss-20b")
+    )
 
     # Gemini configuration
     gemini_api_key: Any = _UNSET

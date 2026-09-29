@@ -263,3 +263,68 @@ def test_the_prompt_keeps_spoken_answers_short_and_honest() -> None:
     assert "no booking system, portal, account or live fares" in lowered
     assert "say briefly that you have no live data" in lowered
     assert "never name a specific business, building, office or project unless" in lowered
+
+
+def _with_backup(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        openai_compat,
+        "settings",
+        openai_compat.settings.__class__(
+            llm_api_key="primary-key",
+            llm_base_url="https://primary.example/v1",
+            llm_model="primary-model",
+            llm_fallback_api_key="backup-key",
+            llm_fallback_base_url="https://backup.example/v1",
+            llm_fallback_model="backup-model",
+        ),
+    )
+
+
+async def test_a_rate_limited_primary_hands_the_turn_to_the_backup_at_once(endpoint, sleeps, monkeypatch) -> None:
+    fake = endpoint(_error(429, retry_after="2"), _ok("Backup ", "answer."))
+    _with_backup(monkeypatch)
+    received: list[str] = []
+
+    await _collect(received)
+
+    assert received == ["Backup ", "answer."]
+    primary, backup = fake.requests
+    assert primary.url.host == "primary.example" and primary.headers["authorization"] == "Bearer primary-key"
+    assert backup.url.host == "backup.example" and backup.headers["authorization"] == "Bearer backup-key"
+    assert json.loads(backup.content)["model"] == "backup-model"
+    assert sleeps == []  # no waiting out the primary's Retry-After
+
+
+async def test_a_healthy_primary_never_touches_the_backup(endpoint, sleeps, monkeypatch) -> None:
+    fake = endpoint(_ok("Primary."))
+    _with_backup(monkeypatch)
+    received: list[str] = []
+
+    await _collect(received)
+
+    assert received == ["Primary."] and [r.url.host for r in fake.requests] == ["primary.example"]
+
+
+async def test_a_primary_that_fails_after_speaking_is_not_repeated_by_the_backup(endpoint, sleeps, monkeypatch) -> None:
+    broken = httpx.Response(
+        200,
+        content=_sse("Half an ", done=False) + b'data: {"error": {"message": "overloaded"}}\n\n',
+        headers={"content-type": "text/event-stream"},
+    )
+    fake = endpoint(broken, _ok("never used"))
+    _with_backup(monkeypatch)
+    received: list[str] = []
+
+    with pytest.raises(RuntimeError, match="overloaded"):
+        await _collect(received)
+
+    assert received == ["Half an "] and len(fake.requests) == 1
+
+
+async def test_without_a_backup_key_the_primary_retries_as_before(endpoint, sleeps) -> None:
+    fake = endpoint(_error(429, retry_after="1"), _ok("ok"))
+    received: list[str] = []
+
+    await _collect(received)
+
+    assert received == ["ok"] and len(fake.requests) == 2 and sleeps == [1.0]

@@ -137,10 +137,12 @@ async def health() -> dict[str, Any]:
         provider, model = "openai-compatible", settings.llm_model
     else:
         provider, model = "local-deterministic", "deterministic"
+    backup = settings.llm_fallback_model if provider == "openai-compatible" and settings.llm_fallback_api_key else None
     return {
         "status": "ok",
         "provider": provider,
         "model": model,
+        "fallback_model": backup,
         "corpus_documents": len(corpus.docs),
         "active_sessions": len(store),
         "speculation": settings.speculation_enabled,

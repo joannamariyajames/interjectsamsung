@@ -15,7 +15,9 @@
 # Declared agent: LK_PROVIDER=nvidia (default) - a LiveKit cascaded voice agent:
 #   Silero VAD -> Groq whisper-large-v3-turbo -> NVIDIA-hosted $FDB_LLM_MODEL
 #   (default openai/gpt-oss-20b, tools) -> local Piper voice (en_US-ljspeech-medium),
-#   tools gated by the BACKSPACE adapter. LK_PROVIDER=groq keeps the all-Groq
+#   tools gated by the BACKSPACE adapter. Backup LLM (FDB_LLM_FALLBACK=1, default):
+#   Groq openai/gpt-oss-120b answers only a request NVIDIA fails or leaves silent for
+#   FDB_LLM_ATTEMPT_TIMEOUT (10) s; the run log records which model served each one. LK_PROVIDER=groq keeps the all-Groq
 #   pipeline (gpt-oss-120b + Orpheus), which needs a paid Groq tier for 100 recordings.
 # Results land in results/fdb_v3/<label>-<timestamp>/.
 set -euo pipefail
@@ -44,6 +46,7 @@ if [[ -f "$ROOT/.env" ]]; then
   done < "$ROOT/.env"
 fi
 export LK_PROVIDER="${LK_PROVIDER:-nvidia}"
+export FDB_LLM_FALLBACK="${FDB_LLM_FALLBACK:-1}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -141,6 +144,14 @@ if tts == "orpheus":
                  "Orpheus needs its terms accepted once by the Groq org admin: "
                  "https://console.groq.com/playground?model=canopylabs%2Forpheus-v1-english")
 print("Groq OK:", ", ".join(need))
+fallback = os.getenv("FDB_LLM_FALLBACK", "0") == "1"
+if fallback and provider.startswith("nvidia"):
+    backup = os.getenv("GROQ_LLM_MODEL", "openai/gpt-oss-120b")
+    # the backup is optional: warn, never stop the run
+    print(f"backup LLM: groq {backup}" if backup in groq_models
+          else f"WARNING: backup LLM groq {backup} not available to this key - NVIDIA only")
+if fallback and provider.startswith("groq") and not os.getenv(os.getenv("FDB_LLM_API_KEY_ENV", "NVIDIA_API_KEY")):
+    print("WARNING: no NVIDIA_API_KEY - no backup LLM, Groq only")
 if provider.startswith("nvidia"):
     base = os.getenv("FDB_LLM_BASE_URL", "https://integrate.api.nvidia.com/v1").rstrip("/")
     model = os.getenv("FDB_LLM_MODEL", "openai/gpt-oss-20b")
