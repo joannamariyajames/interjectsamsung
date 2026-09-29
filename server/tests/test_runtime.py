@@ -269,3 +269,27 @@ async def test_a_topic_free_prefix_never_wins_the_speculation():
     assert docs, "the agent found nothing despite the corpus covering refunds"
     assert any(d.startswith("policy") for d in docs), f"wrong passages: {docs}"
     assert "don't have anything in the corpus" not in collector.text()
+
+
+async def test_hold_on_said_over_the_agent_pauses_and_go_on_resumes():
+    runtime, collector, session = make()
+    await runtime.on_final("What are the baggage limits on each cabin?")
+    await wait_for_tokens(collector, 8)
+    await runtime.on_final("hold on")  # the barge-in itself, not a question
+    assert not runtime.busy
+    assert "interrupted" in collector.stages()
+    assert not [m for m in collector.of("message") if m["role"] == "user" and m["content"] == "hold on"]
+    assert session.checkpoint is not None  # the unfinished answer is kept
+    tokens = len(collector.of("token"))
+    await asyncio.sleep(0.15)
+    assert len(collector.of("token")) == tokens  # and it stays quiet
+
+    await runtime.on_final("go on")
+    await runtime._task
+    assert session.resumes == 1
+
+
+async def test_stop_while_idle_starts_no_turn():
+    runtime, collector, _ = make()
+    await runtime.on_final("stop")
+    assert runtime._task is None and not collector.of("message")

@@ -22,6 +22,15 @@ const METRIC_CAP = 60;
 let socket: AgentSocket | null = null;
 let eventSeq = 0;
 let scenarioCancelled = false;
+const frameListeners = new Set<(frame: ServerFrame) => void>();
+
+/** Observe every server frame (the voice layer speaks replies from these). */
+export function subscribeFrames(listener: (frame: ServerFrame) => void) {
+  frameListeners.add(listener);
+  return () => {
+    frameListeners.delete(listener);
+  };
+}
 
 const sleep = (msValue: number) => new Promise((resolve) => setTimeout(resolve, msValue));
 
@@ -100,7 +109,7 @@ export interface SessionState {
   stopScenario: () => void;
   setDraft: (value: string) => void;
   setModality: (value: Modality) => void;
-  submit: (text?: string) => void;
+  submit: (text?: string, modality?: Modality) => void;
   interrupt: (reason?: "barge_in" | "stop") => void;
   resume: () => void;
   reset: () => void;
@@ -150,7 +159,10 @@ export const useSession = create<SessionState>((set, get) => ({
   connect: () => {
     if (socket) return;
     socket = new AgentSocket(
-      (frame) => applyFrame(set, get, frame),
+      (frame) => {
+        applyFrame(set, get, frame);
+        frameListeners.forEach((listener) => listener(frame));
+      },
       (status) => set({ status }),
     );
     socket.connect();
@@ -224,10 +236,10 @@ export const useSession = create<SessionState>((set, get) => ({
 
   setModality: (value) => set({ modality: value }),
 
-  submit: (text) => {
+  submit: (text, modality) => {
     const body = (text ?? get().draft).trim();
     if (!body) return;
-    socket?.send({ t: "final", text: body, seq: 0, modality: get().modality });
+    socket?.send({ t: "final", text: body, seq: 0, modality: modality ?? get().modality });
     set({ draft: "", tokensThisTurn: 0, filler: null, nudge: null });
   },
 

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { DriveSocket } from "./socket";
-import { isEcho, Listener, Speaker, voiceInputSupported, voiceOutputSupported } from "./speech";
+import { isEcho, Listener, Speaker, voiceInputSupported, voiceOutputSupported } from "~/lib/speech";
 import type { DriveFrame, DriveState } from "./types";
 
 export interface DriveMessage {

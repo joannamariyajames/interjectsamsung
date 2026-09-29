@@ -77,6 +77,7 @@ from .headsup import HeadsUpEvent, detect_contradiction
 from .headsup_travel import register_travel_rules
 from .session import Session, Turn
 from .speculation import SpeculationManager
+from .speech_control import is_hold
 from .work import (
     ReconciliationResult,
     extract_work_items_from_evidence,
@@ -289,6 +290,14 @@ class AgentRuntime:
 
     async def on_final(self, text: str, modality: str = "text", attachment: str | None = None) -> None:
         if not text.strip():
+            return
+        if is_hold(text):
+            # "Hold on" / "stop" is the barge-in, not a question to answer: stop,
+            # keep the checkpoint, and wait for "go on" or a new request.
+            if self.busy:
+                await self.interrupt("barge_in")
+            waiting = "Paused. Say 'go on' to continue." if self.session.checkpoint is not None else "Waiting for you."
+            await self.emit(StageFrame(stage=Stage.IDLE, detail=waiting))
             return
         if self.busy:
             # Speaking over the agent is itself the interrupt.

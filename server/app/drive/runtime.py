@@ -50,6 +50,7 @@ from ..schemas import (
     ToolFrame,
     now_ms,
 )
+from ..speech_control import is_hold
 from .geo import Place, Route, describe_duration, gazetteer, km_between, plan_route
 from .understanding import Understanding, understand
 
@@ -150,6 +151,8 @@ class DriveRuntime:
         text = text.strip()
         if not text:
             return
+        if is_hold(text) and self._streaming is not None and not self._streaming.done():
+            await self.interrupt()  # "stop" said over the agent is the barge-in itself
         await self._cancel_turn()
         self._turn += 1
         turn_id = f"drive-{self._turn}-{uuid.uuid4().hex[:4]}"
@@ -195,8 +198,20 @@ class DriveRuntime:
         started = time.perf_counter()
         try:
             u = understand(text)
+            if u.hold:
+                # The barge-in already stopped the speech; keep the unheard rest for "go on".
+                if self._checkpoint:
+                    await self.emit(StageFrame(stage=Stage.INTERRUPTED, turn_id=turn_id,
+                                               detail="Waiting. Say 'go on' to hear the rest."))
+                else:
+                    await self.emit(StageFrame(stage=Stage.IDLE, turn_id=turn_id, detail="Listening."))
+                return
             if u.resume and self._checkpoint:
                 await self._resume(turn_id)
+                return
+            if u.resume and not u.is_navigation:
+                await self._speak(turn_id, "That was everything. Where to next?")
+                await self.emit(StageFrame(stage=Stage.IDLE, turn_id=turn_id, detail="Listening."))
                 return
             self._checkpoint = None  # a new request replaces an unfinished answer
             reply = await self._handle(u, turn_id, started)
@@ -481,6 +496,11 @@ class DriveRuntime:
         """Anything that is not about the drive: the configured LLM, else an honest offline reply."""
         if u.is_question and self.route is None:
             return "We don't have a destination yet. Where would you like to go?"
+        if re.fullmatch(r"(ok|okay|thanks|thank you|thank you so much|cool|great|nice|alright|all right|fine|got it|perfect)", u.text):
+            return "You're welcome." if u.text.startswith("thank") else "Okay."
+        if len(u.text.split()) <= 2:
+            # a fragment the recogniser caught ("going"): ask, don't lecture
+            return "Sorry, I didn't catch that. Where would you like to go?"
         provider = self.provider
         if provider is not None and getattr(provider, "name", "") != "local-deterministic":
             from ..providers.base import GenerationRequest

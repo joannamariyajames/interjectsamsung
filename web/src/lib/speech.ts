@@ -1,7 +1,7 @@
 /**
- * Real voice for the in-car assistant, with the browser's own speech engines
- * (no API key, no quota): SpeechRecognition for the driver, speechSynthesis for
- * the agent. Chrome and Edge support both.
+ * Real voice for the assistant and the in-car agent, with the browser's own
+ * speech engines (no API key, no quota): SpeechRecognition for the user,
+ * speechSynthesis for the agent. Chrome and Edge support both.
  */
 
 type Recognition = {
@@ -46,6 +46,8 @@ export class Speaker {
   /** The last sentence spoken to the end - its echo can still reach the microphone. */
   lastText = "";
   onSpeaking: (speaking: boolean) => void = () => {};
+  /** What is actually read out for a sentence (e.g. without citation markers). */
+  toSpeech: (text: string) => string = (text) => text;
 
   get speaking() {
     return this.current !== null;
@@ -93,13 +95,17 @@ export class Speaker {
     const current = { ...item, boundary: 0 };
     this.current = current;
     this.onSpeaking(true);
-    const utterance = new SpeechSynthesisUtterance(item.text);
+    const spoken = this.toSpeech(item.text);
+    const utterance = new SpeechSynthesisUtterance(spoken || item.text);
     utterance.lang = "en-IN";
     utterance.rate = 1.05;
+    // Boundaries index the spoken text; map them back onto the original.
+    const scale = spoken ? item.text.length / spoken.length : 1;
     utterance.onboundary = (event) => {
-      if (this.current === current) current.boundary = event.charIndex;
+      if (this.current === current) current.boundary = Math.min(item.text.length, Math.round(event.charIndex * scale));
     };
     const done = () => {
+      clearTimeout(watchdog);
       if (this.current !== current) return; // cancelled: cancel() already reported progress
       this.finished[item.turnId] = item.offset + item.text.length;
       this.lastText = item.text;
@@ -107,8 +113,17 @@ export class Speaker {
     };
     utterance.onend = done;
     utterance.onerror = done;
+    // Chrome can drop an utterance's end event (or never start it), which would
+    // leave the agent "speaking" forever and everything after it unspoken.
+    const watchdog = setTimeout(done, 4000 + (spoken || item.text).length * 120);
+    // ...and it can garbage-collect an utterance mid-speech unless it is referenced.
+    this.utterance = utterance;
+    if (window.speechSynthesis.paused) window.speechSynthesis.resume();
     window.speechSynthesis.speak(utterance);
   }
+
+  /** Held only so the browser cannot garbage-collect it mid-sentence. */
+  utterance: SpeechSynthesisUtterance | null = null;
 }
 
 /* -------------------------------------------------------------- listener */
@@ -238,3 +253,18 @@ export function isEcho(heard: string, speaking: string): boolean {
   const overlap = h.filter((w) => said.has(w)).length / h.length;
   return overlap >= 0.6;
 }
+
+/* ------------------------------------------------------- control phrases */
+
+const normalise = (text: string) =>
+  text.toLowerCase().replace(/’/g, "'").replace(/[^a-z' ]+/g, " ").replace(/\s+/g, " ").trim();
+
+const HOLD =
+  /^(?:ok(?:ay)? |no |please |hey )?(?:hold on|hang on|hold it|wait|wait up|stop|stop talking|stop it|stop there|pause|quiet|be quiet|silence|sh+|shush|shut up|enough|that'?s enough|one (?:sec|second|moment|minute)|just a (?:sec|second|moment|minute)|give me a (?:sec|second|moment|minute))(?: (?:a )?(?:sec|second|moment|minute|bit))?(?: please)?$/;
+const RESUME =
+  /^(?:ok(?:ay)? |yes |yeah |sure |please )?(?:go on|continue|carry on|keep going|go ahead|you were saying|finish that|and then|resume)\b/;
+
+/** "Hold on", "stop": pause the agent - never a request to answer. Mirrors server/app/speech_control.py. */
+export const isHold = (text: string) => HOLD.test(normalise(text));
+/** "Go on", "continue": carry on from what was actually heard. */
+export const isResume = (text: string) => RESUME.test(normalise(text));

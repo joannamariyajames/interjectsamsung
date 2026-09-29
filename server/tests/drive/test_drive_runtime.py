@@ -235,3 +235,38 @@ async def test_a_question_that_supersedes_a_planning_turn_still_gets_guidance_st
     assert car.reply(frames).startswith("About") and "Mumbai" in car.reply(frames)
     assert [f["args"]["to"] for f in car.of(frames, "tool", name="start_navigation")] == ["Mumbai, Maharashtra"]
     assert car.rt.navigation["destination"] == "Mumbai, Maharashtra"
+
+
+@pytest.mark.parametrize("hold", ["hold on", "stop", "wait a second"])
+async def test_hold_on_pauses_without_a_reply_and_go_on_resumes(hold: str) -> None:
+    car = Car(token_delay_ms=20)
+    await car.rt.on_final("hello")
+    await asyncio.sleep(0.12)
+    await car.rt.interrupt()  # the browser stopped speaking on the partial "hold on"
+    interrupted = car.of(car.frames, "message", role="agent", status="interrupted")[0]["content"]
+    frames = await car.say(hold)
+    assert not car.of(frames, "message", role="agent")  # stays quiet: no repeated answer
+    assert car.of(frames, "stage", stage="interrupted")
+    car.rt.token_delay = 0
+    frames = await car.say("go on")
+    resumed = car.of(frames, "message", role="agent", status="resumed")[0]["content"]
+    assert resumed and not resumed.startswith(interrupted.strip())
+
+
+async def test_a_typed_stop_while_speaking_interrupts_and_keeps_the_rest() -> None:
+    car = Car(token_delay_ms=20)
+    await car.rt.on_final("hello")
+    await asyncio.sleep(0.12)
+    frames = await car.say("stop")
+    assert car.of(frames, "checkpoint") and not car.of(frames, "message", role="agent", status="complete")
+    car.rt.token_delay = 0
+    assert car.of(await car.say("go on"), "message", role="agent", status="resumed")
+
+
+async def test_a_misheard_fragment_gets_a_short_question_not_the_help_text() -> None:
+    car = Car()
+    reply = car.reply(await car.say("going"))
+    assert reply == "Sorry, I didn't catch that. Where would you like to go?"
+    assert car.reply(await car.say("thank you")) == "You're welcome."
+    assert car.reply(await car.say("okay")) == "Okay."
+    assert car.reply(await car.say("go on")) == "That was everything. Where to next?"

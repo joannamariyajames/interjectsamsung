@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowUp, AudioLines, Hand, ImageIcon, Keyboard, Mic, Square } from "lucide-react";
+import { ArrowUp, AudioLines, Hand, ImageIcon, Keyboard, Mic, MicOff, Square, Volume2, VolumeX } from "lucide-react";
 import { Button } from "~/components/ui/primitives";
 import { useVoiceReplay } from "~/lib/voice";
+import { useVoice } from "~/lib/voiceChat";
 import { useSession } from "~/store/session";
 import { cn } from "~/lib/utils";
 import type { Modality } from "~/lib/types";
@@ -31,9 +32,13 @@ function LiveWave() {
 export function Composer() {
   const { draft, setDraft, submit, interrupt, modality, setModality, stage, status } = useSession();
   const { transcripts, speaking, speak, stop } = useVoiceReplay();
+  const voice = useVoice();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const agentSpeaking = stage === "responding" || stage === "reasoning" || stage === "retrieving" || stage === "planning";
+  const agentWorking = stage === "responding" || stage === "reasoning" || stage === "retrieving" || stage === "planning";
+  const agentSpeaking = agentWorking || voice.speaking;
+  // Barging in stops the voice at once and, if it is still generating, the answer too.
+  const cutIn = () => (voice.speaking ? voice.bargeIn() : interrupt("barge_in"));
 
   // Auto-grow, capped so the transcript never gets squeezed out.
   useEffect(() => {
@@ -48,7 +53,9 @@ export function Composer() {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
-        interrupt("barge_in");
+        const { speaking, bargeIn } = useVoice.getState();
+        if (speaking) bargeIn();
+        else interrupt("barge_in");
       }
     };
     window.addEventListener("keydown", onKey);
@@ -69,7 +76,7 @@ export function Composer() {
               <Button
                 variant="primary"
                 size="sm"
-                onClick={() => interrupt("barge_in")}
+                onClick={cutIn}
                 className="pulse-accent"
               >
                 <Hand size={13} /> Interrupt
@@ -78,9 +85,9 @@ export function Composer() {
                 <span className="text-live">
                   <LiveWave />
                 </span>
-                Agent is working. Press{" "}
+                {voice.listening ? "Just talk over it - that stops it. Say \"go on\" to hear the rest." : "Agent is working."} Press{" "}
                 <kbd className="rounded border border-line bg-surface px-1 font-mono text-[10px]">Esc</kbd>{" "}
-                or just start typing - both count as barging in.
+                or start typing - both count as barging in.
               </span>
             </motion.div>
           ) : null}
@@ -120,9 +127,23 @@ export function Composer() {
         <div
           className={cn(
             "flex items-end gap-2 rounded-[var(--radius-panel)] border bg-surface/55 p-2 backdrop-blur-sm transition-colors",
-            agentSpeaking ? "border-accent/45" : speaking ? "border-live/60" : "border-line",
+            agentSpeaking ? "border-accent/45" : speaking || voice.listening ? "border-live/60" : "border-line",
           )}
         >
+          <button
+            type="button"
+            onClick={voice.toggleListening}
+            disabled={!voice.supported || status !== "open"}
+            aria-label={voice.listening ? "Stop listening" : "Start listening hands-free"}
+            aria-pressed={voice.listening}
+            title={voice.supported ? "Talk hands-free - cut in any time" : voice.error ?? ""}
+            className={cn(
+              "flex h-9 w-9 shrink-0 items-center justify-center self-end rounded-[var(--radius-pill)] transition-colors disabled:opacity-40",
+              voice.listening ? "pulse-accent bg-live text-background" : "text-muted hover:bg-subtle hover:text-foreground",
+            )}
+          >
+            {voice.listening ? <Mic size={16} /> : <MicOff size={16} />}
+          </button>
           <div className="flex shrink-0 gap-0.5 self-end pb-0.5">
             {MODALITIES.map((option) => {
               const Icon = option.icon;
@@ -152,7 +173,10 @@ export function Composer() {
             value={draft}
             rows={1}
             disabled={status !== "open"}
-            onChange={(event) => setDraft(event.target.value)}
+            onChange={(event) => {
+              if (voice.speaking) voice.bargeIn(); // typing over it counts as cutting in
+              setDraft(event.target.value);
+            }}
             onKeyDown={(event) => {
               if (event.key === "Enter" && !event.shiftKey) {
                 event.preventDefault();
@@ -160,12 +184,25 @@ export function Composer() {
               }
             }}
             placeholder={
-              status === "open"
-                ? "Say something, or cut in mid-answer"
-                : "Reconnecting to the agent..."
+              status !== "open"
+                ? "Reconnecting to the agent..."
+                : voice.listening
+                  ? "Listening - just talk"
+                  : "Tap the mic to talk, or type - cut in mid-answer"
             }
             className="max-h-42 min-h-9 min-w-0 flex-1 resize-none bg-transparent py-2 text-sm leading-relaxed text-foreground outline-none placeholder:text-muted disabled:opacity-50"
           />
+
+          <button
+            type="button"
+            onClick={() => voice.setVoiceOut(!voice.voiceOut)}
+            aria-label={voice.voiceOut ? "Mute spoken replies" : "Read replies aloud"}
+            aria-pressed={voice.voiceOut}
+            title={voice.voiceOut ? "Replies are read aloud while the mic is on" : "Spoken replies are muted"}
+            className="flex h-9 w-9 shrink-0 items-center justify-center self-end rounded-[var(--radius-pill)] text-muted transition-colors hover:bg-subtle hover:text-foreground"
+          >
+            {voice.voiceOut ? <Volume2 size={15} /> : <VolumeX size={15} />}
+          </button>
 
           <Button
             variant="primary"
@@ -179,8 +216,14 @@ export function Composer() {
           </Button>
         </div>
 
-        <p className="px-1 text-[11px] text-muted">
-          Retrieval starts on the partial text as you type, before you press enter.
+        <p className={cn("px-1 text-[11px]", voice.error ? "text-warn" : "text-muted")}>
+          {voice.error
+            ? voice.error
+            : voice.listening
+              ? voice.interim
+                ? `Hearing: "${voice.interim}"`
+                : "Listening. Talk over the answer to cut in; \"hold on\" pauses, \"go on\" continues."
+              : "Retrieval starts on the partial text as you speak or type, before you finish."}
         </p>
       </div>
     </div>

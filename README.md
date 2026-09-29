@@ -75,6 +75,12 @@ cd web && npm install && npm run dev
 Press one of the **Speak** buttons under the composer to hear a transcript
 replayed at talking speed - then cut in while it is still "speaking".
 
+Or tap the **mic** in the composer (Chrome or Edge) and just talk: partial
+speech starts retrieval mid-sentence, replies are read aloud as they stream,
+talking over the agent stops it at once, "hold on" pauses and "go on" carries
+on from what you actually heard. It uses the browser's own speech engines, so
+it costs no API quota.
+
 1. Ask **"What are the baggage limits on each cabin?"**
 2. While it is answering, press **Esc** - or just start typing. Both count as
    barging in. Watch *time to yield* in the right rail.
@@ -94,7 +100,16 @@ only where it is relevant. Answers are streamed at the **Speaking pace** set in
 the sidebar whatever the model's own speed, so there is always time to cut in.
 
 Groq (free tier, fast; any OpenAI-compatible endpoint works the same way).
-In PowerShell, from `server/`, with `GROQ_API_KEY=gsk_...` in the root `.env`:
+With `GROQ_API_KEY=gsk_...` in the root `.env`, one command from the repo root
+(Windows) starts the backend on Groq; the key is never printed:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\start-backend-groq.ps1
+```
+
+Check <http://localhost:8000/api/health>: `"provider": "openai-compatible"`
+means Groq, `"local-deterministic"` means the offline engine. The sidebar shows
+the same badge. By hand instead, in PowerShell from `server/`:
 
 ```powershell
 Remove-Item Env:GEMINI_API_KEY -ErrorAction SilentlyContinue   # Gemini would take precedence

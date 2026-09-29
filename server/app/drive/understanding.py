@@ -19,6 +19,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 
+from ..speech_control import is_hold
 from .geo import Place, gazetteer, normalise
 
 FILLERS = {"um", "umm", "uh", "uhh", "uhm", "er", "erm", "hmm", "hm", "mm", "ah", "eh", "oh", "like"}
@@ -103,6 +104,7 @@ class Understanding:
     resume: bool = False
     repeat: bool = False
     greeting: bool = False
+    hold: bool = False  # "hold on", "stop": go quiet and wait, not a request
     corrected: bool = False
 
     @property
@@ -308,5 +310,6 @@ def understand(text: str) -> Understanding:
     u.status = bool(re.search(r"\bwhere (are we|am i) (going|headed|heading)\b|\bwhat'?s the (plan|route)\b|\b(current|my) route\b", joined))
     u.resume = bool(re.search(r"^(ok |okay |yes |yeah )?(go on|continue|carry on|keep going|go ahead|you were saying|finish that|and then)\b", joined))
     u.repeat = bool(re.search(r"\b(repeat that|repeat it|say (that|it) again|come again|what did you say|pardon)\b|^repeat$", joined))
+    u.hold = is_hold(text) and not u.is_navigation
     u.greeting = bool(re.search(r"^(hi|hello|hey|namaste|good (morning|evening|afternoon))\b|\b(help|what can you do)\b", joined))
     return u
