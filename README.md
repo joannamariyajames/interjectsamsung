@@ -5,7 +5,7 @@
 Built for **Theme 05 - Interruptible Real-Time Agents**, Samsung PRISM Y2026 GenAI
 Hackathon (3rd Edition).
 
-[![CI](https://github.com/joannamariyajames/interject/actions/workflows/ci.yml/badge.svg)](https://github.com/joannamariyajames/interject/actions/workflows/ci.yml)
+[![CI](https://github.com/joannamariyajames/interjectsamsung/actions/workflows/ci.yml/badge.svg)](https://github.com/joannamariyajames/interjectsamsung/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11+-3776ab.svg)
 ![Node 20+](https://img.shields.io/badge/node-20+-5fa04e.svg)
@@ -15,6 +15,52 @@ goes silent while it reasons, or throws the whole turn away and starts again.
 Interject does neither. It starts retrieving before you stop typing, it stops
 mid-word the instant you cut in, and it keeps what it had already worked out so
 the next thing you say continues the answer instead of restarting it.
+
+## For judges: quick start
+
+**Nothing to pay for.** Every key below is from a free account and takes about a
+minute to create. Never commit keys: put them in a file named `.env` in the
+repository root (copy `.env.example`); it is git-ignored.
+
+| Key | Used for | Where to get it (free) |
+|---|---|---|
+| `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` | benchmark agent (LiveKit room) | [cloud.livekit.io](https://cloud.livekit.io) → your project → Settings → Keys |
+| `GROQ_API_KEY` | benchmark speech-to-text; general answers in the web app | [console.groq.com](https://console.groq.com) → API Keys |
+| `NVIDIA_API_KEY` | benchmark LLM (`openai/gpt-oss-20b`) | [build.nvidia.com](https://build.nvidia.com) → any model → Generate API Key |
+
+**1. Benchmark (FDB-v3), one command.** Linux/macOS terminal, or Git Bash on Windows:
+
+```bash
+./scripts/run_fdb_v3.sh              # all 100 recordings
+./scripts/run_fdb_v3.sh --subset 3   # quick 3-recording check first
+```
+
+It installs pinned dependencies, downloads the benchmark data, checks every key,
+runs the official inference and evaluation, and writes everything to
+`results/fdb_v3/<run>/`. Add `--judge` to score with the official gpt-4o judge
+(needs `OPENAI_API_KEY`). Details: [Benchmark](#benchmark-full-duplex-bench-v3).
+
+**2. Web app, including the use-case extension: no keys needed.** Two terminals
+(Python 3.11+, Node 20+):
+
+```bash
+cd server && python -m venv .venv && .venv/bin/pip install -r requirements-dev.txt   # Windows: .venv\Scripts\pip
+.venv/bin/python -m uvicorn app.main:app --port 8000                                  # Windows: .venv\Scripts\python
+```
+
+```bash
+cd web && npm install && npm run dev
+```
+
+Open <http://localhost:5174> in Chrome or Edge, click **Sign up**, then:
+
+- **Drive** (the use-case extension) runs fully offline: say *"Take me to, um,
+  Agra... actually no, Jaipur"*, cut in while it answers, add a fuel stop.
+- The main assistant's interruption behaviour (barge-in, "hold on" / "go on",
+  resuming from what you heard) works offline too.
+- For open-ended general questions on the main page, start the backend with a
+  Groq key instead: see [Using a real model](#using-a-real-model).
+
 
 ---
 
