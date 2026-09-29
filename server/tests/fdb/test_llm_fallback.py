@@ -125,3 +125,9 @@ def test_served_counts_skip_unreadable_lines(tmp_path) -> None:
     log.write_text('{"model": "nvidia a"}\nnot json\n{"model": "nvidia a"}\n{"model": "groq b"}\n', encoding="utf-8")
     assert bench_utils.llm_served_counts(log) == {"nvidia a": 2, "groq b": 1}
     assert bench_utils.llm_served_counts(tmp_path / "missing.log") == {}
+
+
+def test_the_run_config_records_the_turn_wait(keys, monkeypatch) -> None:
+    monkeypatch.setenv("LK_PROVIDER", "nvidia")
+    monkeypatch.delenv("FDB_MIN_ENDPOINTING_DELAY", raising=False)
+    assert pipeline_config.describe()["min_endpointing_delay_s"] == 1.2

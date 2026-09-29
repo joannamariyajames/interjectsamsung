@@ -52,6 +52,11 @@ def fallback_attempt_timeout() -> float:
     return float(os.getenv("FDB_LLM_ATTEMPT_TIMEOUT", "10"))
 
 
+def min_endpointing_delay() -> float:
+    """Seconds of silence before the user's turn counts as finished (LiveKit's default: 0.5)."""
+    return float(os.getenv("FDB_MIN_ENDPOINTING_DELAY", "1.2"))
+
+
 def llm_order() -> list[str]:
     """The models in the order they are tried (one entry without a fallback)."""
     nvidia = f"nvidia {nvidia_model()}"
@@ -79,6 +84,7 @@ def describe() -> dict[str, Any]:
         "llm_endpoint": os.getenv("FDB_LLM_BASE_URL", NVIDIA_BASE_URL) if nvidia else "https://api.groq.com/openai/v1",
         "llm_temperature": float(os.getenv("FDB_LLM_TEMPERATURE" if nvidia else "GROQ_LLM_TEMPERATURE", "0")),
     }
+    desc["min_endpointing_delay_s"] = min_endpointing_delay()
     desc["llm_fallback"] = (
         {"order": llm_order(), "attempt_timeout_s": fallback_attempt_timeout()} if fallback_enabled() else "off"
     )

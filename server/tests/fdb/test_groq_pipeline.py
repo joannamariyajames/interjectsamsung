@@ -120,3 +120,24 @@ def test_groq_pipeline_can_be_built_inside_a_job_thread(monkeypatch: pytest.Monk
     t.join(timeout=60)
     assert "error" not in outcome, outcome.get("error")
     assert outcome["components"] == ["llm", "stt", "tts", "vad"]
+
+
+async def test_the_agent_waits_out_a_mid_request_pause(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("GROQ_API_KEY", "gsk_test_not_a_real_key")
+    monkeypatch.delenv("FDB_MIN_ENDPOINTING_DELAY", raising=False)
+    llm = fdb_runner.build_groq_llm()
+    monkeypatch.setattr(llm, "prewarm", lambda *a, **k: None)
+    ctx = fdb_runner.create_fdb_runner_context("room", components={"llm": llm}, telemetry_path=str(tmp_path / "t.log"))
+    try:
+        # 1.2 s of silence ends a turn, not LiveKit's 0.3 s default for this pipeline
+        assert ctx.session.options.endpointing["min_delay"] == 1.2
+    finally:
+        await ctx.session.aclose()
+        await ctx.runtime.shutdown()
+    monkeypatch.setenv("FDB_MIN_ENDPOINTING_DELAY", "0.8")
+    ctx = fdb_runner.create_fdb_runner_context("room", components={"llm": llm}, telemetry_path=str(tmp_path / "t.log"))
+    try:
+        assert ctx.session.options.endpointing["min_delay"] == 0.8
+    finally:
+        await ctx.session.aclose()
+        await ctx.runtime.shutdown()

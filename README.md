@@ -303,6 +303,11 @@ run; with the backup on it is Groq first, NVIDIA second - the order the web app
 uses. Which model served each request is logged (`agent_llm_served.log` in the
 run folder), and `config.json` counts them under `llm_requests_served`.
 
+A user's turn ends after 1.2 s of silence (`FDB_MIN_ENDPOINTING_DELAY`; LiveKit's
+default for this pipeline is 0.3 s). People pause mid-request ("a new... let me
+think... desk"), and with the shorter wait the agent called a tool on half a
+request and then again on the rest.
+
 - **Tools:** the benchmark's own 12 tools (`lk_agent_tool.AssistantFnc`), unmodified,
   dispatched through the BACKSPACE adapter. A call whose inputs were superseded by a
   correction is blocked *before* it runs, so a state-changing action is never performed
@@ -368,8 +373,20 @@ evaluators, exact argument matching (no LLM judge), 0 errored,
 |---|---|---|---|---|---|---|
 | **69.0%** | 97.0% | 78.1% | 100% | 75.9% | 60.0% | 38.5% |
 
-The scored run is the full audio run through LiveKit; its results land in
-`results/fdb_v3/` once completed.
+**Results - declared configuration (full audio run through LiveKit, all 100
+recordings)** - the one-command script, official evaluators, exact argument matching
+(no LLM judge), [`results/fdb_v3/interject_nvidia_full-20260930-014327`](results/fdb_v3/interject_nvidia_full-20260930-014327):
+
+| Strict pass rate | Turn-taking | Tool selection | Argument accuracy | Avg latency | finance | e-commerce | travel | housing |
+|---|---|---|---|---|---|---|---|---|
+| **56.0%** | 99.0% | 90.1% | 66.7% | 4.45 s | 76.0% | 55.2% | 50.0% | 42.3% |
+
+372 of the 384 LLM requests were answered by NVIDIA, 12 by the Groq backup. Of the 16
+recordings that pass as text but fail as audio, most are calls made during a
+mid-request pause and repeated once the user went on (tool selection counts every
+call), and a few are spelled codes transcribed as words ("F a s t nine nine"). This
+run used LiveKit's 0.3 s turn end; the 1.2 s wait above was added after it and has
+not yet been measured on a full run.
 
 **Results so far (earlier, all-Groq configuration)** - official
 `evaluate_pass_rate.py`, exact argument matching (the official LLM judge is more
@@ -386,7 +403,6 @@ Final configuration over **all 100 recordings** (text replay, exact matching,
 **63.0%** (51/81) on the recordings that ran cleanly (finance 100%, ecommerce 52%,
 housing 38%), **52.0%** on all 100 per the official report, where the 19 that hit
 Groq's free-tier daily token cap count as failures.
-The full audio run through LiveKit is recorded in `results/fdb_v3/` once completed.
 
 **Why the declared pipeline changed:** on a free Groq account a full run cannot
 finish - Orpheus TTS allows 100 requests and 3.6k tokens a day (the agent speaks

@@ -341,6 +341,7 @@ from app.fdb.pipeline_config import (  # noqa: E402
     fallback_enabled,
     groq_model,
     llm_order,
+    min_endpointing_delay,
     nvidia_model,
     tts_choice,
 )
@@ -586,7 +587,17 @@ def create_fdb_runner_context(
                 timeout=float(os.getenv("FDB_LLM_TIMEOUT", "20")),
             )
         )
-        session = AgentSession(**components, tools=tools, max_tool_steps=max_steps, conn_options=conn)
+        # People pause mid-request ("a new... let me think... desk"). LiveKit's
+        # default ends the turn after 0.5 s of silence, so the agent acted on
+        # half a request and then again on the rest; wait a little longer.
+        turn_handling = {"endpointing": {"min_delay": min_endpointing_delay()}}
+        session = AgentSession(
+            **components,
+            tools=tools,
+            max_tool_steps=max_steps,
+            conn_options=conn,
+            turn_handling=turn_handling,
+        )
 
     return FDBRunnerContext(
         room_name=room_name,
