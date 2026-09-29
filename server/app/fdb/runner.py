@@ -70,6 +70,7 @@ except ImportError:
 
 from app.backspace import BackspaceCore
 from app.fdb.adapter import FDBBackspaceAdapter
+from app.fdb.arguments import normalize_arguments
 
 try:
     from livekit import agents
@@ -129,6 +130,19 @@ def _nullable_optionals(sig: inspect.Signature) -> inspect.Signature:
     return sig.replace(parameters=params)
 
 
+def _untyped_backend_params(name: str) -> set[str]:
+    """Parameters the backend API itself declares as ``Any``.
+
+    The voice tool's schema can only say "string" for them (``value: str``),
+    while the API behind it takes any JSON value; a literal "true" or "42"
+    there is passed on as the boolean or number it is.
+    """
+    backend = getattr(registry, "FUNCTIONS", {}).get(name) if registry is not None else None
+    if backend is None:
+        return set()
+    return {p.name for p in inspect.signature(backend).parameters.values() if p.annotation in (Any, "Any")}
+
+
 def wrap_assistant_tools(
     adapter: FDBBackspaceAdapter, fnc_ctx: AssistantFnc, *, nullable_optionals: bool = False
 ) -> list[Any]:
@@ -176,6 +190,17 @@ def wrap_assistant_tools(
                             fact_val = adapter.session.get_fact(param_name)
                             if fact_val is not None:
                                 resolved_kwargs[param_name] = fact_val
+
+                # Rules 2 and 3 (dates as spoken, spelled codes joined), enforced
+                # by parameter kind for every call; a year is only dropped when
+                # the user never said it.
+                if os.getenv("FDB_NORMALIZE_ARGS", "1") != "0":
+                    heard = (
+                        " ".join(t.content for t in adapter.session.turns if t.role == "user")
+                        if adapter.session is not None
+                        else ""
+                    )
+                    resolved_kwargs = normalize_arguments(resolved_kwargs, heard, _untyped_backend_params(name))
 
                 def call_backend(**kw):
                     if registry is not None:

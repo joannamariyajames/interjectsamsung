@@ -251,7 +251,17 @@ run.
   rules for disfluent speech and multi-step tool use (`ARGUMENT_RULES` in
   `runner.py`): act on the final intent after a self-correction, copy values as
   spoken, join spelled-out codes, never invent results or claim an unperformed
-  action, make every call a request needs. No rule names or encodes a benchmark item.
+  action, make every call a request needs. No rule names or encodes a benchmark item;
+  a test checks that none of the rules' made-up examples appears in the benchmark data.
+- **Argument clean-up** (`server/app/fdb/arguments.py`): the two rules about the
+  *form* of a value are also enforced in code for every call, by parameter kind -
+  a code spelled character by character in an identifier parameter is joined
+  ("Q-7-X-2" -> "Q7X2"), a date keeps the spoken form (ordinals dropped, and an
+  ISO date's year removed only if the user never said that year), and where the
+  API itself declares a parameter as `Any` a literal "true"/"42" is passed as the
+  boolean/number. Smaller models follow the prompt's formatting rules unreliably;
+  this makes them deterministic. A test checks that no expected value from the
+  benchmark appears in this code.
 - **Fresh state per scenario:** every LiveKit room gets a new session, BACKSPACE
   graph and runtime; nothing is cached across scenarios.
 - `LK_PROVIDER=gemini3_8` runs the same tools with Gemini Live instead.
