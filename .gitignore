@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 .venv/
 .venv-fdb/
+.voices/
 venv/
 .pytest_cache/
 .ruff_cache/

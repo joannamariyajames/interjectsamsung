@@ -3,7 +3,8 @@
 Feeds each scenario's spoken words - ``metadata.json`` ``dialogue[0]["user"]``,
 the input only, never the expected calls - to the same agent the LiveKit runner
 builds: the benchmark's VoiceAgent instructions, the 12 official tools behind
-the BACKSPACE adapter, and the Groq LLM of the cascaded pipeline. Writes
+the BACKSPACE adapter, and the LLM of the configured cascaded pipeline
+(``LK_PROVIDER``: ``nvidia`` by default, or ``groq``). Writes
 ``result_<name>.json`` in the schema the official evaluators read, so
 ``evaluate_tool_calls.py`` / ``evaluate_pass_rate.py`` score it unchanged.
 
@@ -27,6 +28,7 @@ import uuid
 from pathlib import Path
 from typing import Any
 
+from app.fdb import pipeline_config
 from app.fdb import runner as fdb_runner
 
 
@@ -68,7 +70,7 @@ async def replay_one(scenario_dir: Path, name: str, telemetry_path: Path, timeou
 
     ctx = fdb_runner.create_fdb_runner_context(
         room,
-        components={"llm": fdb_runner.build_groq_llm()},
+        components={"llm": fdb_runner.build_llm()},
         nullable_optionals=True,
         telemetry_path=str(telemetry_path),
     )
@@ -99,7 +101,7 @@ async def replay_one(scenario_dir: Path, name: str, telemetry_path: Path, timeou
         "example_id": example_id,
         "provider": name,
         "mode": "text_replay",
-        "llm_model": os.getenv("GROQ_LLM_MODEL", "openai/gpt-oss-120b"),
+        **{k: v for k, v in pipeline_config.describe().items() if k.startswith("llm_")},
         "room_name": room,
         "actual_tool_calls": calls,
         "transcript": transcript,
@@ -111,9 +113,12 @@ async def replay_one(scenario_dir: Path, name: str, telemetry_path: Path, timeou
 
 
 async def main_async(args: argparse.Namespace) -> int:
-    # Groq only: no hidden Gemini calls from any background component.
+    # The declared cascaded provider only: no hidden Gemini calls from any background component.
     for key in ("GEMINI_API_KEY", "GOOGLE_API_KEY"):
         os.environ.pop(key, None)
+    if os.environ.get("LK_PROVIDER", "").strip().lower() not in fdb_runner.CASCADED_PROVIDERS:
+        os.environ["LK_PROVIDER"] = "nvidia"
+    args.name = args.name or f"interject_{os.environ['LK_PROVIDER']}_replay"
     data_dir = Path(args.data_dir) if args.data_dir else fdb_runner._FDB_V3_DIR / "fdb_v3_data_released"
     examples = set(args.examples.split(",")) if args.examples else None
     # Default outside both repositories: the log is scratch output, not a result.
@@ -141,7 +146,8 @@ async def main_async(args: argparse.Namespace) -> int:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--name", default="interject_groq_replay", help="result_<name>.json and --provider for the evaluators")
+    parser.add_argument("--name", default=None, help="result_<name>.json and --provider for the evaluators "
+                        "(default interject_<provider>_replay)")
     parser.add_argument("--data-dir", default=None, help="fdb_v3_data_released directory")
     parser.add_argument("--examples", default=None, help="comma-separated scenario ids")
     parser.add_argument("--limit", type=int, default=None)

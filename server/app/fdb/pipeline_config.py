@@ -1,0 +1,61 @@
+"""The benchmark pipeline's settings, in one place.
+
+The agent (``runner``), the text replay and the run collector all read the
+configuration through here, so a result file always records the model and voice
+that actually ran - not a default from another pipeline.
+"""
+
+from __future__ import annotations
+
+import os
+from typing import Any
+
+GROQ_PROVIDERS = {"groq", "groq_cascaded", "cascaded_groq"}
+NVIDIA_PROVIDERS = {"nvidia", "nvidia_cascaded", "cascaded_nvidia"}
+CASCADED_PROVIDERS = GROQ_PROVIDERS | NVIDIA_PROVIDERS
+
+NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1"
+NVIDIA_DEFAULT_MODEL = "openai/gpt-oss-20b"
+GROQ_DEFAULT_MODEL = "openai/gpt-oss-120b"
+
+
+def provider() -> str:
+    return os.getenv("LK_PROVIDER", "gemini3_8").strip().lower()
+
+
+def llm_model() -> str:
+    if provider() in NVIDIA_PROVIDERS:
+        return os.getenv("FDB_LLM_MODEL", NVIDIA_DEFAULT_MODEL)
+    return os.getenv("GROQ_LLM_MODEL", GROQ_DEFAULT_MODEL)
+
+
+def tts_choice() -> str:
+    default = "orpheus" if provider() in GROQ_PROVIDERS else "piper"
+    return os.getenv("FDB_TTS", default).strip().lower()
+
+
+def describe() -> dict[str, Any]:
+    """What a run used, for ``config.json`` and per-scenario result files."""
+    p = provider()
+    if p not in CASCADED_PROVIDERS:
+        return {"lk_provider": p}
+    nvidia = p in NVIDIA_PROVIDERS
+    model = llm_model()
+    desc: dict[str, Any] = {
+        "lk_provider": p,
+        "stt": f"groq {os.getenv('GROQ_STT_MODEL', 'whisper-large-v3-turbo')}",
+        "llm_model": model,
+        "llm_endpoint": os.getenv("FDB_LLM_BASE_URL", NVIDIA_BASE_URL) if nvidia else "https://api.groq.com/openai/v1",
+        "llm_temperature": float(os.getenv("FDB_LLM_TEMPERATURE" if nvidia else "GROQ_LLM_TEMPERATURE", "0")),
+    }
+    if nvidia:
+        desc["llm_seed"] = int(os.getenv("FDB_LLM_SEED", "7"))
+    if "gpt-oss" in model:
+        desc["llm_reasoning_effort"] = os.getenv("FDB_REASONING_EFFORT", "low") if nvidia else "low"
+    if tts_choice() == "orpheus":
+        desc["tts"] = f"groq {os.getenv('GROQ_TTS_MODEL', 'canopylabs/orpheus-v1-english')}"
+    else:
+        from app.fdb.local_tts import VOICE_NAME  # noqa: PLC0415 - avoids importing LiveKit for the Groq voice
+
+        desc["tts"] = f"piper {VOICE_NAME} (local)"
+    return desc

@@ -1,10 +1,14 @@
-# Full-Duplex-Bench v3 run: the agent (LK_PROVIDER=groq) plus the official
-# inference/evaluation scripts. Installed by scripts/run_fdb_v3.sh.
+# Full-Duplex-Bench v3 run: the agent (LK_PROVIDER=nvidia by default) plus the
+# official inference/evaluation scripts. Installed by scripts/run_fdb_v3.sh.
 -r requirements.txt
 
-# Cascaded Groq voice pipeline (Whisper STT -> LLM -> Orpheus TTS, Silero VAD)
+# Cascaded voice pipeline: Groq Whisper STT -> OpenAI-compatible LLM (NVIDIA
+# free endpoint; or Groq) -> local Piper TTS (or Groq Orpheus), Silero VAD
 livekit-plugins-groq==1.8.3
+livekit-plugins-openai==1.8.3
 livekit-plugins-silero==1.8.3
+# local, key-free voice (GPL-3.0-or-later; used as an installed dependency)
+piper-tts==1.8.0
 
 # Official FDB-v3 scripts: NeMo ASR (agent speech -> transcript), audio I/O,
 # benchmark data download. ffmpeg must be on PATH as well.

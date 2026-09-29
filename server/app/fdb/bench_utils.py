@@ -18,6 +18,8 @@ import sys
 import time
 from pathlib import Path
 
+from app.fdb import pipeline_config
+
 TELEMETRY_FILES = (Path("/tmp/agent_tool_calls.log"), Path("/tmp/agent_heartbeat.log"))
 
 
@@ -84,11 +86,7 @@ def collect(data_dir: str, label: str, run_dir: str) -> None:
         "full_duplex_bench_commit": _git_rev(data.parents[1]) if len(data.parents) > 1 else "unknown",
         "python": sys.version.split()[0],
         "platform": platform.platform(),
-        "lk_provider": os.getenv("LK_PROVIDER", ""),
-        "groq_stt_model": os.getenv("GROQ_STT_MODEL", "whisper-large-v3-turbo"),
-        "groq_llm_model": os.getenv("GROQ_LLM_MODEL", "openai/gpt-oss-120b"),
-        "groq_llm_temperature": os.getenv("GROQ_LLM_TEMPERATURE", "0"),
-        "groq_tts_model": os.getenv("GROQ_TTS_MODEL", "canopylabs/orpheus-v1-english"),
+        **pipeline_config.describe(),
         "fdb_max_tool_steps": os.getenv("FDB_MAX_TOOL_STEPS", "5"),
         "llm_judge": "gpt-4o (--use-llm)" if os.getenv("FDB_JUDGE") == "1" else "none (exact argument matching)",
         "scenarios_collected": copied,

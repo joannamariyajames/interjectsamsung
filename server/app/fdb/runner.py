@@ -103,9 +103,11 @@ except ImportError as err:
 # "Plugins must be registered on the main thread" and the job never answers.
 try:
     from livekit.plugins import groq as groq_plugin
+    from livekit.plugins import openai as openai_plugin
     from livekit.plugins import silero
-except ImportError:  # the Groq pipeline is optional (requirements-fdb.txt)
+except ImportError:  # the cascaded pipelines are optional (requirements-fdb.txt)
     groq_plugin = None
+    openai_plugin = None
     silero = None
 
 
@@ -237,7 +239,7 @@ ARGUMENT_RULES = (
     "they named without one.\n"
     "3. A code spoken character by character (\"Q-7-X-2\", \"Q 7 X 2\", \"B-4\") is one code: "
     "join it without spaces or dashes (\"Q7X2\", \"B4\").\n"
-    "4. If the user refers to something without its details (\"my place\", \"the office\"), "
+    "4. If the user refers to something without its details (\"my place\", \"my sister's house\"), "
     "pass their words as the value instead of asking a question.\n"
     "5. A request can need several calls. Make every call it needs, in order; when a later "
     "call needs a value an earlier call returned (an ID, an address), use that exact "
@@ -260,35 +262,99 @@ class InterjectVoiceAgent(Agent if Agent is not None else object):  # type: igno
         super().__init__(instructions=VoiceAgent().instructions + ARGUMENT_RULES)
 
 
-GROQ_PROVIDERS = {"groq", "groq_cascaded", "cascaded_groq"}
+# The default, free pipeline (LK_PROVIDER=nvidia): Groq Whisper hears, a
+# tool-calling model on NVIDIA's free API catalog thinks, and a local Piper voice
+# speaks. Every part fits a free account for a full 100-recording run.
+from app.fdb.pipeline_config import (  # noqa: E402
+    CASCADED_PROVIDERS,
+    GROQ_PROVIDERS,
+    NVIDIA_BASE_URL,
+    NVIDIA_PROVIDERS,
+    llm_model,
+    tts_choice,
+)
+from app.fdb.pipeline_config import provider as _provider  # noqa: E402
 
 
 def resolve_session_components() -> dict[str, Any]:
     """AgentSession components for the configured ``LK_PROVIDER``.
 
-    ``groq`` (alias ``groq_cascaded``): a cascaded pipeline on Groq -
-    Whisper STT -> tool-calling LLM -> Orpheus TTS, with Silero VAD. Needs only
-    ``GROQ_API_KEY``. Anything else: a native realtime speech model, see
-    ``resolve_realtime_model``.
+    ``nvidia`` (alias ``nvidia_cascaded``): Groq Whisper STT -> a tool-calling
+    LLM on NVIDIA's OpenAI-compatible API (``FDB_LLM_MODEL``) -> local Piper
+    TTS, with Silero VAD. Needs ``GROQ_API_KEY`` and ``NVIDIA_API_KEY``.
+
+    ``groq`` (alias ``groq_cascaded``): all on Groq - Whisper STT -> LLM ->
+    Orpheus TTS (``FDB_TTS=piper`` swaps in the local voice). Needs only
+    ``GROQ_API_KEY``, but a free account's daily limits cover only part of a run.
+
+    Anything else: a native realtime speech model, see ``resolve_realtime_model``.
     """
-    provider = os.getenv("LK_PROVIDER", "gemini3_8").strip().lower()
-    if provider in GROQ_PROVIDERS:
-        if groq_plugin is None or silero is None:
-            raise RuntimeError("LK_PROVIDER=groq needs livekit-plugins-groq/-silero (server/requirements-fdb.txt)")
-        # The declared provider is Groq alone: drop any Gemini key a .env
-        # supplied, so no background component quietly calls Gemini either.
+    provider = _provider()
+    if provider in CASCADED_PROVIDERS:
+        if groq_plugin is None or openai_plugin is None or silero is None:
+            raise RuntimeError(
+                f"LK_PROVIDER={provider} needs livekit-plugins-groq/-openai/-silero (server/requirements-fdb.txt)"
+            )
+        # The declared providers are the only ones used: drop any Gemini key a
+        # .env supplied, so no background component quietly calls Gemini either.
         for key in ("GEMINI_API_KEY", "GOOGLE_API_KEY"):
             os.environ.pop(key, None)
         return {
             "stt": groq_plugin.STT(model=os.getenv("GROQ_STT_MODEL", "whisper-large-v3-turbo"), language="en"),
-            "llm": build_groq_llm(),
-            "tts": groq_plugin.TTS(
-                model=os.getenv("GROQ_TTS_MODEL", "canopylabs/orpheus-v1-english"),
-                voice=os.getenv("GROQ_TTS_VOICE", "autumn"),
-            ),
+            "llm": build_llm(),
+            "tts": build_tts(),
             "vad": silero.VAD.load(),
         }
     return {"llm": resolve_realtime_model()}
+
+
+def build_llm() -> Any:
+    """The tool-calling LLM of the configured cascaded pipeline (also used by the text replay)."""
+    return build_nvidia_llm() if _provider() in NVIDIA_PROVIDERS else build_groq_llm()
+
+
+def build_nvidia_llm() -> Any:
+    """A tool-calling model behind an OpenAI-compatible API - NVIDIA's by default.
+
+    ``FDB_LLM_BASE_URL`` / ``FDB_LLM_API_KEY_ENV`` point it at any other
+    OpenAI-compatible endpoint (Cerebras, a local vLLM, ...).
+    """
+    if openai_plugin is None:
+        raise RuntimeError("the NVIDIA LLM needs livekit-plugins-openai (server/requirements-fdb.txt)")
+    key_env = os.getenv("FDB_LLM_API_KEY_ENV", "NVIDIA_API_KEY")
+    api_key = os.getenv(key_env)
+    if not api_key:
+        raise RuntimeError(f"{key_env} is not set - add it to the repository-root .env")
+    model = llm_model()
+    options: dict[str, Any] = {}
+    if "gpt-oss" in model:
+        # Same effort the Groq pipeline was tuned with (the Groq plugin's own
+        # default for gpt-oss): a short think keeps the first word prompt.
+        options["reasoning_effort"] = os.getenv("FDB_REASONING_EFFORT", "low")
+    return openai_plugin.LLM(
+        model=model,
+        api_key=api_key,
+        base_url=os.getenv("FDB_LLM_BASE_URL", NVIDIA_BASE_URL),
+        temperature=float(os.getenv("FDB_LLM_TEMPERATURE", "0")),
+        # Pinned so a re-run samples the same way wherever the endpoint honours it.
+        extra_body={"seed": int(os.getenv("FDB_LLM_SEED", "7"))},
+        # Non-OpenAI endpoints get LiveKit's non-strict tool schemas, as the
+        # plugin's own Cerebras/SambaNova/... presets do.
+        _strict_tool_schema=os.getenv("FDB_LLM_STRICT_TOOLS", "0") == "1",
+        **options,
+    )
+
+
+def build_tts() -> Any:
+    """Local Piper by default; ``FDB_TTS=orpheus`` uses Groq's hosted voice."""
+    if tts_choice() == "orpheus":
+        return groq_plugin.TTS(
+            model=os.getenv("GROQ_TTS_MODEL", "canopylabs/orpheus-v1-english"),
+            voice=os.getenv("GROQ_TTS_VOICE", "autumn"),
+        )
+    from app.fdb.local_tts import PiperTTS
+
+    return PiperTTS()
 
 
 def build_groq_llm() -> Any:
@@ -298,7 +364,7 @@ def build_groq_llm() -> Any:
     return groq_plugin.LLM(
         # gpt-oss-120b: of the Groq models tried, the one that reliably calls the
         # tool instead of describing made-up results or asking for confirmation.
-        model=os.getenv("GROQ_LLM_MODEL", "openai/gpt-oss-120b"),
+        model=llm_model(),
         temperature=float(os.getenv("GROQ_LLM_TEMPERATURE", "0")),
     )
 
@@ -307,7 +373,7 @@ def resolve_realtime_model() -> Any:
     """Resolve realtime model provider with support for gemini3_8."""
     if not os.getenv("GOOGLE_API_KEY") and os.getenv("GEMINI_API_KEY"):
         os.environ["GOOGLE_API_KEY"] = os.environ["GEMINI_API_KEY"]
-    provider = os.getenv("LK_PROVIDER", "gemini3_8").strip().lower()
+    provider = _provider()
     if provider in {"gemini3_8", "gemini_3_8", "gemini3.8"}:
         return google.realtime.RealtimeModel(
             model=os.getenv("GEMINI_LIVE_MODEL", "gemini-3.8-live"),
@@ -370,7 +436,7 @@ def create_fdb_runner_context(
     tracker = LatencyTracker() if LatencyTracker is not None else None
     fnc_ctx = AssistantFnc(tracker, room_name) if AssistantFnc is not None else None
     if nullable_optionals is None:
-        nullable_optionals = os.getenv("LK_PROVIDER", "").strip().lower() in GROQ_PROVIDERS
+        nullable_optionals = os.getenv("LK_PROVIDER", "").strip().lower() in CASCADED_PROVIDERS
     tools = (
         wrap_assistant_tools(adapter, fnc_ctx, nullable_optionals=nullable_optionals)
         if fnc_ctx is not None

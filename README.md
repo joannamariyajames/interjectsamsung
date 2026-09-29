@@ -209,22 +209,37 @@ Full write-up: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 ## Benchmark: Full-Duplex-Bench v3
 
 **Declared agent:** a custom LiveKit voice agent (`server/app/fdb/runner.py`,
-`LK_PROVIDER=groq`), a cascaded pipeline on Groq's hosted APIs:
+`LK_PROVIDER=nvidia`), a cascaded pipeline that a free account can run end to end:
 
 ```mermaid
 flowchart LR
     U[caller audio<br/>LiveKit room] --> V[Silero VAD]
     V --> S[STT<br/>Groq whisper-large-v3-turbo]
-    S --> L[LLM + 12 benchmark tools<br/>Groq openai/gpt-oss-120b]
+    S --> L[LLM + 12 benchmark tools<br/>NVIDIA-hosted openai/gpt-oss-20b]
     L -->|tool call| B{BACKSPACE adapter}
     B -->|current: execute + log| M[official mock APIs]
     B -->|stale: blocked, never runs| X[ ]
     M --> L
-    L --> T[TTS<br/>Groq canopylabs/orpheus-v1-english]
+    L --> T[TTS, local CPU<br/>Piper en_US-ljspeech-medium]
     T --> U
     S -. final transcript .-> R[AgentRuntime<br/>fact tracking]
     R -. facts .-> B
 ```
+
+| Stage | Provider | Why |
+|---|---|---|
+| Speech-to-text | Groq `whisper-large-v3-turbo` (hosted) | fast; the free tier's 8 h of audio a day covers a run |
+| LLM + tools | `openai/gpt-oss-20b` on NVIDIA's free API catalog (`FDB_LLM_MODEL`; OpenAI-compatible) | tool calling; free endpoint with no daily token cap on a run's scale |
+| Text-to-speech | Piper, local on the CPU, `en_US-ljspeech-medium` pinned by SHA-256 | no key, no quota; about 0.1 s to the first audio of a sentence |
+| Turn detection | Silero VAD, local | |
+
+The LLM runs at temperature 0 with a pinned seed (`FDB_LLM_SEED`, default 7);
+gpt-oss models use `reasoning_effort=low`, as the Groq pipeline was tuned. Any
+OpenAI-compatible endpoint can stand in via `FDB_LLM_BASE_URL`,
+`FDB_LLM_API_KEY_ENV` and `FDB_LLM_MODEL` (for example
+`nvidia/nemotron-3-super-120b-a12b`). `LK_PROVIDER=groq` keeps the all-Groq
+pipeline (`gpt-oss-120b` + Orpheus TTS), which needs a paid Groq tier for a full
+run.
 
 - **Tools:** the benchmark's own 12 tools (`lk_agent_tool.AssistantFnc`), unmodified,
   dispatched through the BACKSPACE adapter. A call whose inputs were superseded by a
@@ -241,13 +256,15 @@ flowchart LR
   graph and runtime; nothing is cached across scenarios.
 - `LK_PROVIDER=gemini3_8` runs the same tools with Gemini Live instead.
 
-**Keys** (environment variables; never committed):
+**Keys** - all free accounts, no payment needed. Put them in the environment or in
+the repository-root `.env` (git-ignored; the script reads it and never prints values):
 
 | Variable | Needed for | Where to get it |
 |---|---|---|
-| `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` | the agent and the inference script | LiveKit Cloud project -> Settings -> Keys |
-| `GROQ_API_KEY` | STT, LLM and TTS | console.groq.com. Orpheus TTS needs its terms accepted once by the org admin |
-| `OPENAI_API_KEY` (optional) | the official gpt-4o LLM judge (`--use-llm`) | platform.openai.com |
+| `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` | the agent and the inference script | LiveKit Cloud project -> Settings -> Keys (free Build plan) |
+| `GROQ_API_KEY` | speech-to-text | console.groq.com -> API Keys (free) |
+| `NVIDIA_API_KEY` | the LLM | build.nvidia.com -> any model -> Generate API Key (free, `nvapi-...`) |
+| `OPENAI_API_KEY` (optional) | the official gpt-4o LLM judge (`--use-llm`) | platform.openai.com (paid) |
 
 **Run it** (Linux/macOS/Git Bash; Python 3.11, git; ffmpeg is fetched if missing):
 
@@ -258,21 +275,23 @@ flowchart LR
 
 The script clones Full-Duplex-Bench at the pinned commit next to this repo,
 downloads the benchmark data, installs `server/requirements-fdb.txt` (all versions
-pinned) into `server/.venv-fdb`, checks Groq access, starts the agent and waits for
-it to register with LiveKit, runs the **official** inference and evaluation scripts
+pinned) into `server/.venv-fdb`, checks every key (one tiny LLM request), fetches the
+pinned Piper voice into `.voices/`, starts the agent and waits for it to register
+with LiveKit, runs the **official** inference and evaluation scripts
 unmodified, and writes reports, per-scenario results, telemetry, `pip freeze` and the
 exact configuration to `results/fdb_v3/<label>-<timestamp>/`. On a machine without an
 NVIDIA GPU the official ASR model is kept on the CPU (`scripts/fdb_official_inference.py`);
-on a GPU machine the official path runs as is. LLM temperature is 0.
+on a GPU machine the official path runs as is.
 
 **Iterating without LiveKit:** `python -m app.fdb.replay` (from `server/`) feeds each
 scenario's spoken words to the same agent - instructions, tools, BACKSPACE, LLM - with
 STT/TTS skipped, and writes result files the official evaluators score unchanged. It
 reads only the user's utterance from `metadata.json`, never the expected calls.
 
-**Results so far** - official `evaluate_pass_rate.py`, exact argument matching (the
-official LLM judge is more lenient on formatting such as dates), text replay on a
-24-scenario sample (6 per domain):
+**Results so far (earlier, all-Groq configuration)** - official
+`evaluate_pass_rate.py`, exact argument matching (the official LLM judge is more
+lenient on formatting such as dates), text replay on a 24-scenario sample (6 per
+domain):
 
 | Configuration | Strict pass rate |
 |---|---|
@@ -286,13 +305,20 @@ housing 38%), **52.0%** on all 100 per the official report, where the 19 that hi
 Groq's free-tier daily token cap count as failures.
 The full audio run through LiveKit is recorded in `results/fdb_v3/` once completed.
 
-**Rate limits:** Groq's free tier is not enough for a full run: Orpheus TTS allows
-100 requests per day (the agent uses about 2 per recording, one per spoken
-sentence) and `openai/gpt-oss-120b` 200k tokens per day. Use a Groq Dev Tier key
-(pay-as-you-go); on a free key, run `--subset N`. A full run takes about 1h45m
-and about 100 LiveKit agent-session minutes.
+**Why the declared pipeline changed:** on a free Groq account a full run cannot
+finish - Orpheus TTS allows 100 requests and 3.6k tokens a day (the agent speaks
+about twice per recording) and `openai/gpt-oss-120b` 200k tokens a day - and Groq
+paused new paid-tier upgrades. The declared pipeline keeps Groq only for
+speech-to-text, whose free allowance covers a run, moves the LLM to NVIDIA's free
+endpoint and speaks locally. A full run takes about 1h45m and a few hundred LiveKit
+participant minutes (the free Build plan includes 5,000 a month).
 
-**Smoke run** (`--subset 3`, full audio pipeline through LiveKit, exact matching):
+**Licences of what the run downloads:** Piper (`piper-tts`) is GPL-3.0-or-later and
+is used as an installed dependency; the LJSpeech voice is trained on a public-domain
+dataset; NVIDIA's free endpoints are for development and evaluation under NVIDIA's
+API terms.
+
+**Smoke run, all-Groq configuration** (`--subset 3`, full audio pipeline through LiveKit, exact matching):
 3/3 passed, turn-taking 100%, tool selection and argument accuracy 100%, mean
 perceived latency 4.8 s - see `results/fdb_v3/interject_groq_smoke-*`.
 
