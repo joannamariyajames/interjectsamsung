@@ -1,0 +1,34 @@
+{
+  "example_id": "travel_20",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-travel_20-849451",
+  "actual_tool_calls": [
+    {
+      "function": "search_flights",
+      "args": {
+        "destination": "Toronto",
+        "date": "July 20"
+      },
+      "timestamp_start": 1790694694.4639823,
+      "timestamp_end": 1790694695.0415244
+    },
+    {
+      "function": "update_identity_doc",
+      "args": {
+        "doc_type": "driver_license",
+        "doc_number": "DL88"
+      },
+      "timestamp_start": 1790694699.6450536,
+      "timestamp_end": 1790694699.6450536
+    }
+  ],
+  "transcript": "Got it. The flight to Toronto on July 20th is $450, so I’ve updated your driver license to D‑L‑8‑8.",
+  "error": null,
+  "duration_s": 18.55
+}

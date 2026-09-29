@@ -1,0 +1,34 @@
+{
+  "example_id": "travel_23",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-travel_23-9fd555",
+  "actual_tool_calls": [
+    {
+      "function": "update_identity_doc",
+      "args": {
+        "doc_type": "passport",
+        "doc_number": "P1122"
+      },
+      "timestamp_start": 1790694793.0219426,
+      "timestamp_end": 1790694793.0219426
+    },
+    {
+      "function": "update_identity_doc",
+      "args": {
+        "doc_type": "driver license",
+        "doc_number": "DL9090"
+      },
+      "timestamp_start": 1790694799.7707603,
+      "timestamp_end": 1790694799.7707603
+    }
+  ],
+  "transcript": "Your passport number has been updated to P-1-1-2-2, and your driver license number is now D-L-9-0-9-0.",
+  "error": null,
+  "duration_s": 19.08
+}

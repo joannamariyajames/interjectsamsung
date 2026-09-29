@@ -1,0 +1,34 @@
+{
+  "example_id": "ecommerce_16",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-ecommerce_16-210ab1",
+  "actual_tool_calls": [
+    {
+      "function": "search_products",
+      "args": {
+        "query": "coffee maker",
+        "max_price": 50.0
+      },
+      "timestamp_start": 1790693742.737516,
+      "timestamp_end": 1790693742.737516
+    },
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "PROD1",
+        "quantity": 1
+      },
+      "timestamp_start": 1790693744.232463,
+      "timestamp_end": 1790693744.232463
+    }
+  ],
+  "transcript": "Your coffee maker is in the cart. Enjoy your brew!",
+  "error": null,
+  "duration_s": 3.93
+}

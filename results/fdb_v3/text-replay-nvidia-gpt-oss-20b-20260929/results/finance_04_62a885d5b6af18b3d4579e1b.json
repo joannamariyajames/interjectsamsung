@@ -1,0 +1,26 @@
+{
+  "example_id": "finance_04",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-finance_04-4b27f9",
+  "actual_tool_calls": [
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 1000.0,
+        "from_currency": "USD",
+        "to_currency": "GBP"
+      },
+      "timestamp_start": 1790693867.4584446,
+      "timestamp_end": 1790693867.4584446
+    }
+  ],
+  "transcript": "Sure thing! 1,000 US dollars is about 900 British pounds right now.",
+  "error": null,
+  "duration_s": 2.04
+}

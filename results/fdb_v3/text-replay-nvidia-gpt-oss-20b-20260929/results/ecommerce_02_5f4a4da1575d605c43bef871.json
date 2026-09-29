@@ -1,0 +1,25 @@
+{
+  "example_id": "ecommerce_02",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-ecommerce_02-b155cb",
+  "actual_tool_calls": [
+    {
+      "function": "search_products",
+      "args": {
+        "query": "wireless headphones",
+        "max_price": 100.0
+      },
+      "timestamp_start": 1790693621.1599712,
+      "timestamp_end": 1790693621.1599712
+    }
+  ],
+  "transcript": "Here’s a pair that fits your budget: Wireless Headphones Premium for $90. Let me know if you’d like to add it to your cart or see more options.",
+  "error": null,
+  "duration_s": 3.95
+}

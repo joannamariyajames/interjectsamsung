@@ -1,0 +1,29 @@
+📖 Loading benchmark data from benchmark_data_v2.json...
+📁 Scanning fdb_v3_data_released for provider 'interject_nvidia_replay'...
+🔍 Found 100 valid result files matching benchmark scenarios.
+
+📊 EVALUATION REPORT
+========================================================
+  Scenarios evaluated : 100
+  Turn-Take Success   : 99/100 (99.0%)
+  No Response (silent): 1
+
+  By Metric (turn-taken only, N=99):
+    Tool Selection Acc : 97.0%
+    Argument Acc       : 78.1%
+    Response Qual      : (LLM judge disabled, use --use-llm)
+
+  Latency (N=0, turn-taken only):
+
+  By Domain (all samples):
+    ecommerce_support: tool_selection_acc=98.2%, argument_acc=81.6%
+    finance_billing: tool_selection_acc=100.0%, argument_acc=100.0%
+    housing_location: tool_selection_acc=92.8%, argument_acc=51.9%
+    travel_identity: tool_selection_acc=96.3%, argument_acc=79.2%
+
+  By Difficulty (all samples):
+    easy: tool_selection_acc=100.0%, argument_acc=86.1%
+    medium: tool_selection_acc=97.1%, argument_acc=67.6%
+    hard: tool_selection_acc=92.9%, argument_acc=80.0%
+
+  📄 Full report saved: D:/Samsung_Hackathon/interjectsamsung/results/fdb_v3/text-replay-nvidia-gpt-oss-20b-20260929/interject_nvidia_replay_evaluation_report.json

@@ -298,6 +298,17 @@ scenario's spoken words to the same agent - instructions, tools, BACKSPACE, LLM 
 STT/TTS skipped, and writes result files the official evaluators score unchanged. It
 reads only the user's utterance from `metadata.json`, never the expected calls.
 
+**Results - declared configuration (text replay, all 100 recordings)** - official
+evaluators, exact argument matching (no LLM judge), 0 errored,
+[`results/fdb_v3/text-replay-nvidia-gpt-oss-20b-20260929`](results/fdb_v3/text-replay-nvidia-gpt-oss-20b-20260929):
+
+| Strict pass rate | Tool selection | Argument accuracy | finance | e-commerce | travel | housing |
+|---|---|---|---|---|---|---|
+| **69.0%** | 97.0% | 78.1% | 100% | 75.9% | 60.0% | 38.5% |
+
+The scored run is the full audio run through LiveKit; its results land in
+`results/fdb_v3/` once completed.
+
 **Results so far (earlier, all-Groq configuration)** - official
 `evaluate_pass_rate.py`, exact argument matching (the official LLM judge is more
 lenient on formatting such as dates), text replay on a 24-scenario sample (6 per

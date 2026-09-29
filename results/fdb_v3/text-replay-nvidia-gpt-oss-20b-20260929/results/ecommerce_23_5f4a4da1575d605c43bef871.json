@@ -1,0 +1,33 @@
+{
+  "example_id": "ecommerce_23",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-ecommerce_23-8e4690",
+  "actual_tool_calls": [
+    {
+      "function": "track_order",
+      "args": {
+        "order_id": "GG5"
+      },
+      "timestamp_start": 1790693806.0893524,
+      "timestamp_end": 1790693806.0893524
+    },
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "X1",
+        "quantity": 1
+      },
+      "timestamp_start": 1790693809.5265658,
+      "timestamp_end": 1790693809.5265658
+    }
+  ],
+  "transcript": "Your order GG5 is out for delivery. The item X1 has been added to your cart. I’ll proceed with the refund for that order.",
+  "error": null,
+  "duration_s": 8.11
+}

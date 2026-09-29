@@ -1,0 +1,24 @@
+{
+  "example_id": "ecommerce_17",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-ecommerce_17-b7df13",
+  "actual_tool_calls": [
+    {
+      "function": "track_order",
+      "args": {
+        "order_id": "GG5"
+      },
+      "timestamp_start": 1790693750.2728333,
+      "timestamp_end": 1790693750.2728333
+    }
+  ],
+  "transcript": "Your order GG5 is currently out for delivery.",
+  "error": null,
+  "duration_s": 3.25
+}

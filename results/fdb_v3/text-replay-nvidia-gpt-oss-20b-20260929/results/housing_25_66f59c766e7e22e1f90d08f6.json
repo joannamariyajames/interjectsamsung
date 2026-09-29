@@ -1,0 +1,44 @@
+{
+  "example_id": "housing_25",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-housing_25-bf3484",
+  "actual_tool_calls": [
+    {
+      "function": "update_search_filter",
+      "args": {
+        "filter_name": "pets_allowed",
+        "value": true
+      },
+      "timestamp_start": 1790694438.968681,
+      "timestamp_end": 1790694439.1596577
+    },
+    {
+      "function": "update_search_filter",
+      "args": {
+        "filter_name": "max_price",
+        "value": 3500
+      },
+      "timestamp_start": 1790694443.7332382,
+      "timestamp_end": 1790694443.832609
+    },
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "San Francisco",
+        "bedrooms": 0,
+        "max_price": 3500.0
+      },
+      "timestamp_start": 1790694446.0266414,
+      "timestamp_end": 1790694446.4490833
+    }
+  ],
+  "transcript": "Here are the listings that match your updated filter: Apartment APT1 in San Francisco, 0 bedrooms, priced at $3,400.",
+  "error": null,
+  "duration_s": 16.21
+}

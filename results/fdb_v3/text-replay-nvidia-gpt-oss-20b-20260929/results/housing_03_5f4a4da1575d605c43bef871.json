@@ -1,0 +1,25 @@
+{
+  "example_id": "housing_03",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-housing_03-227879",
+  "actual_tool_calls": [
+    {
+      "function": "update_search_filter",
+      "args": {
+        "filter_name": "max_price",
+        "value": 1800
+      },
+      "timestamp_start": 1790694034.9141183,
+      "timestamp_end": 1790694034.96808
+    }
+  ],
+  "transcript": "Got it! Your max‑price filter is now set to $1,800 per month. Let me know if you’d like to tweak anything else.",
+  "error": null,
+  "duration_s": 5.65
+}

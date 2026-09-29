@@ -1,0 +1,45 @@
+{
+  "example_id": "housing_20",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-housing_20-c11c43",
+  "actual_tool_calls": [
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Austin",
+        "bedrooms": 1,
+        "max_price": 2000.0
+      },
+      "timestamp_start": 1790694293.854635,
+      "timestamp_end": 1790694294.30999
+    },
+    {
+      "function": "calculate_commute",
+      "args": {
+        "origin_address": "my office",
+        "destination_address": "APT1",
+        "mode": "driving"
+      },
+      "timestamp_start": 1790694297.0536017,
+      "timestamp_end": 1790694297.5745494
+    },
+    {
+      "function": "update_search_filter",
+      "args": {
+        "filter_name": "max_price",
+        "value": 2500
+      },
+      "timestamp_start": 1790694299.8925776,
+      "timestamp_end": 1790694299.9988325
+    }
+  ],
+  "transcript": "Got it. I’ve updated your search to a $2,500 budget. Let me find the new listings for you.",
+  "error": null,
+  "duration_s": 34.17
+}

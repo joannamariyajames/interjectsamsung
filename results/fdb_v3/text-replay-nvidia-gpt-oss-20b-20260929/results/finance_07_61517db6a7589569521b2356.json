@@ -1,0 +1,25 @@
+{
+  "example_id": "finance_07",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-finance_07-2321b3",
+  "actual_tool_calls": [
+    {
+      "function": "modify_autopay",
+      "args": {
+        "bill_type": "mortgage",
+        "source_account": "savings"
+      },
+      "timestamp_start": 1790693885.7970395,
+      "timestamp_end": 1790693885.7970395
+    }
+  ],
+  "transcript": "Your mortgage autopay has been updated to pull from your savings account.",
+  "error": null,
+  "duration_s": 2.33
+}

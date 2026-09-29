@@ -1,0 +1,24 @@
+{
+  "example_id": "travel_11",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-travel_11-edf96a",
+  "actual_tool_calls": [
+    {
+      "function": "book_flight",
+      "args": {
+        "passenger_name": "Morgan Smith"
+      },
+      "timestamp_start": 1790694539.0857422,
+      "timestamp_end": 1790694539.0857422
+    }
+  ],
+  "transcript": "Got it. Your flight to Austin on February 2nd is booked under Morgan Smith. The confirmation number is B789. Let me know if you need anything else.",
+  "error": null,
+  "duration_s": 24.42
+}

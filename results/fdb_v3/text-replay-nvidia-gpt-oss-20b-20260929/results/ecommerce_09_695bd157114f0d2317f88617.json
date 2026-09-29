@@ -1,0 +1,24 @@
+{
+  "example_id": "ecommerce_09",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-ecommerce_09-8af0ac",
+  "actual_tool_calls": [
+    {
+      "function": "search_products",
+      "args": {
+        "query": "hiking boots"
+      },
+      "timestamp_start": 1790693669.9512668,
+      "timestamp_end": 1790693669.9512668
+    }
+  ],
+  "transcript": "Here are some hiking boots you might like: hiking boots Premium for $99.99.",
+  "error": null,
+  "duration_s": 5.73
+}

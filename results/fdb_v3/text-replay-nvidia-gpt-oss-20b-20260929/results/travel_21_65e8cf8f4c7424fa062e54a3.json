@@ -1,0 +1,42 @@
+{
+  "example_id": "travel_21",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-travel_21-721587",
+  "actual_tool_calls": [
+    {
+      "function": "search_flights",
+      "args": {
+        "destination": "Vegas",
+        "date": "August 8"
+      },
+      "timestamp_start": 1790694712.2729611,
+      "timestamp_end": 1790694712.5748775
+    },
+    {
+      "function": "book_flight",
+      "args": {
+        "passenger_name": "Quinn Davis"
+      },
+      "timestamp_start": 1790694719.8075473,
+      "timestamp_end": 1790694719.8075473
+    },
+    {
+      "function": "update_identity_doc",
+      "args": {
+        "doc_type": "visa",
+        "doc_number": "V77"
+      },
+      "timestamp_start": 1790694743.5222604,
+      "timestamp_end": 1790694743.5222604
+    }
+  ],
+  "transcript": "Your flight to Vegas on August 8th has been booked under Quinn Davis, reference B789. Your visa number has been updated to V‑7‑7. Let me know if there’s anything else you’d like to do.",
+  "error": null,
+  "duration_s": 40.14
+}

@@ -1,0 +1,24 @@
+{
+  "example_id": "finance_17",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-finance_17-e5c06d",
+  "actual_tool_calls": [
+    {
+      "function": "get_card_benefits",
+      "args": {
+        "card_type": "gold"
+      },
+      "timestamp_start": 1790693951.6890957,
+      "timestamp_end": 1790693951.6890957
+    }
+  ],
+  "transcript": "Here are the benefits for the gold card: 2% cashback and no foreign transaction fee.",
+  "error": null,
+  "duration_s": 2.97
+}

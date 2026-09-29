@@ -1,0 +1,26 @@
+{
+  "example_id": "housing_05",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-housing_05-ee2829",
+  "actual_tool_calls": [
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Miami",
+        "bedrooms": 1,
+        "max_price": 1500.0
+      },
+      "timestamp_start": 1790694061.3009322,
+      "timestamp_end": 1790694061.9602427
+    }
+  ],
+  "transcript": "Here’s a pet‑friendly one‑bedroom in Miami for $1,400 a month. It’s within your $1,500 budget.",
+  "error": null,
+  "duration_s": 3.32
+}

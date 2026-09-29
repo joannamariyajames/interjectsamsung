@@ -1,0 +1,143 @@
+🔧 API Backend running with 'instant' latency profile.
+replaying 100 scenario(s) as result_interject_nvidia_replay.json (telemetry: C:\Users\Asus\AppData\Local\Temp\claude\d--Samsung-Hackathon\36a630de-a751-440e-a12f-9ad892df0924\scratchpad\interject_nvidia_replay.log)
+[1/100] ecommerce_01            4.17s  track_order({"order_id": "ABC123"})
+[2/100] ecommerce_01            2.53s  track_order({"order_id": "ABC123"})
+[3/100] ecommerce_02            3.95s  search_products({"query": "wireless headphones", "max_price": 100.0})
+[4/100] ecommerce_04            3.66s  track_order({"order_id": "XYZ88"})
+[5/100] ecommerce_05            2.72s  search_products({"query": "desk", "max_price": 300.0})
+[6/100] ecommerce_06            2.79s  add_to_cart({"product_id": "K2", "quantity": 2})
+[7/100] ecommerce_07            4.98s  track_order({"order_id": "FAST99"})
+[8/100] ecommerce_08            3.03s  search_products({"query": "mechanical keyboard", "max_price": 200.0})
+[9/100] ecommerce_08            3.11s  search_products({"query": "mechanical keyboard", "max_price": 200.0})
+failed to generate LLM completion: Connection error. (caused by APIError: list index out of range), retrying in 0.1s
+[10/100] ecommerce_09            5.73s  search_products({"query": "hiking boots"})
+[11/100] ecommerce_10            5.32s  track_order({"order_id": "123ABC"}), search_products({"query": "winter jackets", "max_price": 150.0})
+[12/100] ecommerce_11            2.32s  add_to_cart({"product_id": "B7", "quantity": 1})
+[13/100] ecommerce_12            4.34s  search_products({"query": "electronics"})
+[14/100] ecommerce_13            5.65s  add_to_cart({"product_id": "K2", "quantity": 1}), track_order({"order_id": "DELIV"})
+[15/100] ecommerce_13            4.72s  add_to_cart({"product_id": "K2", "quantity": 1}), track_order({"order_id": "DELIV"})
+[16/100] ecommerce_14            4.34s  add_to_cart({"product_id": "P5X2", "quantity": 2})
+failed to generate LLM completion: Connection error. (caused by APIError: list index out of range), retrying in 0.1s
+[17/100] ecommerce_14             5.7s  add_to_cart({"product_id": "P5X2", "quantity": 2})
+[18/100] ecommerce_15            2.65s  track_order({"order_id": "BOB12"})
+[19/100] ecommerce_15            5.04s  track_order({"order_id": "BOB12"})
+[20/100] ecommerce_16            3.93s  search_products({"query": "coffee maker", "max_price": 50.0}), add_to_cart({"product_id": "PROD1", "quantity": 1})
+[21/100] ecommerce_17            3.25s  track_order({"order_id": "GG5"})
+failed to generate LLM completion: Connection error. (caused by APIError: unexpected tokens remaining in message header: Some("to=functions.track_order <|constrain|>... <|constrain|>???><|start|>assistant<|channel|>commentary")), retrying in 0.1s
+[22/100] ecommerce_18            7.43s  search_products({"query": "gaming mouse"}), add_to_cart({"product_id": "PROD1", "quantity": 1})
+[23/100] ecommerce_19            4.27s  search_products({"query": "tablet"}), add_to_cart({"product_id": "PROD1", "quantity": 1})
+[24/100] ecommerce_20            5.67s  search_products({"query": "coffee maker", "max_price": 50.0}), add_to_cart({"product_id": "PROD1", "quantity": 2})
+failed to generate LLM completion: Connection error. (caused by APIError: list index out of range), retrying in 0.1s
+[25/100] ecommerce_21            8.75s  track_order({"order_id": "BOB"}), search_products({"query": "watch", "max_price": 200.0}), add_to_cart({"product_id": "PROD1", "quantity": 1})
+[26/100] ecommerce_21            7.54s  track_order({"order_id": "BOB"}), search_products({"query": "watch", "max_price": 200.0}), add_to_cart({"product_id": "PROD1", "quantity": 1})
+[27/100] ecommerce_23            8.11s  track_order({"order_id": "GG5"}), add_to_cart({"product_id": "X1", "quantity": 1})
+failed to generate LLM completion: Connection error. (caused by APIError: list index out of range), retrying in 0.1s
+[28/100] ecommerce_25            9.81s  track_order({"order_id": "CAT"}), search_products({"query": "cat food"}), add_to_cart({"product_id": "PROD1", "quantity": 3})
+[29/100] ecommerce_25            6.62s  track_order({"order_id": "CAT"}), search_products({"query": "cat food"}), add_to_cart({"product_id": "PROD1", "quantity": 3})
+[30/100] finance_01              2.79s  get_exchange_rate({"amount": 500.0, "from_currency": "USD", "to_currency": "EUR"})
+[31/100] finance_01              1.97s  get_exchange_rate({"amount": 500.0, "from_currency": "USD", "to_currency": "EUR"})
+[32/100] finance_02              2.66s  get_card_benefits({"card_type": "platinum"})
+[33/100] finance_03              2.22s  modify_autopay({"bill_type": "mortgage", "source_account": "savings"})
+[34/100] finance_03              4.34s  modify_autopay({"bill_type": "mortgage", "source_account": "savings"})
+[35/100] finance_04              2.04s  get_exchange_rate({"amount": 1000.0, "from_currency": "USD", "to_currency": "GBP"})
+[36/100] finance_06              2.12s  get_card_benefits({"card_type": "travel"})
+failed to generate LLM completion: Connection error. (caused by APIError: list index out of range), retrying in 0.1s
+[37/100] finance_07              4.87s  modify_autopay({"bill_type": "mortgage", "source_account": "savings"})
+[38/100] finance_07              2.33s  modify_autopay({"bill_type": "mortgage", "source_account": "savings"})
+[39/100] finance_08              3.31s  get_exchange_rate({"amount": 200.0, "from_currency": "EUR", "to_currency": "USD"})
+[40/100] finance_08              4.08s  get_exchange_rate({"amount": 200.0, "from_currency": "EUR", "to_currency": "USD"})
+[41/100] finance_10               6.3s  get_card_benefits({"card_type": "travel"}), get_exchange_rate({"amount": 200.0, "from_currency": "GBP", "to_currency": "JPY"})
+[42/100] finance_11              5.39s  modify_autopay({"bill_type": "credit_card", "source_account": "savings"})
+[43/100] finance_12              2.03s  get_exchange_rate({"amount": 150.0, "from_currency": "EUR", "to_currency": "USD"})
+[44/100] finance_12              1.91s  get_exchange_rate({"amount": 150.0, "from_currency": "EUR", "to_currency": "USD"})
+[45/100] finance_14              3.97s  get_exchange_rate({"amount": 50.0, "from_currency": "USD", "to_currency": "EUR"}), get_exchange_rate({"amount": 100.0, "from_currency": "CAD", "to_currency": "USD"})
+[46/100] finance_15              3.71s  modify_autopay({"bill_type": "mortgage", "source_account": "savings"})
+[47/100] finance_16              2.02s  get_exchange_rate({"amount": 500.0, "from_currency": "JPY", "to_currency": "USD"})
+[48/100] finance_17              2.97s  get_card_benefits({"card_type": "gold"})
+[49/100] finance_18              9.08s  get_exchange_rate({"amount": 1000.0, "from_currency": "USD", "to_currency": "EUR"}), modify_autopay({"bill_type": "credit_card", "source_account": "savings"}), get_card_benefits({"card_type": "premium"})
+[50/100] finance_19              4.26s  get_exchange_rate({"amount": 300.0, "from_currency": "EUR", "to_currency": "GBP"})
+unknown AI function `modify_autopay<|channel|>commentary`
+[51/100] finance_20              7.75s  get_exchange_rate({"amount": 1000.0, "from_currency": "USD", "to_currency": "EUR"}), modify_autopay({"bill_type": "mortgage", "source_account": "checking"})
+[52/100] finance_21              7.46s  get_card_benefits({"card_type": "gold"}), get_exchange_rate({"amount": 500.0, "from_currency": "USD", "to_currency": "JPY"})
+[53/100] finance_22              7.61s  modify_autopay({"bill_type": "mortgage", "source_account": "savings"}), modify_autopay({"bill_type": "credit_card", "source_account": "checking"})
+[54/100] finance_23              3.65s  modify_autopay({"bill_type": "mortgage", "source_account": "savings"})
+[55/100] housing_01              4.74s  search_apartments({"city": "Seattle", "bedrooms": 2, "max_price": 2500.0})
+failed to generate LLM completion: Connection error. (caused by APIError: list index out of range), retrying in 0.1s
+[56/100] housing_02              6.47s  calculate_commute({"origin_address": "101 Main Street", "destination_address": "Downtown Office", "mode": "driving"})
+[57/100] housing_03              5.65s  update_search_filter({"filter_name": "max_price", "value": 1800})
+[58/100] housing_04              9.34s  search_apartments({"city": "Denver", "bedrooms": 1, "max_price": 2000.0})
+[59/100] housing_05              5.05s  search_apartments({"city": "Miami", "bedrooms": 1, "max_price": 1500.0})
+[60/100] housing_05              3.32s  search_apartments({"city": "Miami", "bedrooms": 1, "max_price": 1500.0})
+[61/100] housing_06              6.52s  calculate_commute({"origin_address": "Oak Street", "destination_address": "Gym", "mode": "walking"})
+[62/100] housing_08               7.3s  update_search_filter({"filter_name": "pets_allowed", "value": true})
+[63/100] housing_09              8.19s  search_apartments({"city": "Chicago", "bedrooms": 2, "max_price": 2000.0})
+[64/100] housing_10              6.27s  calculate_commute({"origin_address": "500 Central Ave", "destination_address": "University", "mode": "driving"}), update_search_filter({"filter_name": "preferred_neighborhood", "value": "Northside"})
+[65/100] housing_11               9.5s  search_apartments({"city": "my place", "bedrooms": 2, "max_price": 1600.0})
+[66/100] housing_13             13.52s  update_search_filter({"filter_name": "max_price", "value": 3000}), update_search_filter({"filter_name": "bedrooms", "value": 3})
+failed to generate LLM completion: Request timed out., retrying in 0.1s
+[67/100] housing_14             25.62s  search_apartments({"city": "Portland", "bedrooms": 1, "max_price": 1800.0})
+[68/100] housing_14              5.96s  search_apartments({"city": "Portland", "bedrooms": 1, "max_price": 1800.0})
+error parsing arguments for `search_apartments`
+ToolError while executing tool: Error parsing arguments for `search_apartments`: 1 validation error for SearchApartmentsArgs
+max_price
+  Field required [type=missing, input_value={'city': 'Atlanta', 'bedrooms': 3}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+[69/100] housing_15             14.02s  search_apartments({"city": "Atlanta", "bedrooms": 3, "max_price": 10000.0})
+error parsing arguments for `search_apartments`
+ToolError while executing tool: Error parsing arguments for `search_apartments`: 1 validation error for SearchApartmentsArgs
+max_price
+  Input should be a valid number [type=float_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.13/v/float_type
+[70/100] housing_15             18.87s  update_search_filter({"filter_name": "pet_friendly", "value": true}), search_apartments({"city": "Atlanta", "bedrooms": 3, "max_price": 3000.0})
+[71/100] housing_17              9.36s  calculate_commute({"origin_address": "my house", "destination_address": "the office", "mode": "driving"})
+[72/100] housing_17              6.42s  calculate_commute({"origin_address": "my house", "destination_address": "the office", "mode": "driving"})
+failed to generate LLM completion: Connection error. (caused by APIError: list index out of range), retrying in 0.1s
+[73/100] housing_18             21.95s  search_apartments({"city": "Portland", "bedrooms": 1, "max_price": 1800.0}), calculate_commute({"origin_address": "APT1", "destination_address": "coffee shop on 5th Street", "mode": "biking"})
+[74/100] housing_19              6.32s  calculate_commute({"origin_address": "my house", "destination_address": "gym", "mode": "driving"})
+failed to generate LLM completion: Request timed out., retrying in 0.1s
+[75/100] housing_20             34.17s  search_apartments({"city": "Austin", "bedrooms": 1, "max_price": 2000.0}), calculate_commute({"origin_address": "my office", "destination_address": "APT1", "mode": "driving"}), update_search_filter({"filter_name": "max_price", "value": 2500})
+error parsing arguments for `search_apartments`
+ToolError while executing tool: Error parsing arguments for `search_apartments`: 1 validation error for SearchApartmentsArgs
+max_price
+  Input should be a valid number [type=float_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.13/v/float_type
+[76/100] housing_21             19.99s  search_apartments({"city": "New York", "bedrooms": 3, "max_price": 3000.0})
+error parsing arguments for `search_apartments`
+ToolError while executing tool: Error parsing arguments for `search_apartments`: 1 validation error for SearchApartmentsArgs
+max_price
+  Input should be a valid number [type=float_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.13/v/float_type
+[77/100] housing_22              36.1s  update_search_filter({"filter_name": "pets_allowed", "value": true}), search_apartments({"city": "Seattle", "bedrooms": 1, "max_price": 2000.0}), calculate_commute({"origin_address": "APT1", "destination_address": "Seattle Stadium", "mode": "driving"})
+[78/100] housing_24             21.86s  update_search_filter({"filter_name": "max_price", "value": 1500}), search_apartments({"city": "Dallas", "bedrooms": 1, "max_price": 1500.0})
+failed to generate LLM completion: Request timed out., retrying in 0.1s
+[79/100] housing_24             37.02s  (no tool call)
+[80/100] housing_25             16.21s  update_search_filter({"filter_name": "pets_allowed", "value": true}), update_search_filter({"filter_name": "max_price", "value": 3500}), search_apartments({"city": "San Francisco", "bedrooms": 0, "max_price": 3500.0})
+[81/100] travel_01               5.33s  search_flights({"destination": "Tokyo", "date": "July 15"})
+[82/100] travel_02               8.87s  update_identity_doc({"doc_type": "passport", "doc_number": "P88990011"})
+[83/100] travel_03               4.07s  search_flights({"destination": "London", "date": "August 20"})
+[84/100] travel_03               4.83s  search_flights({"destination": "London", "date": "August 20"})
+[85/100] travel_05               8.43s  search_flights({"destination": "Chicago", "date": "December 12"})
+[86/100] travel_07               4.06s  update_identity_doc({"doc_type": "driver_license", "doc_number": "DL555"})
+[87/100] travel_07               5.12s  update_identity_doc({"doc_type": "driver_license", "doc_number": "DL555"})
+[88/100] travel_08               8.65s  search_flights({"destination": "Seattle", "date": "November 1"})
+[89/100] travel_10                8.5s  search_flights({"destination": "Miami", "date": "October 7"})
+failed to generate LLM completion: Connection error. (caused by APIError: list index out of range), retrying in 0.1s
+[90/100] travel_11              24.42s  book_flight({"passenger_name": "Morgan Smith"})
+[91/100] travel_14               9.07s  search_flights({"destination": "Seoul", "date": "March 22"})
+[92/100] travel_16               8.27s  search_flights({"destination": "Vegas", "date": "August 8"})
+failed to generate LLM completion: Connection error. (caused by APIError: list index out of range), retrying in 0.1s
+failed to generate LLM completion: Connection error. (caused by APIError: list index out of range), retrying in 2.0s
+failed to generate LLM completion: Request timed out., retrying in 0.1s
+[93/100] travel_18              64.88s  search_flights({"destination": "Dubai", "date": "April 10"}), book_flight({"passenger_name": "Casey Lee"}), update_identity_doc({"doc_type": "passport", "doc_number": "E-772211"})
+failed to generate LLM completion: Request timed out., retrying in 0.1s
+[94/100] travel_19              28.68s  search_flights({"destination": "Milan", "date": "June 3"})
+[95/100] travel_20              18.55s  search_flights({"destination": "Toronto", "date": "July 20"}), update_identity_doc({"doc_type": "driver_license", "doc_number": "DL88"})
+failed to generate LLM completion: Request timed out., retrying in 0.1s
+[96/100] travel_21              40.14s  search_flights({"destination": "Vegas", "date": "August 8"}), book_flight({"passenger_name": "Quinn Davis"}), update_identity_doc({"doc_type": "visa", "doc_number": "V77"})
+[97/100] travel_21              13.31s  search_flights({"destination": "Vegas", "date": "August 8"}), book_flight({"passenger_name": "Quinn Davis"}), update_identity_doc({"doc_type": "visa", "doc_number": "V77"})
+[98/100] travel_23              13.17s  update_identity_doc({"doc_type": "passport", "doc_number": "P1122"}), update_identity_doc({"doc_type": "driver license", "doc_number": "DL9090"})
+failed to generate LLM completion: Connection error. (caused by APIError: list index out of range), retrying in 0.1s
+[99/100] travel_23              19.08s  update_identity_doc({"doc_type": "passport", "doc_number": "P1122"}), update_identity_doc({"doc_type": "driver license", "doc_number": "DL9090"})
+unknown AI function `book_flight<|channel|>commentary`
+[100/100] travel_24              24.55s  search_flights({"destination": "Vancouver", "date": "November 5"}), book_flight({"passenger_name": "Skyler"})
+done: 100 ok, 0 errored

@@ -1,0 +1,43 @@
+{
+  "example_id": "finance_18",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-finance_18-18a692",
+  "actual_tool_calls": [
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 1000.0,
+        "from_currency": "USD",
+        "to_currency": "EUR"
+      },
+      "timestamp_start": 1790693957.506677,
+      "timestamp_end": 1790693957.506677
+    },
+    {
+      "function": "modify_autopay",
+      "args": {
+        "bill_type": "credit_card",
+        "source_account": "savings"
+      },
+      "timestamp_start": 1790693959.8084192,
+      "timestamp_end": 1790693959.8084192
+    },
+    {
+      "function": "get_card_benefits",
+      "args": {
+        "card_type": "premium"
+      },
+      "timestamp_start": 1790693961.2693028,
+      "timestamp_end": 1790693961.2693028
+    }
+  ],
+  "transcript": "The exchange rate is 0.9, so 1,000 USD is 900 EUR. Your credit‑card autopay has been switched to pull from your savings account. The premium card offers 2 % cashback and no foreign transaction fee.",
+  "error": null,
+  "duration_s": 9.08
+}

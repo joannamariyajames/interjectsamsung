@@ -1,0 +1,43 @@
+📖 Loading benchmark data from benchmark_data_v2.json...
+📁 Scanning fdb_v3_data_released for provider 'interject_nvidia_replay'...
+🔍 Found 100 valid result files matching benchmark scenarios.
+
+📊 PASS RATE REPORT — INTERJECT_NVIDIA_REPLAY
+========================================================
+  Total Scenarios : 100
+  ✅ Passed       : 69
+  ❌ Failed       : 31
+  📈 Pass Rate    : 69.0%
+
+  Failure Breakdown:
+    Wrong Tools     : 9
+    Wrong Arguments : 22
+
+  By Domain:
+    ecommerce_support: 75.9%
+    finance_billing: 100.0%
+    housing_location: 38.5%
+    travel_identity: 60.0%
+
+  By Difficulty:
+    easy: 86.1%
+    medium: 61.8%
+    hard: 56.7%
+
+  By Num Tool Calls:
+    1 tools: 75.8%
+    2 tools: 72.2%
+    3 tools: 37.5%
+
+  By Disfluency Feature:
+    PAUSE: 44.4%
+    FILLER: 62.1%
+    HESITATION: 60.0%
+    FALSE_START: 83.3%
+    SELF_CORRECTION: 82.4%
+
+  State Rollback:
+    With rollback:    82.4%
+    Without rollback: 66.3%
+
+  📄 Report saved: D:/Samsung_Hackathon/interjectsamsung/results/fdb_v3/text-replay-nvidia-gpt-oss-20b-20260929/interject_nvidia_replay_pass_rate_report.json

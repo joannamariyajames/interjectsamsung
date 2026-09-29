@@ -1,0 +1,41 @@
+{
+  "example_id": "ecommerce_25",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-ecommerce_25-66c048",
+  "actual_tool_calls": [
+    {
+      "function": "track_order",
+      "args": {
+        "order_id": "CAT"
+      },
+      "timestamp_start": 1790693817.7709794,
+      "timestamp_end": 1790693817.7709794
+    },
+    {
+      "function": "search_products",
+      "args": {
+        "query": "cat food"
+      },
+      "timestamp_start": 1790693821.8365004,
+      "timestamp_end": 1790693821.8365004
+    },
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "PROD1",
+        "quantity": 3
+      },
+      "timestamp_start": 1790693823.2894342,
+      "timestamp_end": 1790693823.2894342
+    }
+  ],
+  "transcript": "Your order C-A-T is out for delivery. I’ve added three units of “cat food Premium” to your cart.",
+  "error": null,
+  "duration_s": 9.81
+}
