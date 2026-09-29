@@ -1,0 +1,34 @@
+{
+  "example_id": "finance_21",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-finance_21-7ab010",
+  "actual_tool_calls": [
+    {
+      "function": "get_card_benefits",
+      "args": {
+        "card_type": "gold"
+      },
+      "timestamp_start": 1790693988.2798345,
+      "timestamp_end": 1790693988.2798345
+    },
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 500.0,
+        "from_currency": "USD",
+        "to_currency": "JPY"
+      },
+      "timestamp_start": 1790693991.2968707,
+      "timestamp_end": 1790693991.2968707
+    }
+  ],
+  "transcript": "The gold card gives you 2 % cashback and no foreign transaction fee. 500 USD converts to 450 JPY at the current rate.",
+  "error": null,
+  "duration_s": 7.46
+}

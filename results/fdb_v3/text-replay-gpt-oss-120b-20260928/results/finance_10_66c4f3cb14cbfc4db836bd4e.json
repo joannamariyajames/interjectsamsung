@@ -1,0 +1,30 @@
+{
+  "example_id": "finance_10",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-finance_10-baf1e3",
+  "actual_tool_calls": [
+    {
+      "function": "get_card_benefits",
+      "args": {
+        "card_type": "travel"
+      },
+      "timestamp_start": 1790618681.132422,
+      "timestamp_end": 1790618681.132422
+    },
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 200.0,
+        "from_currency": "GBP",
+        "to_currency": "JPY"
+      },
+      "timestamp_start": 1790618682.8705065,
+      "timestamp_end": 1790618682.8705065
+    }
+  ],
+  "transcript": "The travel card offers 2% cashback and no foreign‑transaction fees. Converting £200 gives about ¥180.",
+  "error": null,
+  "duration_s": 2.93
+}

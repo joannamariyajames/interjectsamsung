@@ -12,12 +12,28 @@ const MODALITY_ICON = {
   image: ImageIcon,
 } as const;
 
+/** Answers are meant to be plain spoken text; drop markdown a model slips in anyway. */
+function plain(text: string) {
+  return text
+    .replace(/\*\*([^*\n]+)\*\*/g, "$1")
+    .replace(/__([^_\n]+)__/g, "$1")
+    .replace(/^#{1,6}\s+/gm, "");
+}
+
 function Evidence({ message }: { message: ChatMessage }) {
-  const docs = (message.meta?.evidence as string[] | undefined) ?? [];
+  // Only what the answer actually cites: a passage that was retrieved but not
+  // used did not ground anything, and showing it implies it did.
+  const retrieved = (message.meta?.evidence as string[] | undefined) ?? [];
+  const docs = retrieved.filter((doc) => message.content.includes(`[${doc}]`));
   if (!docs.length) return null;
   return (
     <div className="mt-2 flex flex-wrap items-center gap-1">
-      <span className="text-[10px] uppercase tracking-wider text-muted">grounded in</span>
+      <span
+        className="text-[10px] uppercase tracking-wider text-muted"
+        title="Interject Travel is a fictional demo agency; its knowledge base is sample data, not real-world facts."
+      >
+        from the demo agency&rsquo;s knowledge base (fictional)
+      </span>
       {docs.map((doc) => (
         <Badge key={doc} tone="info" className="font-mono">
           {doc}
@@ -122,7 +138,7 @@ function AgentBubble({
           ) : null}
 
           <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground">
-            {message.content}
+            {plain(message.content)}
             {streaming ? <span className="stream-caret" aria-hidden /> : null}
           </p>
 

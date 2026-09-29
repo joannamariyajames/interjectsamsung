@@ -1,0 +1,26 @@
+{
+  "example_id": "finance_01",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-finance_01-46cf07",
+  "actual_tool_calls": [
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 500.0,
+        "from_currency": "USD",
+        "to_currency": "EUR"
+      },
+      "timestamp_start": 1790693839.0837522,
+      "timestamp_end": 1790693839.0837522
+    }
+  ],
+  "transcript": "Sure thing! 500 US dollars is about 450 euros.",
+  "error": null,
+  "duration_s": 2.79
+}

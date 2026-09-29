@@ -1,0 +1,35 @@
+{
+  "example_id": "housing_10",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-housing_10-c33d10",
+  "actual_tool_calls": [
+    {
+      "function": "calculate_commute",
+      "args": {
+        "origin_address": "500 Central Ave",
+        "destination_address": "University",
+        "mode": "driving"
+      },
+      "timestamp_start": 1790694099.3689728,
+      "timestamp_end": 1790694099.6633086
+    },
+    {
+      "function": "update_search_filter",
+      "args": {
+        "filter_name": "preferred_neighborhood",
+        "value": "Northside"
+      },
+      "timestamp_start": 1790694101.4141152,
+      "timestamp_end": 1790694101.5294542
+    }
+  ],
+  "transcript": "The drive from 500 Central Ave to the University takes about 25 minutes. Your preferred neighborhood filter has been updated to Northside.",
+  "error": null,
+  "duration_s": 6.27
+}

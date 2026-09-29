@@ -1,0 +1,35 @@
+{
+  "example_id": "housing_15",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-housing_15-5489a7",
+  "actual_tool_calls": [
+    {
+      "function": "update_search_filter",
+      "args": {
+        "filter_name": "pet_friendly",
+        "value": true
+      },
+      "timestamp_start": 1790694202.0587885,
+      "timestamp_end": 1790694202.2445157
+    },
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Atlanta",
+        "bedrooms": 3,
+        "max_price": 3000.0
+      },
+      "timestamp_start": 1790694205.0256221,
+      "timestamp_end": 1790694205.6637154
+    }
+  ],
+  "transcript": "Here’s a 3‑bedroom, pet‑friendly place in Atlanta that fits your budget: Apartment APT1, $2,900 a month.",
+  "error": null,
+  "duration_s": 18.87
+}

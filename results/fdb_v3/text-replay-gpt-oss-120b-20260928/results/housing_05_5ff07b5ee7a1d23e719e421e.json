@@ -1,0 +1,22 @@
+{
+  "example_id": "housing_05",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_05-194276",
+  "actual_tool_calls": [
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Miami",
+        "bedrooms": 1,
+        "max_price": 1500.0
+      },
+      "timestamp_start": 1790618896.5049052,
+      "timestamp_end": 1790618897.1654577
+    }
+  ],
+  "transcript": "I found a pet‑friendly one‑bedroom apartment in Miami for $1,400 a month.",
+  "error": null,
+  "duration_s": 1.9
+}

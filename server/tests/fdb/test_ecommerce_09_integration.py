@@ -269,32 +269,42 @@ async def test_ecommerce_09_full_duplex_bench_integration(tmp_path: Path):
     assert work_2.output == res2
 
     # -----------------------------------------------------------------------
-    # Requirement I: Telemetry contains valid revised call and NOT stale call
+    # Requirement I: Telemetry reports exactly what executed
     # -----------------------------------------------------------------------
-    written_count = adapter.flush()
-    assert written_count == 1
+    # Both searches ran, so both are in the official log (each written as it
+    # executed); the gated stale re-attempt never ran and is not. Hiding the
+    # executed "running shoes" call would misreport the agent to the evaluator.
+    assert adapter.flush() == 0
     assert telemetry_file.exists()
 
-    lines = telemetry_file.read_text(encoding="utf-8").strip().splitlines()
-    assert len(lines) == 1
+    records = [json.loads(line) for line in telemetry_file.read_text(encoding="utf-8").splitlines()]
+    assert all(r["room"] == "ecommerce_09_room" for r in records)
+    assert [(r["call"]["function"], r["call"]["args"]) for r in records] == [
+        ("search_products", {"query": "running shoes"}),
+        ("search_products", {"query": "hiking boots"}),
+    ]
 
-    record = json.loads(lines[0])
-    assert record["room"] == "ecommerce_09_room"
-    assert record["call"]["function"] == "search_products"
-    assert record["call"]["args"] == {"query": "hiking boots"}
-    # The stale call with query="running shoes" is NOT present!
-
-    # Validate against official FDB-v3 evaluate_scenario evaluator
-    eval_result = evaluate_scenario(
+    # The official FDB-v3 evaluator scores that honest log: the corrected call
+    # is there (full recall) but the stale call that ran costs precision.
+    honest = evaluate_scenario(
         scenario=scenario,
-        actual_calls=[record["call"]],
+        actual_calls=[r["call"] for r in records],
         transcript=correction_user_msg,
         result_data=None,
         use_llm=False,
-    )
+    )["metrics"]
+    assert honest["tool_selection_acc"]["recall"] == 1.0
+    assert honest["tool_selection_acc"]["precision"] < 1.0
 
-    metrics = eval_result["metrics"]
-    assert metrics["tool_selection_acc"]["score"] == 1.0
-    assert metrics["tool_selection_acc"]["recall"] == 1.0
-    assert metrics["tool_selection_acc"]["precision"] == 1.0
-    assert metrics["argument_acc"]["score"] == 1.0
+    # What the benchmark rewards is an agent that acts only on the corrected
+    # intent - never issuing the stale call at all - which scores perfectly.
+    final_intent_only = evaluate_scenario(
+        scenario=scenario,
+        actual_calls=[records[1]["call"]],
+        transcript=correction_user_msg,
+        result_data=None,
+        use_llm=False,
+    )["metrics"]
+    assert final_intent_only["tool_selection_acc"]["score"] == 1.0
+    assert final_intent_only["tool_selection_acc"]["precision"] == 1.0
+    assert final_intent_only["argument_acc"]["score"] == 1.0

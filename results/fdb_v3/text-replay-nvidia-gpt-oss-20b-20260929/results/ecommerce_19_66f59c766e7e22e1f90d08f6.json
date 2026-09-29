@@ -1,0 +1,33 @@
+{
+  "example_id": "ecommerce_19",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-ecommerce_19-4e8624",
+  "actual_tool_calls": [
+    {
+      "function": "search_products",
+      "args": {
+        "query": "tablet"
+      },
+      "timestamp_start": 1790693767.0223606,
+      "timestamp_end": 1790693767.0223606
+    },
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "PROD1",
+        "quantity": 1
+      },
+      "timestamp_start": 1790693768.5818777,
+      "timestamp_end": 1790693768.5818777
+    }
+  ],
+  "transcript": "Your tablet has been added to the cart. Enjoy!",
+  "error": null,
+  "duration_s": 4.27
+}

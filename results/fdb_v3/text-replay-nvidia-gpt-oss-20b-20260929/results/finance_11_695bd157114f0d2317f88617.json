@@ -1,0 +1,25 @@
+{
+  "example_id": "finance_11",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-finance_11-ef2471",
+  "actual_tool_calls": [
+    {
+      "function": "modify_autopay",
+      "args": {
+        "bill_type": "credit_card",
+        "source_account": "savings"
+      },
+      "timestamp_start": 1790693914.220665,
+      "timestamp_end": 1790693914.220665
+    }
+  ],
+  "transcript": "Your credit card autopay has been switched to pull from your savings account.",
+  "error": null,
+  "duration_s": 5.39
+}

@@ -1,0 +1,19 @@
+{
+  "label": "interject_nvidia_smoke",
+  "collected_at": "2026-09-29T20:55:54+0530",
+  "interject_commit": "c6c83298d4e8cc9ca1f073d4e8276e6cec6776e6",
+  "full_duplex_bench_commit": "c6c83298d4e8cc9ca1f073d4e8276e6cec6776e6",
+  "python": "3.11.16",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "lk_provider": "nvidia",
+  "stt": "groq whisper-large-v3-turbo",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "tts": "piper en_US-ljspeech-medium (local)",
+  "fdb_max_tool_steps": "5",
+  "llm_judge": "none (exact argument matching)",
+  "scenarios_collected": 3
+}

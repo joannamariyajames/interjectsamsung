@@ -67,7 +67,7 @@ REGISTRY: dict[str, ToolSpec] = {
     for spec in (
         ToolSpec(
             name="search_corpus",
-            description="Look up the travel corpus (fares, hotels, policy, support).",
+            description="Look up the Interject Travel demo knowledge base (a fictional agency: fares, hotels, client policy, support).",
             effect=Effect.READ,
             params=("query",),
             fn=_search_corpus,

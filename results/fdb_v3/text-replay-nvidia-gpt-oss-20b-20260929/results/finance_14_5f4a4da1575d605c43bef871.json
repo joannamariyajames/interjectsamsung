@@ -1,0 +1,36 @@
+{
+  "example_id": "finance_14",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-finance_14-11bf86",
+  "actual_tool_calls": [
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 50.0,
+        "from_currency": "USD",
+        "to_currency": "EUR"
+      },
+      "timestamp_start": 1790693932.0645235,
+      "timestamp_end": 1790693932.0645235
+    },
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 100.0,
+        "from_currency": "CAD",
+        "to_currency": "USD"
+      },
+      "timestamp_start": 1790693933.252654,
+      "timestamp_end": 1790693933.252654
+    }
+  ],
+  "transcript": "50 US dollars is 45 euros.  \n100 Canadian dollars is 90 US dollars.",
+  "error": null,
+  "duration_s": 3.97
+}

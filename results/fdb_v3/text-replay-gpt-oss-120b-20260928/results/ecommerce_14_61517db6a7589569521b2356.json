@@ -1,0 +1,21 @@
+{
+  "example_id": "ecommerce_14",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-ecommerce_14-42cf5f",
+  "actual_tool_calls": [
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "P52",
+        "quantity": 2
+      },
+      "timestamp_start": 1790618391.6462042,
+      "timestamp_end": 1790618391.6462042
+    }
+  ],
+  "transcript": "Added two of that item to your cart.",
+  "error": null,
+  "duration_s": 0.7
+}

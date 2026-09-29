@@ -1,0 +1,26 @@
+{
+  "example_id": "finance_16",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-finance_16-d256f3",
+  "actual_tool_calls": [
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 500.0,
+        "from_currency": "JPY",
+        "to_currency": "USD"
+      },
+      "timestamp_start": 1790693945.715752,
+      "timestamp_end": 1790693945.715752
+    }
+  ],
+  "transcript": "500 yen is about 4.50 US dollars.",
+  "error": null,
+  "duration_s": 2.02
+}

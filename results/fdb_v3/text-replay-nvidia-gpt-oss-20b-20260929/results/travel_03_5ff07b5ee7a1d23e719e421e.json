@@ -1,0 +1,25 @@
+{
+  "example_id": "travel_03",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-travel_03-3201be",
+  "actual_tool_calls": [
+    {
+      "function": "search_flights",
+      "args": {
+        "destination": "London",
+        "date": "August 20"
+      },
+      "timestamp_start": 1790694474.280083,
+      "timestamp_end": 1790694474.9889836
+    }
+  ],
+  "transcript": "Here’s a flight to London on August 20th for $450. Let me know if you’d like to book it or need more options.",
+  "error": null,
+  "duration_s": 4.07
+}

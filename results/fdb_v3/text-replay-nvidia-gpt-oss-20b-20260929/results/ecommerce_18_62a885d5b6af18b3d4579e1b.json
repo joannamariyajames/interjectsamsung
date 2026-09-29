@@ -1,0 +1,33 @@
+{
+  "example_id": "ecommerce_18",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-ecommerce_18-498131",
+  "actual_tool_calls": [
+    {
+      "function": "search_products",
+      "args": {
+        "query": "gaming mouse"
+      },
+      "timestamp_start": 1790693758.2880926,
+      "timestamp_end": 1790693758.2880926
+    },
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "PROD1",
+        "quantity": 1
+      },
+      "timestamp_start": 1790693759.5241454,
+      "timestamp_end": 1790693759.5241454
+    }
+  ],
+  "transcript": "",
+  "error": null,
+  "duration_s": 7.43
+}

@@ -1,0 +1,20 @@
+{
+  "example_id": "ecommerce_01",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-ecommerce_01-361803",
+  "actual_tool_calls": [
+    {
+      "function": "track_order",
+      "args": {
+        "order_id": "ABC123"
+      },
+      "timestamp_start": 1790618218.368845,
+      "timestamp_end": 1790618218.368845
+    }
+  ],
+  "transcript": "Your order ABC123 is out for delivery right now.",
+  "error": null,
+  "duration_s": 1.35
+}

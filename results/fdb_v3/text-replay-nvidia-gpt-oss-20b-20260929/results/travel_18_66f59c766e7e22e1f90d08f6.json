@@ -1,0 +1,42 @@
+{
+  "example_id": "travel_18",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-travel_18-38c177",
+  "actual_tool_calls": [
+    {
+      "function": "search_flights",
+      "args": {
+        "destination": "Dubai",
+        "date": "April 10"
+      },
+      "timestamp_start": 1790694615.1952128,
+      "timestamp_end": 1790694615.73132
+    },
+    {
+      "function": "book_flight",
+      "args": {
+        "passenger_name": "Casey Lee"
+      },
+      "timestamp_start": 1790694620.1940706,
+      "timestamp_end": 1790694620.1940706
+    },
+    {
+      "function": "update_identity_doc",
+      "args": {
+        "doc_type": "passport",
+        "doc_number": "E-772211"
+      },
+      "timestamp_start": 1790694622.196028,
+      "timestamp_end": 1790694622.196028
+    }
+  ],
+  "transcript": "Your flight to Dubai on April 10th has been booked for Casey Lee, and your passport number has been updated to E-772211. Safe travels!",
+  "error": null,
+  "duration_s": 64.88
+}

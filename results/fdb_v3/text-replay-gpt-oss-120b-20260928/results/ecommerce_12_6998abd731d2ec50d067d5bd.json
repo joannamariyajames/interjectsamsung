@@ -1,0 +1,20 @@
+{
+  "example_id": "ecommerce_12",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-ecommerce_12-9bc6ca",
+  "actual_tool_calls": [
+    {
+      "function": "search_products",
+      "args": {
+        "query": "electronics"
+      },
+      "timestamp_start": 1790618345.266607,
+      "timestamp_end": 1790618345.266607
+    }
+  ],
+  "transcript": "I found an electronics product for you: the electronics Premium, priced at $99.99.",
+  "error": null,
+  "duration_s": 1.05
+}

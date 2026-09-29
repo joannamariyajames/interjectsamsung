@@ -1,0 +1,35 @@
+{
+  "example_id": "finance_20",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-finance_20-4289c4",
+  "actual_tool_calls": [
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 1000.0,
+        "from_currency": "USD",
+        "to_currency": "EUR"
+      },
+      "timestamp_start": 1790693978.7189252,
+      "timestamp_end": 1790693978.7189252
+    },
+    {
+      "function": "modify_autopay",
+      "args": {
+        "bill_type": "mortgage",
+        "source_account": "checking"
+      },
+      "timestamp_start": 1790693980.9657872,
+      "timestamp_end": 1790693980.9657872
+    }
+  ],
+  "transcript": "Your mortgage autopay has been switched to pull from your checking account. The current 1000 USD is about 900 EUR at a rate of 0.9. Let me know if there’s anything else you’d like to do.",
+  "error": null,
+  "duration_s": 7.75
+}

@@ -1,0 +1,34 @@
+{
+  "example_id": "finance_22",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-finance_22-ebbf3c",
+  "actual_tool_calls": [
+    {
+      "function": "modify_autopay",
+      "args": {
+        "bill_type": "mortgage",
+        "source_account": "savings"
+      },
+      "timestamp_start": 1790693998.8976712,
+      "timestamp_end": 1790693998.8976712
+    },
+    {
+      "function": "modify_autopay",
+      "args": {
+        "bill_type": "credit_card",
+        "source_account": "checking"
+      },
+      "timestamp_start": 1790694000.2514672,
+      "timestamp_end": 1790694000.2514672
+    }
+  ],
+  "transcript": "Your mortgage autopay is now set to pull from savings, and your credit card payment will come from checking. Let me know if there’s anything else you’d like to adjust.",
+  "error": null,
+  "duration_s": 7.61
+}

@@ -1,0 +1,22 @@
+{
+  "example_id": "finance_01",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-finance_01-f891dc",
+  "actual_tool_calls": [
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 500.0,
+        "from_currency": "USD",
+        "to_currency": "EUR"
+      },
+      "timestamp_start": 1790618552.4224665,
+      "timestamp_end": 1790618552.4224665
+    }
+  ],
+  "transcript": "Sure thing! Five hundred US dollars is about 450 euros right now.",
+  "error": null,
+  "duration_s": 1.41
+}

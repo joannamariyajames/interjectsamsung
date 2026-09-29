@@ -1,0 +1,42 @@
+{
+  "example_id": "housing_20",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_20-9f3588",
+  "actual_tool_calls": [
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Austin",
+        "bedrooms": 1,
+        "max_price": 2000.0
+      },
+      "timestamp_start": 1790619097.9602516,
+      "timestamp_end": 1790619098.6886868
+    },
+    {
+      "function": "calculate_commute",
+      "args": {
+        "origin_address": "my office",
+        "destination_address": "APT1",
+        "mode": "driving"
+      },
+      "timestamp_start": 1790619099.4317102,
+      "timestamp_end": 1790619100.0115886
+    },
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Austin",
+        "bedrooms": 1,
+        "max_price": 2500.0
+      },
+      "timestamp_start": 1790619100.5805485,
+      "timestamp_end": 1790619100.842318
+    }
+  ],
+  "transcript": "I found a one‑bedroom place in Austin for $2,400 that meets your budget after the adjustment.",
+  "error": null,
+  "duration_s": 4.29
+}

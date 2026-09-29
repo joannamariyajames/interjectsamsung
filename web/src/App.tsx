@@ -1,12 +1,45 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Menu, PanelRightClose, PanelRightOpen, Wifi, WifiOff, X } from "lucide-react";
+import { Car, LogOut, Menu, PanelRightClose, PanelRightOpen, Wifi, WifiOff, X } from "lucide-react";
+import { Logo } from "~/components/Logo";
 import { Badge, Button, Panel } from "~/components/ui/primitives";
 import { Composer } from "~/components/Composer";
 import { MindRail } from "~/components/MindRail";
 import { Sidebar } from "~/components/Sidebar";
 import { Transcript } from "~/components/Transcript";
+import { DriveView } from "~/drive/DriveView";
+import { AuthDialog } from "~/landing/AuthDialog";
+import { Landing } from "~/landing/Landing";
+import { useAuth } from "~/lib/auth";
 import { useSession } from "~/store/session";
+
+type Route = "landing" | "login" | "signup" | "app" | "drive";
+
+const routeFromHash = (): Route => {
+  const hash = window.location.hash.replace(/^#\/?/, "");
+  return hash === "login" || hash === "signup" || hash === "app" || hash === "drive" ? hash : "landing";
+};
+const go = (hash: string) => {
+  window.location.hash = hash;
+};
+
+function UserMenu() {
+  const { user, logout } = useAuth();
+  if (!user) return null;
+  return (
+    <div className="flex items-center gap-1.5">
+      <span
+        title={user.email}
+        className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-soft text-xs font-semibold text-accent"
+      >
+        {user.name.trim().charAt(0).toUpperCase() || "?"}
+      </span>
+      <Button variant="ghost" size="icon" aria-label="Log out" title="Log out" onClick={() => void logout()}>
+        <LogOut size={15} />
+      </Button>
+    </div>
+  );
+}
 
 function ConnectionBadge() {
   const status = useSession((s) => s.status);
@@ -24,7 +57,57 @@ function ConnectionBadge() {
   );
 }
 
+/**
+ * Routes: the public landing page at "/", with log-in and sign-up dialogs
+ * (#login, #signup); the assistant (#app) and the in-car Drive extension
+ * (#drive) need a session - without one the server refuses their sockets too.
+ */
 export default function App() {
+  const { status, refresh } = useAuth();
+  const [route, setRoute] = useState<Route>(routeFromHash);
+  const [next, setNext] = useState<Route>("app");
+
+  useEffect(() => {
+    void refresh();
+    const onHash = () => setRoute(routeFromHash());
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, [refresh]);
+
+  useEffect(() => {
+    if (status === "guest" && (route === "app" || route === "drive")) {
+      setNext(route); // come back here after logging in
+      go("login");
+    } else if (status === "user" && (route === "login" || route === "signup")) {
+      go(next);
+    }
+  }, [status, route, next]);
+
+  if (status === "loading") {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="animate-pulse">
+          <Logo size={44} />
+        </div>
+      </div>
+    );
+  }
+  if (status === "user" && route === "app") return <AssistantApp />;
+  if (status === "user" && route === "drive") return <DriveView onExit={() => go("app")} />;
+
+  return (
+    <>
+      <Landing onAuth={(mode) => go(mode)} />
+      <AnimatePresence>
+        {(route === "login" || route === "signup") && status === "guest" ? (
+          <AuthDialog mode={route} onMode={(mode) => go(mode)} onClose={() => go("")} onDone={() => go(next)} />
+        ) : null}
+      </AnimatePresence>
+    </>
+  );
+}
+
+function AssistantApp() {
   const connect = useSession((s) => s.connect);
   const disconnect = useSession((s) => s.disconnect);
   const stage = useSession((s) => s.stage);
@@ -108,8 +191,12 @@ export default function App() {
           </div>
 
           <div className="ml-auto flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => (window.location.hash = "drive")} aria-label="Open drive mode">
+              <Car size={13} /> Drive
+            </Button>
             <ConnectionBadge />
             {stage === "interrupted" ? <Badge tone="accent">interrupted</Badge> : null}
+            <UserMenu />
             <Button
               variant="ghost"
               size="icon"

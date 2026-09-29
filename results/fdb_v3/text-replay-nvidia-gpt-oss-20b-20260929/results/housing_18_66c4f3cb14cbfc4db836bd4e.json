@@ -1,0 +1,36 @@
+{
+  "example_id": "housing_18",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-housing_18-deb642",
+  "actual_tool_calls": [
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Portland",
+        "bedrooms": 1,
+        "max_price": 1800.0
+      },
+      "timestamp_start": 1790694245.8571763,
+      "timestamp_end": 1790694246.4900312
+    },
+    {
+      "function": "calculate_commute",
+      "args": {
+        "origin_address": "APT1",
+        "destination_address": "coffee shop on 5th Street",
+        "mode": "biking"
+      },
+      "timestamp_start": 1790694252.072588,
+      "timestamp_end": 1790694252.6567945
+    }
+  ],
+  "transcript": "The cheapest 1‑bedroom in Portland is $1,700 a month. It would take about 25 minutes to bike from there to your coffee shop on 5th Street.",
+  "error": null,
+  "duration_s": 21.95
+}

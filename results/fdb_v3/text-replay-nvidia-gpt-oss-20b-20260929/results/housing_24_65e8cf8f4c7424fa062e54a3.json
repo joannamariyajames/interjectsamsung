@@ -1,0 +1,35 @@
+{
+  "example_id": "housing_24",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-housing_24-0e7d8a",
+  "actual_tool_calls": [
+    {
+      "function": "update_search_filter",
+      "args": {
+        "filter_name": "max_price",
+        "value": 1500
+      },
+      "timestamp_start": 1790694380.5742896,
+      "timestamp_end": 1790694380.7774813
+    },
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Dallas",
+        "bedrooms": 1,
+        "max_price": 1500.0
+      },
+      "timestamp_start": 1790694384.0367324,
+      "timestamp_end": 1790694384.747801
+    }
+  ],
+  "transcript": "I’ve found a 1‑bedroom apartment in Dallas for $1,400. To get the walking time to a grocery store, I’d need the exact address of the apartment and a nearby store. If you can provide those details, I’ll calculate the walking time right away.",
+  "error": null,
+  "duration_s": 21.86
+}

@@ -1,0 +1,25 @@
+{
+  "example_id": "ecommerce_05",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-ecommerce_05-0d25b4",
+  "actual_tool_calls": [
+    {
+      "function": "search_products",
+      "args": {
+        "query": "desk",
+        "max_price": 300.0
+      },
+      "timestamp_start": 1790693634.7231174,
+      "timestamp_end": 1790693634.7231174
+    }
+  ],
+  "transcript": "Here’s a desk that fits your budget: the Premium Desk for $290. It’s under $300 and should meet your needs.",
+  "error": null,
+  "duration_s": 2.72
+}

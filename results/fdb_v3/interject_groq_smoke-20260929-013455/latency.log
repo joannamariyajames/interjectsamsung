@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "D:\Samsung_Hackathon\Full-Duplex-Bench\v3\analyze_tool_latency.py", line 381, in <module>
+    main()
+  File "D:\Samsung_Hackathon\Full-Duplex-Bench\v3\analyze_tool_latency.py", line 271, in main
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Samsung_Hackathon\interjectsamsung\server\.venv-fdb\Lib\site-packages\openai\_client.py", line 231, in __init__
+    raise OpenAIError(
+openai.OpenAIError: Missing credentials. Please pass an `api_key`, `workload_identity`, `admin_api_key`, or set the `OPENAI_API_KEY` or `OPENAI_ADMIN_KEY` environment variable.

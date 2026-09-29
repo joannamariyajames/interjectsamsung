@@ -1,0 +1,22 @@
+{
+  "example_id": "housing_01",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_01-b857d0",
+  "actual_tool_calls": [
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Seattle",
+        "bedrooms": 2,
+        "max_price": 2500.0
+      },
+      "timestamp_start": 1790618848.2666793,
+      "timestamp_end": 1790618848.9172237
+    }
+  ],
+  "transcript": "I found a 2‑bedroom place in Seattle for $2,400 a month.",
+  "error": null,
+  "duration_s": 2.42
+}

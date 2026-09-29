@@ -157,7 +157,13 @@ async def test_gemini_provider_stream_cancellation() -> None:
 
     yielded: list[str] = []
     task = asyncio.create_task(consume(yielded))
-    await asyncio.sleep(0.06)  # allow first chunk to be emitted
+    # Cancel as soon as the first chunk has been emitted. A fixed sleep here
+    # raced the fake stream's 50 ms chunk delay on Windows, whose ~15.6 ms
+    # default timer granularity rounds both waits to the same tick.
+    for _ in range(200):
+        if yielded:
+            break
+        await asyncio.sleep(0.005)
     task.cancel()
 
     with pytest.raises(asyncio.CancelledError):

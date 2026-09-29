@@ -34,9 +34,11 @@ is exercised directly by tests against the real ``AgentRuntime``/``Session``.
 from __future__ import annotations
 
 import asyncio
+import contextlib
+import logging
 import re
 import uuid
-from typing import Any, Awaitable, Callable, Sequence
+from typing import Any, AsyncIterator, Awaitable, Callable, Sequence
 
 from .backspace import (
     BackspaceIntegrationResult,
@@ -75,6 +77,7 @@ from .headsup import HeadsUpEvent, detect_contradiction
 from .headsup_travel import register_travel_rules
 from .session import Session, Turn
 from .speculation import SpeculationManager
+from .speech_control import is_hold
 from .work import (
     ReconciliationResult,
     extract_work_items_from_evidence,
@@ -82,6 +85,60 @@ from .work import (
     reconcile_work_items,
     validate_work_item,
 )
+
+_log = logging.getLogger(__name__)
+
+# A word plus its trailing whitespace, or a whitespace run (a chunk can start
+# with one). Joining the matches reproduces the chunk exactly.
+_WORDS = re.compile(r"\S+\s*|\s+")
+
+
+def _word_key(word: str) -> str:
+    """Compare words ignoring case, punctuation and markdown (``**``, ``-``)."""
+    return re.sub(r"[\W_]+", "", word.lower())
+
+
+async def _drop_repeated_prefix(already_said: str, chunks: AsyncIterator[str]) -> AsyncIterator[str]:
+    """Pass a resumed answer through, minus any restart of what was already said.
+
+    Asked to continue after a barge-in, a model sometimes starts over instead.
+    The start of the stream is held back only while it still matches the
+    interrupted words; once it diverges (or the repeat is complete) the rest
+    flows through untouched, so a genuine continuation is never delayed for long.
+    """
+    target = [k for k in map(_word_key, already_said.split()) if k]
+    async with contextlib.aclosing(chunks):
+        if not target:
+            async for chunk in chunks:
+                yield chunk
+            return
+        buffer = ""
+        async for chunk in chunks:
+            if buffer is None:
+                yield chunk
+                continue
+            buffer += chunk
+            matched, cut = 0, 0
+            for m in re.finditer(r"\S+\s*", buffer):
+                complete = m.end() < len(buffer) or buffer[-1:].isspace()
+                if not complete:
+                    break
+                key = _word_key(m.group())
+                if not key:
+                    cut = m.end()
+                    continue
+                if key != target[matched]:
+                    yield buffer  # a genuine continuation: release everything held
+                    buffer = None
+                    break
+                matched, cut = matched + 1, m.end()
+                if matched == len(target):
+                    rest = buffer[cut:]
+                    buffer = None
+                    if rest:
+                        yield rest
+                    break
+        # If the stream ended while still repeating, nothing new was said.
 
 # Semantic correspondences between tool argument names and canonical fact keys
 _TOOL_ARG_FACT_ALIASES: dict[str, tuple[str, ...]] = {
@@ -145,6 +202,23 @@ class AgentRuntime:
             self._token_delay = token_delay_ms
         if strict_harness is not None:
             self.harness.strict = strict_harness
+
+    async def _paced(self, chunks: AsyncIterator[str]) -> AsyncIterator[str]:
+        """Re-emit a provider's stream word by word at the session's speaking pace.
+
+        Hosted models can deliver a whole answer in well under a second, which
+        leaves nothing to interrupt; the local engine is paced the same way, so
+        only the token source differs between providers. Each word is a
+        cancellation point, and the checkpoint then holds exactly the words the
+        user saw. The provider stream is closed as soon as this stops - on a
+        barge-in too - so a hosted model's HTTP stream is not left open.
+        """
+        async with contextlib.aclosing(chunks):
+            async for chunk in chunks:
+                for word in _WORDS.findall(chunk):
+                    if self._token_delay > 0:
+                        await asyncio.sleep(self._token_delay / 1000.0)
+                    yield word
 
     def observe_fact(
         self,
@@ -216,6 +290,14 @@ class AgentRuntime:
 
     async def on_final(self, text: str, modality: str = "text", attachment: str | None = None) -> None:
         if not text.strip():
+            return
+        if is_hold(text):
+            # "Hold on" / "stop" is the barge-in, not a question to answer: stop,
+            # keep the checkpoint, and wait for "go on" or a new request.
+            if self.busy:
+                await self.interrupt("barge_in")
+            waiting = "Paused. Say 'go on' to continue." if self.session.checkpoint is not None else "Waiting for you."
+            await self.emit(StageFrame(stage=Stage.IDLE, detail=waiting))
             return
         if self.busy:
             # Speaking over the agent is itself the interrupt.
@@ -550,18 +632,22 @@ class AgentRuntime:
             await self._stage_to(Stage.RESPONDING, "Answering - interrupt any time", turn_id)
             turn_started = now_ms()
             first_token_at: float | None = None
-            async for chunk in self.provider.stream(request):
-                if first_token_at is None:
-                    first_token_at = now_ms()
-                    await self.emit(
-                        MetricFrame(
-                            name="time_to_first_token",
-                            value=round(first_token_at - turn_started, 1),
-                            note="plan complete -> first visible word",
+            answer = self.provider.stream(request)
+            if resume_from:
+                answer = _drop_repeated_prefix(resume_from, answer)
+            async with contextlib.aclosing(self._paced(answer)) as tokens:
+                async for chunk in tokens:
+                    if first_token_at is None:
+                        first_token_at = now_ms()
+                        await self.emit(
+                            MetricFrame(
+                                name="time_to_first_token",
+                                value=round(first_token_at - turn_started, 1),
+                                note="plan complete -> first visible word",
+                            )
                         )
-                    )
-                self._partial_out += chunk
-                await self.emit(TokenFrame(turn_id=turn_id, text=chunk))
+                    self._partial_out += chunk
+                    await self.emit(TokenFrame(turn_id=turn_id, text=chunk))
             self._plan_progress = "answer complete"
 
             # If a Heads-Up cut-in was triggered, ensure the cut-in correction is surfaced
@@ -619,7 +705,11 @@ class AgentRuntime:
             interrupted = True
             raise
         except Exception as exc:  # noqa: BLE001
-            await self.emit(ErrorFrame(message=f"{type(exc).__name__}: {exc}"))
+            # Recovering keeps the session alive, but the cause must not vanish:
+            # log the full traceback server-side and name it in the stage detail.
+            _log.exception("turn %s failed (provider=%s)", turn_id, self.provider.name)
+            reason = f"{type(exc).__name__}: {exc}"
+            await self.emit(ErrorFrame(message=reason))
             if self._headsup is not None:
                 cut_in = self._headsup.cut_in_text
                 self.session.add_turn(Turn(turn_id, "agent", cut_in, status="complete"))
@@ -637,7 +727,10 @@ class AgentRuntime:
                         },
                     )
                 )
-            await self.emit(StageFrame(stage=Stage.IDLE, detail="Recovered from an error."))
+            summary = " ".join(reason.split())
+            if len(summary) > 160:
+                summary = summary[:157] + "..."
+            await self.emit(StageFrame(stage=Stage.IDLE, detail=f"Recovered from an error - {summary}"))
         finally:
             self._stop_filler()
             if interrupted:

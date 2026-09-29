@@ -7,7 +7,20 @@ Runs as a standalone LiveKit worker process using cli.run_app(WorkerOptions(...)
 from __future__ import annotations
 
 import logging
+import os
+import sys
 from typing import Any
+
+try:
+    from dotenv import load_dotenv
+
+    # This worker's LIVEKIT_* / GEMINI_API_KEY live in the repository-root
+    # .env. Load it here, before .config is imported, rather than in config.py,
+    # which the web backend imports too. Never during a test run.
+    if "pytest" not in sys.modules and "PYTEST_CURRENT_TEST" not in os.environ and "PYTEST_VERSION" not in os.environ:
+        load_dotenv()
+except ImportError:
+    pass
 
 from livekit.agents import Agent, AgentSession, JobContext, WorkerOptions, cli
 from livekit.plugins.google.realtime import RealtimeModel

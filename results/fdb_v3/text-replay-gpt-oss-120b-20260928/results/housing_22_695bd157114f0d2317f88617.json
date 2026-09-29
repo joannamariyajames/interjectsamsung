@@ -1,0 +1,21 @@
+{
+  "example_id": "housing_22",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_22-0a71f1",
+  "actual_tool_calls": [
+    {
+      "function": "update_search_filter",
+      "args": {
+        "filter_name": "pets_allowed",
+        "value": "true"
+      },
+      "timestamp_start": 1790619126.2146485,
+      "timestamp_end": 1790619126.4135778
+    }
+  ],
+  "transcript": "",
+  "error": "APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIError: Tool call validation failed: tool call validation failed: parameters for tool search_apartments did not match schema: errors: [`/max_price`: expected number, but got null])",
+  "duration_s": 8.52
+}

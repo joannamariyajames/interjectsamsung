@@ -1,0 +1,22 @@
+{
+  "example_id": "finance_04",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-finance_04-b5eb76",
+  "actual_tool_calls": [
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 1000.0,
+        "from_currency": "USD",
+        "to_currency": "GBP"
+      },
+      "timestamp_start": 1790618611.1202557,
+      "timestamp_end": 1790618611.1212556
+    }
+  ],
+  "transcript": "Sure thing! At the current rate, $1,000 USD converts to about £900.",
+  "error": null,
+  "duration_s": 3.24
+}

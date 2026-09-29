@@ -1,0 +1,25 @@
+{
+  "example_id": "travel_16",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-travel_16-211d07",
+  "actual_tool_calls": [
+    {
+      "function": "search_flights",
+      "args": {
+        "destination": "Vegas",
+        "date": "August 8"
+      },
+      "timestamp_start": 1790694582.5281918,
+      "timestamp_end": 1790694582.8144307
+    }
+  ],
+  "transcript": "Here are the available flights to Vegas on August 8th: flight FL123 for $450. Would you like to book it?",
+  "error": null,
+  "duration_s": 8.27
+}

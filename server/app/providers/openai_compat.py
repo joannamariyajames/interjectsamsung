@@ -8,23 +8,14 @@ so interruption behaves identically to the local engine.
 
 from __future__ import annotations
 
+import asyncio
 import json
 from typing import AsyncIterator
 
 import httpx
 
 from ..config import settings
-from .base import GenerationRequest
-
-SYSTEM = (
-    "You are a real-time assistant that can be interrupted at any moment. "
-    "Answer briefly and concretely, grounded in the evidence provided. "
-    "Cite evidence inline as [doc_id]. If you are resuming after an interruption, "
-    "continue from where you stopped instead of restarting. Never invent facts "
-    "that are not in the evidence. When session facts are provided, treat them "
-    "as the canonical user context — they reflect what the user has told you "
-    "across the conversation so far."
-)
+from .base import SYSTEM, GenerationRequest
 
 
 class OpenAICompatProvider:
@@ -54,7 +45,7 @@ class OpenAICompatProvider:
             facts_lines = "\n".join(f"  {k}: {v}" for k, v in request.facts.items())
             user += f"Session facts (canonical):\n{facts_lines}\n"
         user += (
-            f"Evidence:\n{evidence}\n\n"
+            f"Evidence (Interject Travel demo knowledge base - fictional sample data):\n{evidence}\n\n"
             f"User just said: {request.utterance}"
         )
         if request.notice:
@@ -62,12 +53,22 @@ class OpenAICompatProvider:
                 "\n\nThe safety harness refused part of this request. Tell the user plainly, "
                 f"in your own words: {request.notice}"
             )
-        if request.resume_from:
-            user += (
-                "\n\nYou were interrupted mid-answer. Here is what you had already said; "
-                f"continue it, do not repeat it:\n\"\"\"{request.resume_from}\"\"\""
-            )
         messages.append({"role": "user", "content": user})
+        if request.resume_from:
+            # The interrupted words go in as the assistant's own turn, then an
+            # explicit ask for the rest. Quoted inside a user message instead,
+            # real models (seen with Groq) re-answered from the top.
+            messages.append({"role": "assistant", "content": request.resume_from})
+            messages.append(
+                {
+                    "role": "user",
+                    "content": (
+                        "You were interrupted mid-answer. Continue your previous message from "
+                        "exactly where it was cut off. Output only the remaining text: do not "
+                        "repeat anything you already said and do not add a preamble."
+                    ),
+                }
+            )
         return messages
 
     async def stream(self, request: GenerationRequest) -> AsyncIterator[str]:
@@ -77,23 +78,77 @@ class OpenAICompatProvider:
             "stream": True,
             "temperature": 0.3,
         }
+        tuning = _tuning(settings.llm_model)
+        payload.update(tuning)
         headers = {"Authorization": f"Bearer {settings.llm_api_key}"}
         url = settings.llm_base_url.rstrip("/") + "/chat/completions"
 
+        # A rate limit (429) or a transient server error (5xx) is retried, but
+        # only while the provider has sent nothing yet: an error status always
+        # arrives before the first streamed chunk, so already-delivered text is
+        # never re-sent. The server's Retry-After is honoured; a wait longer than
+        # _MAX_RETRY_WAIT_S (e.g. a spent daily quota) fails at once instead.
         async with httpx.AsyncClient(timeout=60.0) as client:
-            async with client.stream("POST", url, json=payload, headers=headers) as response:
-                if response.status_code >= 400:
-                    detail = (await response.aread()).decode("utf-8", "replace")[:200]
-                    raise RuntimeError(f"provider returned {response.status_code}: {detail}")
-                async for line in response.aiter_lines():
-                    if not line.startswith("data:"):
-                        continue
-                    data = line[5:].strip()
-                    if data == "[DONE]":
+            for attempt in range(1, _MAX_ATTEMPTS + 1):
+                async with client.stream("POST", url, json=payload, headers=headers) as response:
+                    if response.status_code < 400:
+                        async for line in response.aiter_lines():
+                            if not line.startswith("data:"):
+                                continue
+                            data = line[5:].strip()
+                            if data == "[DONE]":
+                                return
+                            try:
+                                event = json.loads(data)
+                            except json.JSONDecodeError:
+                                continue
+                            if isinstance(event, dict) and event.get("error"):
+                                raise RuntimeError(f"provider stream error: {event['error']}")
+                            try:
+                                delta = event["choices"][0]["delta"].get("content")
+                            except (KeyError, IndexError, TypeError, AttributeError):
+                                continue
+                            if delta:
+                                yield delta
                         return
-                    try:
-                        delta = json.loads(data)["choices"][0]["delta"].get("content")
-                    except (json.JSONDecodeError, KeyError, IndexError):
+
+                    detail = (await response.aread()).decode("utf-8", "replace")[:400]
+                    if response.status_code == 400 and any(key in detail for key in tuning):
+                        # This endpoint does not take an optional tuning field:
+                        # ask again at once without them rather than fail the turn.
+                        for key in tuning:
+                            payload.pop(key, None)
+                        tuning = {}
                         continue
-                    if delta:
-                        yield delta
+                    wait = _retry_wait(response.headers.get("retry-after"), attempt)
+                    retryable = response.status_code in _RETRYABLE_STATUS and wait <= _MAX_RETRY_WAIT_S
+                    if not retryable or attempt == _MAX_ATTEMPTS:
+                        raise RuntimeError(f"provider returned {response.status_code}: {detail}")
+                await asyncio.sleep(wait)
+            # only reached when the last attempt was spent dropping tuning fields
+            raise RuntimeError(f"provider returned 400: {detail}")
+
+
+def _tuning(model: str) -> dict[str, object]:
+    """Optional request fields that keep a spoken answer short and prompt."""
+    extra: dict[str, object] = {}
+    if settings.llm_max_tokens > 0:
+        extra["max_completion_tokens"] = settings.llm_max_tokens
+    if "gpt-oss" in model.lower() and settings.llm_reasoning_effort:
+        extra["reasoning_effort"] = settings.llm_reasoning_effort
+    return extra
+
+
+_MAX_ATTEMPTS = 3
+_MAX_RETRY_WAIT_S = 10.0
+_RETRYABLE_STATUS = {429, 500, 502, 503, 504}
+
+
+def _retry_wait(retry_after: str | None, attempt: int) -> float:
+    """Seconds to wait before the next attempt: Retry-After if given, else 1s, 2s."""
+    if retry_after:
+        try:
+            return max(0.0, float(retry_after.strip().rstrip("s")))
+        except ValueError:
+            pass
+    return float(attempt)

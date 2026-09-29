@@ -1,0 +1,29 @@
+{
+  "example_id": "ecommerce_19",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-ecommerce_19-fa2395",
+  "actual_tool_calls": [
+    {
+      "function": "search_products",
+      "args": {
+        "query": "tablet"
+      },
+      "timestamp_start": 1790618461.6619322,
+      "timestamp_end": 1790618461.6619322
+    },
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "PROD1",
+        "quantity": 1
+      },
+      "timestamp_start": 1790618462.3919022,
+      "timestamp_end": 1790618462.3919022
+    }
+  ],
+  "transcript": "Your tablet has been added to the cart.",
+  "error": null,
+  "duration_s": 1.84
+}

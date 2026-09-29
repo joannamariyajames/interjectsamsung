@@ -1,0 +1,21 @@
+{
+  "example_id": "travel_21",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-travel_21-2c79f5",
+  "actual_tool_calls": [
+    {
+      "function": "search_flights",
+      "args": {
+        "destination": "Vegas",
+        "date": "2026-08-08"
+      },
+      "timestamp_start": 1790619930.7212708,
+      "timestamp_end": 1790619930.983211
+    }
+  ],
+  "transcript": "",
+  "error": "APIConnectionError: failed to generate LLM completion after 4 attempts (caused by APIStatusError: message=\"Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198518, Requested 2191. Please try again in 5m6.288s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}\", status_code=429, retryable=True, request_id=req_01m3mm4ex8ef69nmre6xw4hsba, body={'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198518, Requested 2191. Please try again in 5m6.288s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'})",
+  "duration_s": 22.75
+}

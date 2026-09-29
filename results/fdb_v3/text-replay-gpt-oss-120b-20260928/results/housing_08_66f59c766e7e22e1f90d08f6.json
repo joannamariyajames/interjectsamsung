@@ -1,0 +1,21 @@
+{
+  "example_id": "housing_08",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_08-199676",
+  "actual_tool_calls": [
+    {
+      "function": "update_search_filter",
+      "args": {
+        "filter_name": "pet_friendly",
+        "value": "true"
+      },
+      "timestamp_start": 1790618934.824376,
+      "timestamp_end": 1790618934.905603
+    }
+  ],
+  "transcript": "Your search filter has been updated to show only pet‑friendly listings.",
+  "error": null,
+  "duration_s": 1.59
+}

@@ -1,0 +1,42 @@
+{
+  "example_id": "ecommerce_21",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-ecommerce_21-dad6ed",
+  "actual_tool_calls": [
+    {
+      "function": "track_order",
+      "args": {
+        "order_id": "BOB"
+      },
+      "timestamp_start": 1790693785.1287634,
+      "timestamp_end": 1790693785.1287634
+    },
+    {
+      "function": "search_products",
+      "args": {
+        "query": "watch",
+        "max_price": 200.0
+      },
+      "timestamp_start": 1790693786.234264,
+      "timestamp_end": 1790693786.234264
+    },
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "PROD1",
+        "quantity": 1
+      },
+      "timestamp_start": 1790693788.856892,
+      "timestamp_end": 1790693788.856892
+    }
+  ],
+  "transcript": "Your order BOB is out for delivery. I found a watch under $200 and added it to your cart.",
+  "error": null,
+  "duration_s": 8.75
+}

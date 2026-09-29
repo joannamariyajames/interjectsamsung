@@ -1,0 +1,22 @@
+{
+  "example_id": "finance_19",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-finance_19-919fad",
+  "actual_tool_calls": [
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 300.0,
+        "from_currency": "EUR",
+        "to_currency": "GBP"
+      },
+      "timestamp_start": 1790618787.7139196,
+      "timestamp_end": 1790618787.7139196
+    }
+  ],
+  "transcript": "Sure thing! Converting 300 euros gives you about 330 British pounds.",
+  "error": null,
+  "duration_s": 1.31
+}

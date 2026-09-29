@@ -1,0 +1,25 @@
+{
+  "example_id": "ecommerce_11",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-ecommerce_11-3fd472",
+  "actual_tool_calls": [
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "B7",
+        "quantity": 1
+      },
+      "timestamp_start": 1790693683.8485065,
+      "timestamp_end": 1790693683.8485065
+    }
+  ],
+  "transcript": "Your cart now has 1 unit of product B7. Let me know if you’d like to add anything else.",
+  "error": null,
+  "duration_s": 2.32
+}

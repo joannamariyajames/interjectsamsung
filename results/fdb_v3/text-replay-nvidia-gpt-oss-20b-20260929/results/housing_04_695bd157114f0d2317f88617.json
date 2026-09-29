@@ -1,0 +1,26 @@
+{
+  "example_id": "housing_04",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-housing_04-6f3681",
+  "actual_tool_calls": [
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Denver",
+        "bedrooms": 1,
+        "max_price": 2000.0
+      },
+      "timestamp_start": 1790694045.5046163,
+      "timestamp_end": 1790694046.0880992
+    }
+  ],
+  "transcript": "Here’s a 1‑bedroom apartment in Denver for $1,900 a month.",
+  "error": null,
+  "duration_s": 9.34
+}

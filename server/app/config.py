@@ -2,23 +2,20 @@
 
 Everything has a working default so the demo runs with zero setup. Set
 ``LLM_API_KEY`` to swap the deterministic local engine for a real model.
+
+This module deliberately does not load a ``.env`` file. The repository-root
+``.env`` is the LiveKit worker's credential file (see ``.env.example``);
+loading it here, where the web backend imports it too, silently switched the
+browser agent from the offline engine to Gemini whenever that file held a
+``GEMINI_API_KEY``. Entry points that need it (``app.livekit_worker``,
+``app.fdb.runner``) load it themselves before importing this module.
 """
 
 from __future__ import annotations
 
 import os
-import sys
 from dataclasses import dataclass, field
 from typing import Any
-
-try:
-    from dotenv import load_dotenv
-
-    # Preserve normal application dotenv behavior, but avoid polluting test runs
-    if "pytest" not in sys.modules and "PYTEST_CURRENT_TEST" not in os.environ and "PYTEST_VERSION" not in os.environ:
-        load_dotenv()
-except ImportError:
-    pass
 
 
 def _env_int(key: str, default: int) -> int:
@@ -53,6 +50,14 @@ class Settings:
         default_factory=lambda: os.environ.get("LLM_BASE_URL", "https://api.openai.com/v1")
     )
     llm_model: str = field(default_factory=lambda: os.environ.get("LLM_MODEL", "gpt-4o-mini"))
+    # A spoken answer should be short; the cap is a backstop for when a model
+    # ignores the prompt (0 disables it).
+    llm_max_tokens: int = field(default_factory=lambda: _env_int("LLM_MAX_TOKENS", 900))
+    # Reasoning models (gpt-oss) think before the first word; "low" keeps the
+    # silence before an answer short, which matters more in voice than depth.
+    llm_reasoning_effort: str = field(
+        default_factory=lambda: os.environ.get("LLM_REASONING_EFFORT", "low")
+    )
 
     # Gemini configuration
     gemini_api_key: Any = _UNSET
@@ -92,6 +97,10 @@ class Settings:
     tool_timeout_ms: int = field(default_factory=lambda: _env_int("TOOL_TIMEOUT_MS", 4000))
     max_tool_calls_per_turn: int = field(default_factory=lambda: _env_int("MAX_TOOL_CALLS", 4))
     strict_harness: bool = field(default_factory=lambda: _env_bool("STRICT_HARNESS", True))
+
+    # --- accounts -------------------------------------------------------
+    # The assistant and Drive need a logged-in user (app/auth.py); 0 opens them.
+    auth_required: bool = field(default_factory=lambda: _env_bool("AUTH_REQUIRED", True))
 
     # --- session --------------------------------------------------------
     # Session-scoped memory only; no cross-session user profile is ever built.

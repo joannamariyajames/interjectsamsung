@@ -1,0 +1,21 @@
+{
+  "example_id": "housing_03",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_03-a1234f",
+  "actual_tool_calls": [
+    {
+      "function": "update_search_filter",
+      "args": {
+        "filter_name": "max_price",
+        "value": "1800"
+      },
+      "timestamp_start": 1790618873.3898249,
+      "timestamp_end": 1790618873.461313
+    }
+  ],
+  "transcript": "Your search filter has been updated to a maximum monthly price of 1800.",
+  "error": null,
+  "duration_s": 1.44
+}

@@ -1,0 +1,29 @@
+📖 Loading benchmark data from benchmark_data_v2.json...
+📁 Scanning fdb_v3_data_released for provider 'interject_groq_replay'...
+🔍 Found 100 valid result files matching benchmark scenarios.
+
+📊 EVALUATION REPORT
+========================================================
+  Scenarios evaluated : 100
+  Turn-Take Success   : 81/100 (81.0%)
+  No Response (silent): 19
+
+  By Metric (turn-taken only, N=81):
+    Tool Selection Acc : 97.7%
+    Argument Acc       : 73.5%
+    Response Qual      : (LLM judge disabled, use --use-llm)
+
+  Latency (N=0, turn-taken only):
+
+  By Domain (all samples):
+    ecommerce_support: tool_selection_acc=94.7%, argument_acc=74.1%
+    finance_billing: tool_selection_acc=100.0%, argument_acc=100.0%
+    housing_location: tool_selection_acc=96.0%, argument_acc=42.3%
+    travel_identity: tool_selection_acc=50.0%, argument_acc=16.7%
+
+  By Difficulty (all samples):
+    easy: tool_selection_acc=97.2%, argument_acc=66.7%
+    medium: tool_selection_acc=87.3%, argument_acc=61.8%
+    hard: tool_selection_acc=75.9%, argument_acc=52.8%
+
+  📄 Full report saved: D:/Samsung_Hackathon/interjectsamsung/results/fdb_v3/text-replay-gpt-oss-120b-20260928/interject_groq_replay_evaluation_report.json

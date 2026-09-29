@@ -1,0 +1,25 @@
+{
+  "example_id": "travel_01",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-travel_01-77e5f3",
+  "actual_tool_calls": [
+    {
+      "function": "search_flights",
+      "args": {
+        "destination": "Tokyo",
+        "date": "July 15"
+      },
+      "timestamp_start": 1790694453.4662044,
+      "timestamp_end": 1790694453.882664
+    }
+  ],
+  "transcript": "Here are the flights I found for July 15 to Tokyo: flight FL123, priced at $450.",
+  "error": null,
+  "duration_s": 5.33
+}

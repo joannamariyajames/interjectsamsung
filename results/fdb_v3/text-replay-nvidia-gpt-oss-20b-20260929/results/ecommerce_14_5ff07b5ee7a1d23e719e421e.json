@@ -1,0 +1,25 @@
+{
+  "example_id": "ecommerce_14",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-ecommerce_14-c0d460",
+  "actual_tool_calls": [
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "P5X2",
+        "quantity": 2
+      },
+      "timestamp_start": 1790693714.3610785,
+      "timestamp_end": 1790693714.3610785
+    }
+  ],
+  "transcript": "Your cart now has 2 of P5X2, totaling $199.98. Let me know what else you’d like to do.",
+  "error": null,
+  "duration_s": 4.34
+}

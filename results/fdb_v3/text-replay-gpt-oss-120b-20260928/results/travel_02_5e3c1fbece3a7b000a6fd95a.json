@@ -1,0 +1,21 @@
+{
+  "example_id": "travel_02",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-travel_02-712964",
+  "actual_tool_calls": [
+    {
+      "function": "update_identity_doc",
+      "args": {
+        "doc_type": "passport",
+        "doc_number": "P88990011"
+      },
+      "timestamp_start": 1790619229.6131122,
+      "timestamp_end": 1790619229.6131122
+    }
+  ],
+  "transcript": "Your passport number has been updated successfully.",
+  "error": null,
+  "duration_s": 16.62
+}

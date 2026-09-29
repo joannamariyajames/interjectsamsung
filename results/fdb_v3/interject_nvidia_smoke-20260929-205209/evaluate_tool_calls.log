@@ -1,0 +1,26 @@
+📖 Loading benchmark data from benchmark_data_v2.json...
+📁 Scanning D:/Samsung_Hackathon/interjectsamsung/results/fdb_v3/interject_nvidia_smoke-20260929-205209/subset-data for provider 'interject_nvidia_smoke'...
+🔍 Found 3 valid result files matching benchmark scenarios.
+
+📊 EVALUATION REPORT
+========================================================
+  Scenarios evaluated : 3
+  Turn-Take Success   : 3/3 (100.0%)
+
+  By Metric (turn-taken only, N=3):
+    Tool Selection Acc : 100.0%
+    Argument Acc       : 100.0%
+    Response Qual      : (LLM judge disabled, use --use-llm)
+
+  Latency (N=3, turn-taken only):
+    Avg latency        : 10.61s ± 8.08s  (excl. interruptions)
+    Min / Max          : 1.84s / 17.76s
+    Interruptions      : 0 / 3  (0.0%)
+
+  By Domain (all samples):
+    ecommerce_support: tool_selection_acc=100.0%, argument_acc=100.0%
+
+  By Difficulty (all samples):
+    easy: tool_selection_acc=100.0%, argument_acc=100.0%
+
+  📄 Full report saved: D:/Samsung_Hackathon/interjectsamsung/results/fdb_v3/interject_nvidia_smoke-20260929-205209/interject_nvidia_smoke_evaluation_report.json

@@ -1,0 +1,25 @@
+{
+  "example_id": "travel_14",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-travel_14-c42f9e",
+  "actual_tool_calls": [
+    {
+      "function": "search_flights",
+      "args": {
+        "destination": "Seoul",
+        "date": "March 22"
+      },
+      "timestamp_start": 1790694569.852725,
+      "timestamp_end": 1790694570.357482
+    }
+  ],
+  "transcript": "Here are the flights to Seoul on March 22: flight FL123, price $450. Let me know if you’d like to book or need more options.",
+  "error": null,
+  "duration_s": 9.07
+}

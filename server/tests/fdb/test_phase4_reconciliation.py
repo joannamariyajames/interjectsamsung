@@ -5,7 +5,8 @@ Verifies:
    Original request -> tool call -> user correction -> old work becomes stale ->
    stale call blocked by Phase 3 gate -> new tool call executes with updated facts.
 2. Unaffected facts and work items are preserved during fact correction.
-3. Telemetry buffering and flushing only emits valid work items, pruning stale ones.
+3. Telemetry reports every executed call (a later-stale one included); calls the
+   gate blocks before execution are never run and never reported.
 4. Gemini's 12-tool surface remains strictly static throughout the lifecycle.
 5. End-to-end integration between Session.facts, BackspaceCore, and FDBBackspaceAdapter.
 """
@@ -169,19 +170,19 @@ async def test_phase4_complete_reconciliation_flow(tmp_path: Path):
     assert q_fact_v1.fact_id not in w2.depends_on_facts
 
     # -----------------------------------------------------------------------
-    # Step 5: Telemetry Pruning & Flush Verification
+    # Step 5: Telemetry reports what actually executed
     # -----------------------------------------------------------------------
-    # Only valid work w2 is written; stale work w1 is pruned from telemetry log
-    flushed_count = adapter.flush()
-    assert flushed_count == 1
+    # Both searches ran, so both are reported (each when it executed); the
+    # blocked re-invocations of stale w1 never ran and are not reported.
+    assert adapter.flush() == 0
     assert telemetry_file.exists()
 
     records = [
         json.loads(line)
         for line in telemetry_file.read_text(encoding="utf-8").strip().splitlines()
     ]
-    assert len(records) == 1
-    rec = records[0]
+    assert [r["call"]["args"]["query"] for r in records] == ["running shoes", "hiking boots"]
+    rec = records[1]
     assert rec["call"]["function"] == "search_products"
     assert rec["call"]["args"]["query"] == "hiking boots"
     assert rec["call"]["args"]["max_price"] == 100.0
@@ -247,20 +248,18 @@ async def test_phase4_unaffected_work_and_facts_preserved(tmp_path: Path):
     res_search2_raw = await tool_map["search_products"](query="desktop")
     assert json.loads(res_search2_raw)["status"] == "success"
 
-    # 6. Flush telemetry: contains track_order and new search, but NOT old search
-    flushed = adapter.flush()
-    assert flushed == 2
+    # 6. Telemetry reports all three executed calls, in order
+    assert adapter.flush() == 0
 
     records = [
         json.loads(line)
         for line in telemetry_file.read_text(encoding="utf-8").strip().splitlines()
     ]
-    funcs = [r["call"]["function"] for r in records]
-    assert "track_order" in funcs
-    assert "search_products" in funcs
-
-    search_rec = [r for r in records if r["call"]["function"] == "search_products"][0]
-    assert search_rec["call"]["args"]["query"] == "desktop"
+    assert [(r["call"]["function"], r["call"]["args"]) for r in records] == [
+        ("search_products", {"query": "laptop"}),
+        ("track_order", {"order_id": "ORD-456"}),
+        ("search_products", {"query": "desktop"}),
+    ]
 
 
 # ===========================================================================
@@ -319,14 +318,13 @@ async def test_phase4_runtime_observation_end_to_end(tmp_path: Path):
     res2_raw = await tool_map["search_products"](query="boots")
     assert json.loads(res2_raw)["status"] == "success"
 
-    # Telemetry records only the fresh call
+    # Telemetry reports both executed searches; the blocked reuse never ran
     adapter.flush()
     records = [
         json.loads(line)
         for line in telemetry_file.read_text(encoding="utf-8").strip().splitlines()
     ]
-    assert len(records) == 1
-    assert records[0]["call"]["args"]["query"] == "boots"
+    assert [r["call"]["args"]["query"] for r in records] == ["sneakers", "boots"]
 
 
 # ===========================================================================

@@ -1,0 +1,20 @@
+{
+  "example_id": "finance_17",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-finance_17-14668a",
+  "actual_tool_calls": [
+    {
+      "function": "get_card_benefits",
+      "args": {
+        "card_type": "gold"
+      },
+      "timestamp_start": 1790618763.349319,
+      "timestamp_end": 1790618763.349319
+    }
+  ],
+  "transcript": "The gold card offers 2% cashback and no foreign transaction fees.",
+  "error": null,
+  "duration_s": 0.92
+}

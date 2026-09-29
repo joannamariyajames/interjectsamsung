@@ -1,0 +1,25 @@
+{
+  "example_id": "travel_19",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-travel_19-e92ac6",
+  "actual_tool_calls": [
+    {
+      "function": "search_flights",
+      "args": {
+        "destination": "Milan",
+        "date": "June 3"
+      },
+      "timestamp_start": 1790694680.47513,
+      "timestamp_end": 1790694680.9027598
+    }
+  ],
+  "transcript": "Here are the flights to Milan on June 3: flight FL123, price $450.00.",
+  "error": null,
+  "duration_s": 28.68
+}

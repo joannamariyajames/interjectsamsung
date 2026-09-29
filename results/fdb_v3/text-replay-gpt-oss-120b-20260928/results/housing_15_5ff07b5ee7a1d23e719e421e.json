@@ -1,0 +1,22 @@
+{
+  "example_id": "housing_15",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_15-756b8b",
+  "actual_tool_calls": [
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Atlanta",
+        "bedrooms": 3,
+        "max_price": 2500.0
+      },
+      "timestamp_start": 1790619023.7210338,
+      "timestamp_end": 1790619024.1474502
+    }
+  ],
+  "transcript": "I found a pet‑friendly three‑bedroom apartment in Atlanta for $2,400.",
+  "error": null,
+  "duration_s": 1.5
+}

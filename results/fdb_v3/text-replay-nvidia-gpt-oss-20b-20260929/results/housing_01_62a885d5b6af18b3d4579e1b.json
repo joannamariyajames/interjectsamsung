@@ -1,0 +1,26 @@
+{
+  "example_id": "housing_01",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-housing_01-c168c8",
+  "actual_tool_calls": [
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Seattle",
+        "bedrooms": 2,
+        "max_price": 2500.0
+      },
+      "timestamp_start": 1790694015.755841,
+      "timestamp_end": 1790694016.1773326
+    }
+  ],
+  "transcript": "Here’s a 2‑bedroom apartment in Seattle for $2,400 a month. Let me know if you’d like more options or details.",
+  "error": null,
+  "duration_s": 4.74
+}

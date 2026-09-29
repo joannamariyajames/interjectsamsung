@@ -1,0 +1,30 @@
+{
+  "example_id": "housing_13",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-housing_13-3fdc7b",
+  "actual_tool_calls": [
+    {
+      "function": "update_search_filter",
+      "args": {
+        "filter_name": "max_price",
+        "value": "3000"
+      },
+      "timestamp_start": 1790618985.9148223,
+      "timestamp_end": 1790618986.1002438
+    },
+    {
+      "function": "update_search_filter",
+      "args": {
+        "filter_name": "bedrooms",
+        "value": "3"
+      },
+      "timestamp_start": 1790618987.0603566,
+      "timestamp_end": 1790618987.215793
+    }
+  ],
+  "transcript": "Your search filters have been updated to a maximum price of $3,000 per month and a minimum of 3 bedrooms.",
+  "error": null,
+  "duration_s": 3.23
+}

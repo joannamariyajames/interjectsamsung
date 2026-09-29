@@ -1,0 +1,25 @@
+{
+  "example_id": "travel_03",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-travel_03-28e4ef",
+  "actual_tool_calls": [
+    {
+      "function": "search_flights",
+      "args": {
+        "destination": "London",
+        "date": "August 20"
+      },
+      "timestamp_start": 1790694481.3832152,
+      "timestamp_end": 1790694482.0013509
+    }
+  ],
+  "transcript": "Here are the flights I found for London on August 20th: flight FL123, priced at $450. Let me know if you’d like to book it or need more options.",
+  "error": null,
+  "duration_s": 4.83
+}

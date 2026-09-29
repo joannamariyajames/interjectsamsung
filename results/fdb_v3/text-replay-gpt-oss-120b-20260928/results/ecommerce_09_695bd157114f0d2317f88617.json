@@ -1,0 +1,20 @@
+{
+  "example_id": "ecommerce_09",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-ecommerce_09-7d7f09",
+  "actual_tool_calls": [
+    {
+      "function": "search_products",
+      "args": {
+        "query": "hiking boots"
+      },
+      "timestamp_start": 1790618310.744754,
+      "timestamp_end": 1790618310.744754
+    }
+  ],
+  "transcript": "I found a hiking boot called “hiking boots Premium” for $99.99.",
+  "error": null,
+  "duration_s": 1.3
+}

@@ -1,0 +1,33 @@
+{
+  "example_id": "ecommerce_10",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-ecommerce_10-2a1962",
+  "actual_tool_calls": [
+    {
+      "function": "track_order",
+      "args": {
+        "order_id": "123ABC"
+      },
+      "timestamp_start": 1790693675.2693162,
+      "timestamp_end": 1790693675.2693162
+    },
+    {
+      "function": "search_products",
+      "args": {
+        "query": "winter jackets",
+        "max_price": 150.0
+      },
+      "timestamp_start": 1790693676.3141272,
+      "timestamp_end": 1790693676.3141272
+    }
+  ],
+  "transcript": "Your order 1-2-3-A-B-C is out for delivery. I found a winter jacket under $150: “winter jackets Premium” for $140. Let me know if you’d like to add it to your cart.",
+  "error": null,
+  "duration_s": 5.32
+}

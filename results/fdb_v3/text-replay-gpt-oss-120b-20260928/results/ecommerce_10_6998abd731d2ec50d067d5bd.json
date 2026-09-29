@@ -1,0 +1,29 @@
+{
+  "example_id": "ecommerce_10",
+  "provider": "interject_groq_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-120b",
+  "room_name": "replay-ecommerce_10-7baab8",
+  "actual_tool_calls": [
+    {
+      "function": "track_order",
+      "args": {
+        "order_id": "1-2-3-A-B-C"
+      },
+      "timestamp_start": 1790618322.1232188,
+      "timestamp_end": 1790618322.1232188
+    },
+    {
+      "function": "search_products",
+      "args": {
+        "query": "winter jackets",
+        "max_price": 150.0
+      },
+      "timestamp_start": 1790618322.7428687,
+      "timestamp_end": 1790618322.7428687
+    }
+  ],
+  "transcript": "Your order 1-2-3-A-B-C is out for delivery. I’ve also searched for winter jackets under $150. Your order 1-2-3-A-B-C is out for delivery. I also found a winter jacket under $150—product ID PROD1, priced at $140.",
+  "error": null,
+  "duration_s": 1.84
+}

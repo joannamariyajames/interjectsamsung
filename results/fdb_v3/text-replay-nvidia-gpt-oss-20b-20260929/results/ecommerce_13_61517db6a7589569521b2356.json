@@ -1,0 +1,33 @@
+{
+  "example_id": "ecommerce_13",
+  "provider": "interject_nvidia_replay",
+  "mode": "text_replay",
+  "llm_model": "openai/gpt-oss-20b",
+  "llm_endpoint": "https://integrate.api.nvidia.com/v1",
+  "llm_temperature": 0.0,
+  "llm_seed": 7,
+  "llm_reasoning_effort": "low",
+  "room_name": "replay-ecommerce_13-db442a",
+  "actual_tool_calls": [
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "K2",
+        "quantity": 1
+      },
+      "timestamp_start": 1790693706.1662748,
+      "timestamp_end": 1790693706.1662748
+    },
+    {
+      "function": "track_order",
+      "args": {
+        "order_id": "DELIV"
+      },
+      "timestamp_start": 1790693707.1070561,
+      "timestamp_end": 1790693707.1070561
+    }
+  ],
+  "transcript": "Your item K-2 has been added to the cart. Your last order D-E-L-I-V is out for delivery.",
+  "error": null,
+  "duration_s": 4.72
+}
