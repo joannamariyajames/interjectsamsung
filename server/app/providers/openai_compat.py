@@ -45,7 +45,7 @@ class OpenAICompatProvider:
             facts_lines = "\n".join(f"  {k}: {v}" for k, v in request.facts.items())
             user += f"Session facts (canonical):\n{facts_lines}\n"
         user += (
-            f"Evidence:\n{evidence}\n\n"
+            f"Evidence (Interject Travel demo knowledge base - fictional sample data):\n{evidence}\n\n"
             f"User just said: {request.utterance}"
         )
         if request.notice:

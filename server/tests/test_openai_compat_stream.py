@@ -185,6 +185,25 @@ def test_real_model_providers_share_a_general_purpose_prompt() -> None:
     assert openai_compat.SYSTEM is SYSTEM
     lowered = SYSTEM.lower()
     assert "general-purpose" in lowered and "general knowledge" in lowered
-    assert "only when it actually answers" in lowered  # passages are optional, not a cage
+    assert "use a passage only when the user asks about" in lowered  # passages are optional, not a cage
     assert "never swap in a different route" in lowered
     assert "never invent facts that are not in the evidence" not in lowered
+
+
+def test_the_prompt_frames_the_knowledge_base_as_a_fictional_demo_agency() -> None:
+    lowered = SYSTEM.lower()
+    assert "interject travel, a fictional demo travel agency" in lowered
+    assert "not real-world facts" in lowered
+    assert "never assume the user belongs to a company or corporate account" in lowered
+    assert "never apply a client policy to the user unless" in lowered
+    assert "general travel questions, ignore the passages" in lowered
+
+
+def test_evidence_reaches_the_model_labelled_as_fictional_sample_data() -> None:
+    request = GenerationRequest(
+        goal="trip", utterance="I want to travel to Mumbai on Friday",
+        evidence=[{"doc_id": "policy#7", "title": "Approval thresholds", "snippet": "For corporate clients..."}],
+    )
+    user = OpenAICompatProvider()._messages(request)[-1]["content"]
+    assert "Evidence (Interject Travel demo knowledge base - fictional sample data):" in user
+    assert "[policy#7] Approval thresholds" in user

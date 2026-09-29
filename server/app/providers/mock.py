@@ -89,7 +89,7 @@ class MockProvider:
                 top["snippet"], request.utterance + " " + request.goal, limit=1
             )
             parts.append(
-                f"On {top['title'].lower()}: {lead[0] if lead else top['snippet'][:160]}\n\n"
+                f"Per Interject Travel's demo guide, on {top['title'].lower()}: {lead[0] if lead else top['snippet'][:160]}\n\n"
             )
 
         bullets: list[str] = []

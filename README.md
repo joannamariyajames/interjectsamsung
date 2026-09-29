@@ -95,8 +95,8 @@ against the live socket, using the same public actions a human would.
 ### Using a real model
 
 Everything works the same; only the token source changes. With a real model
-the agent answers general questions too, using and citing the knowledge base
-only where it is relevant. Answers are streamed at the **Speaking pace** set in
+the agent answers general questions too, using and citing the demo knowledge
+base only when you ask about the demo agency (see below). Answers are streamed at the **Speaking pace** set in
 the sidebar whatever the model's own speed, so there is always time to cut in.
 
 Groq (free tier, fast; any OpenAI-compatible endpoint works the same way).
@@ -146,6 +146,24 @@ call fails (a spent quota, a bad key), the turn ends with the error in the
 stage line and the full traceback in the server log.
 
 Streaming stays cancellable chunk by chunk, so interruption behaves identically.
+
+### The knowledge base is a fictional demo agency
+
+The retrieval corpus in `server/corpus/` is the knowledge base of **Interject
+Travel, a fictional travel agency made up for this demo**: its own fare
+buckets, partner hotels, corporate-client policy and support desk. None of it
+is real-world data - the hotels, prices, allowances and policies are invented -
+and the agent is told so: it uses a passage only when you ask about booking
+with Interject Travel or its rules, never presents one as a real airline's or
+hotel's fact, and never applies a client policy to you unless you say you are
+a corporate client. It holds no flight schedules or live fares; for those the
+agent gives general guidance and says to check a live source. Answers show
+only the passages they actually cite, labelled as the demo agency's.
+
+The corpus exists to exercise the interruption machinery on something
+concrete - speculative retrieval mid-sentence, evidence carried across a
+checkpoint, the harness refusing a self-approved booking, heads-up cut-ins
+when a claim contradicts a passage - not as a source of travel facts.
 
 ---
 
@@ -353,7 +371,7 @@ server/          FastAPI + asyncio agent runtime
   app/providers/     deterministic local engine + OpenAI-compatible streaming
   app/drive/         use-case extension: in-car voice assistant (/ws/drive)
   app/fdb/           Full-Duplex-Bench v3 agent (LiveKit), replay, run helpers
-  corpus/            the provided corpus (travel: fares, hotels, policy, support)
+  corpus/            demo knowledge base of Interject Travel, a fictional agency (sample data)
   tests/             19 tests, including the interruption behaviours
 web/             React + Vite + Tailwind v4
   src/components/MindRail.tsx    live stages, latency, harness audit, timeline
@@ -385,8 +403,10 @@ refuses an irreversible call.
 - Speculation is scored loosely and then verified: the prefetched passages must
   cover at least half of what the finished utterance actually needs, or they are
   discarded and refetched. A wrong guess costs latency, never correctness.
-- Voice is simulated from transcripts, which is what the brief permits. Real
-  microphone input would drop into the same partial channel unchanged.
+- Voice uses the browser's own speech engines (Chrome or Edge; English, en-IN).
+  The transcript replay buttons remain for repeatable demos.
+- No live data: the agent cannot browse, and the knowledge base is fictional
+  sample data, so fares, schedules and availability are general guidance only.
 - The telemetry rail is desktop-first: it is shown by default from 1280px and can
   be toggled on from 1024px. Below 768px the sidebar moves into a slide-over
   drawer behind the menu button. The chat itself works at phone width.

@@ -13,11 +13,19 @@ const MODALITY_ICON = {
 } as const;
 
 function Evidence({ message }: { message: ChatMessage }) {
-  const docs = (message.meta?.evidence as string[] | undefined) ?? [];
+  // Only what the answer actually cites: a passage that was retrieved but not
+  // used did not ground anything, and showing it implies it did.
+  const retrieved = (message.meta?.evidence as string[] | undefined) ?? [];
+  const docs = retrieved.filter((doc) => message.content.includes(`[${doc}]`));
   if (!docs.length) return null;
   return (
     <div className="mt-2 flex flex-wrap items-center gap-1">
-      <span className="text-[10px] uppercase tracking-wider text-muted">grounded in</span>
+      <span
+        className="text-[10px] uppercase tracking-wider text-muted"
+        title="Interject Travel is a fictional demo agency; its knowledge base is sample data, not real-world facts."
+      >
+        from the demo agency&rsquo;s knowledge base (fictional)
+      </span>
       {docs.map((doc) => (
         <Badge key={doc} tone="info" className="font-mono">
           {doc}

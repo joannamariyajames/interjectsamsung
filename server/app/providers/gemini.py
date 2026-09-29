@@ -101,7 +101,7 @@ class GeminiProvider:
             f"Active goal: {request.goal}\n"
             f"Constraints: {', '.join(request.constraints) or 'none'}\n"
             f"{facts_block}"
-            f"Evidence:\n{evidence}\n\n"
+            f"Evidence (Interject Travel demo knowledge base - fictional sample data):\n{evidence}\n\n"
             f"User just said: {request.utterance}"
         )
         if request.notice:
