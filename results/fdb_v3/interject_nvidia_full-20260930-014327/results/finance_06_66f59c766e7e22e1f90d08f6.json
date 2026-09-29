@@ -1,0 +1,422 @@
+{
+  "pid": "66f59c766e7e22e1f90d08f6",
+  "example_id": "finance_06",
+  "category": "finance_billing",
+  "title": "Card Benefits with Hesitation",
+  "provider": "interject_nvidia_full",
+  "evaluated_at": "2026-09-30T02:16:59.049003",
+  "inference_time_s": 47.12,
+  "room_name": "eval-977f4f4e",
+  "stream_start_time": 1790714821.815352,
+  "input_transcript": "Um, so uh, I was wondering what the benefits are for the travel card. I think that's the one my co-worker recommended for me.",
+  "input_asr_chunks": [
+    {
+      "text": "Um,",
+      "timestamp": [
+        0.88,
+        1.28
+      ]
+    },
+    {
+      "text": "so",
+      "timestamp": [
+        1.6,
+        1.84
+      ]
+    },
+    {
+      "text": "uh,",
+      "timestamp": [
+        1.92,
+        2.24
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        2.48,
+        2.72
+      ]
+    },
+    {
+      "text": "was",
+      "timestamp": [
+        2.72,
+        2.88
+      ]
+    },
+    {
+      "text": "wondering",
+      "timestamp": [
+        2.88,
+        3.36
+      ]
+    },
+    {
+      "text": "what",
+      "timestamp": [
+        3.36,
+        3.6
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        3.6,
+        3.7600000000000002
+      ]
+    },
+    {
+      "text": "benefits",
+      "timestamp": [
+        3.7600000000000002,
+        4.72
+      ]
+    },
+    {
+      "text": "are",
+      "timestamp": [
+        4.72,
+        5.04
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        5.04,
+        5.36
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        5.36,
+        5.68
+      ]
+    },
+    {
+      "text": "travel",
+      "timestamp": [
+        5.92,
+        6.5600000000000005
+      ]
+    },
+    {
+      "text": "card.",
+      "timestamp": [
+        6.5600000000000005,
+        7.04
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        7.6000000000000005,
+        7.84
+      ]
+    },
+    {
+      "text": "think",
+      "timestamp": [
+        7.84,
+        8.08
+      ]
+    },
+    {
+      "text": "that's",
+      "timestamp": [
+        8.08,
+        8.96
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        8.96,
+        9.28
+      ]
+    },
+    {
+      "text": "one",
+      "timestamp": [
+        9.28,
+        9.6
+      ]
+    },
+    {
+      "text": "my",
+      "timestamp": [
+        9.6,
+        9.92
+      ]
+    },
+    {
+      "text": "co-worker",
+      "timestamp": [
+        9.92,
+        10.64
+      ]
+    },
+    {
+      "text": "recommended",
+      "timestamp": [
+        10.64,
+        11.200000000000001
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        11.200000000000001,
+        11.44
+      ]
+    },
+    {
+      "text": "me.",
+      "timestamp": [
+        11.44,
+        11.76
+      ]
+    }
+  ],
+  "user_speech_end_rel": 11.76,
+  "latency": {
+    "input_duration_s": 43.74,
+    "output_duration_s": 43.74,
+    "first_speech_s": 13.65
+  },
+  "user_done_unix": 1790714833.575352,
+  "transcript": "Great choice. The travel card gives you 2% cash back and no foreign transaction fee. Let me know if you'd like to add it to your cart or need anything else.",
+  "asr_chunks": [
+    {
+      "text": "Great",
+      "timestamp": [
+        13.6,
+        14.0
+      ]
+    },
+    {
+      "text": "choice.",
+      "timestamp": [
+        14.0,
+        14.4
+      ]
+    },
+    {
+      "text": "The",
+      "timestamp": [
+        14.64,
+        14.8
+      ]
+    },
+    {
+      "text": "travel",
+      "timestamp": [
+        14.8,
+        15.200000000000001
+      ]
+    },
+    {
+      "text": "card",
+      "timestamp": [
+        15.200000000000001,
+        15.52
+      ]
+    },
+    {
+      "text": "gives",
+      "timestamp": [
+        15.52,
+        15.76
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        15.76,
+        15.92
+      ]
+    },
+    {
+      "text": "2%",
+      "timestamp": [
+        15.92,
+        16.16
+      ]
+    },
+    {
+      "text": "cash",
+      "timestamp": [
+        16.56,
+        16.96
+      ]
+    },
+    {
+      "text": "back",
+      "timestamp": [
+        16.96,
+        17.2
+      ]
+    },
+    {
+      "text": "and",
+      "timestamp": [
+        17.28,
+        17.44
+      ]
+    },
+    {
+      "text": "no",
+      "timestamp": [
+        17.44,
+        17.68
+      ]
+    },
+    {
+      "text": "foreign",
+      "timestamp": [
+        17.68,
+        18.16
+      ]
+    },
+    {
+      "text": "transaction",
+      "timestamp": [
+        18.16,
+        18.8
+      ]
+    },
+    {
+      "text": "fee.",
+      "timestamp": [
+        18.8,
+        19.12
+      ]
+    },
+    {
+      "text": "Let",
+      "timestamp": [
+        19.36,
+        19.52
+      ]
+    },
+    {
+      "text": "me",
+      "timestamp": [
+        19.52,
+        19.68
+      ]
+    },
+    {
+      "text": "know",
+      "timestamp": [
+        19.68,
+        19.84
+      ]
+    },
+    {
+      "text": "if",
+      "timestamp": [
+        19.84,
+        20.0
+      ]
+    },
+    {
+      "text": "you'd",
+      "timestamp": [
+        20.0,
+        20.32
+      ]
+    },
+    {
+      "text": "like",
+      "timestamp": [
+        20.32,
+        20.48
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        20.48,
+        20.64
+      ]
+    },
+    {
+      "text": "add",
+      "timestamp": [
+        20.64,
+        20.88
+      ]
+    },
+    {
+      "text": "it",
+      "timestamp": [
+        20.88,
+        21.04
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        21.04,
+        21.2
+      ]
+    },
+    {
+      "text": "your",
+      "timestamp": [
+        21.2,
+        21.44
+      ]
+    },
+    {
+      "text": "cart",
+      "timestamp": [
+        21.44,
+        21.92
+      ]
+    },
+    {
+      "text": "or",
+      "timestamp": [
+        21.92,
+        22.16
+      ]
+    },
+    {
+      "text": "need",
+      "timestamp": [
+        22.16,
+        22.48
+      ]
+    },
+    {
+      "text": "anything",
+      "timestamp": [
+        22.48,
+        23.12
+      ]
+    },
+    {
+      "text": "else.",
+      "timestamp": [
+        23.12,
+        23.68
+      ]
+    }
+  ],
+  "perceived_total_latency": 1.84,
+  "audio_agent_speech_start": 13.6,
+  "actual_tool_calls": [
+    {
+      "function": "get_card_benefits",
+      "args": {
+        "card_type": "travel"
+      },
+      "timestamp_start": 12.2,
+      "timestamp_end": 12.2
+    }
+  ],
+  "status": "completed"
+}

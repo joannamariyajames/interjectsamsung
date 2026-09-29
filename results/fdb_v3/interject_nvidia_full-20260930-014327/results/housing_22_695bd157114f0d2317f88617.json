@@ -1,0 +1,758 @@
+{
+  "pid": "695bd157114f0d2317f88617",
+  "example_id": "housing_22",
+  "category": "housing_location",
+  "title": "Filler-Heavy Multi-Tool Chain",
+  "provider": "interject_nvidia_full",
+  "evaluated_at": "2026-09-30T02:55:13.387256",
+  "inference_time_s": 53.63,
+  "room_name": "eval-5534cba5",
+  "stream_start_time": 1790717116.178833,
+  "input_transcript": "You know, um, can you first update my filter so pets are allowed? Um, I keep forgetting to set that. Then, like, search in Seattle for one bedroom. And then once you find something, uh, check the transit time from there to the stadium because, you know, I go to games pretty often.",
+  "input_asr_chunks": [
+    {
+      "text": "You",
+      "timestamp": [
+        0.64,
+        0.96
+      ]
+    },
+    {
+      "text": "know,",
+      "timestamp": [
+        0.96,
+        1.2
+      ]
+    },
+    {
+      "text": "um,",
+      "timestamp": [
+        1.44,
+        1.68
+      ]
+    },
+    {
+      "text": "can",
+      "timestamp": [
+        2.32,
+        2.56
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        2.56,
+        2.8000000000000003
+      ]
+    },
+    {
+      "text": "first",
+      "timestamp": [
+        2.8000000000000003,
+        3.04
+      ]
+    },
+    {
+      "text": "update",
+      "timestamp": [
+        3.04,
+        3.44
+      ]
+    },
+    {
+      "text": "my",
+      "timestamp": [
+        3.44,
+        3.6
+      ]
+    },
+    {
+      "text": "filter",
+      "timestamp": [
+        3.6,
+        4.08
+      ]
+    },
+    {
+      "text": "so",
+      "timestamp": [
+        4.08,
+        4.24
+      ]
+    },
+    {
+      "text": "pets",
+      "timestamp": [
+        4.24,
+        4.5600000000000005
+      ]
+    },
+    {
+      "text": "are",
+      "timestamp": [
+        4.5600000000000005,
+        4.72
+      ]
+    },
+    {
+      "text": "allowed?",
+      "timestamp": [
+        4.72,
+        5.44
+      ]
+    },
+    {
+      "text": "Um,",
+      "timestamp": [
+        5.76,
+        6.0
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        6.16,
+        6.32
+      ]
+    },
+    {
+      "text": "keep",
+      "timestamp": [
+        6.32,
+        6.5600000000000005
+      ]
+    },
+    {
+      "text": "forgetting",
+      "timestamp": [
+        6.5600000000000005,
+        7.2
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        7.2,
+        7.5200000000000005
+      ]
+    },
+    {
+      "text": "set",
+      "timestamp": [
+        7.5200000000000005,
+        7.84
+      ]
+    },
+    {
+      "text": "that.",
+      "timestamp": [
+        7.84,
+        8.16
+      ]
+    },
+    {
+      "text": "Then,",
+      "timestamp": [
+        8.48,
+        8.72
+      ]
+    },
+    {
+      "text": "like,",
+      "timestamp": [
+        8.8,
+        8.96
+      ]
+    },
+    {
+      "text": "search",
+      "timestamp": [
+        9.120000000000001,
+        9.36
+      ]
+    },
+    {
+      "text": "in",
+      "timestamp": [
+        9.36,
+        9.52
+      ]
+    },
+    {
+      "text": "Seattle",
+      "timestamp": [
+        9.52,
+        10.0
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        10.0,
+        10.16
+      ]
+    },
+    {
+      "text": "one",
+      "timestamp": [
+        10.24,
+        10.48
+      ]
+    },
+    {
+      "text": "bedroom.",
+      "timestamp": [
+        10.48,
+        11.52
+      ]
+    },
+    {
+      "text": "And",
+      "timestamp": [
+        11.84,
+        11.92
+      ]
+    },
+    {
+      "text": "then",
+      "timestamp": [
+        11.92,
+        12.16
+      ]
+    },
+    {
+      "text": "once",
+      "timestamp": [
+        12.16,
+        12.48
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        12.48,
+        12.72
+      ]
+    },
+    {
+      "text": "find",
+      "timestamp": [
+        12.72,
+        12.96
+      ]
+    },
+    {
+      "text": "something,",
+      "timestamp": [
+        12.96,
+        13.120000000000001
+      ]
+    },
+    {
+      "text": "uh,",
+      "timestamp": [
+        13.280000000000001,
+        13.36
+      ]
+    },
+    {
+      "text": "check",
+      "timestamp": [
+        13.52,
+        13.84
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        13.84,
+        14.16
+      ]
+    },
+    {
+      "text": "transit",
+      "timestamp": [
+        14.16,
+        14.8
+      ]
+    },
+    {
+      "text": "time",
+      "timestamp": [
+        14.8,
+        15.120000000000001
+      ]
+    },
+    {
+      "text": "from",
+      "timestamp": [
+        15.44,
+        15.76
+      ]
+    },
+    {
+      "text": "there",
+      "timestamp": [
+        15.76,
+        16.0
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        16.0,
+        16.080000000000002
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        16.080000000000002,
+        16.240000000000002
+      ]
+    },
+    {
+      "text": "stadium",
+      "timestamp": [
+        16.240000000000002,
+        16.64
+      ]
+    },
+    {
+      "text": "because,",
+      "timestamp": [
+        16.72,
+        16.88
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        16.96,
+        17.04
+      ]
+    },
+    {
+      "text": "know,",
+      "timestamp": [
+        17.04,
+        17.12
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        17.2,
+        17.36
+      ]
+    },
+    {
+      "text": "go",
+      "timestamp": [
+        17.36,
+        17.44
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        17.44,
+        17.6
+      ]
+    },
+    {
+      "text": "games",
+      "timestamp": [
+        17.6,
+        18.0
+      ]
+    },
+    {
+      "text": "pretty",
+      "timestamp": [
+        18.0,
+        18.56
+      ]
+    },
+    {
+      "text": "often.",
+      "timestamp": [
+        18.56,
+        19.52
+      ]
+    }
+  ],
+  "user_speech_end_rel": 19.52,
+  "latency": {
+    "input_duration_s": 50.1,
+    "output_duration_s": 50.1,
+    "first_speech_s": 28.35
+  },
+  "user_done_unix": 1790717135.698833,
+  "transcript": "Got it. Your filter is now set to allow pets. I found a one-bedroom apartment in Seattle for $1.1,900. The commute from that apartment to the stadium takes about twenty-five minutes by car. Let me know if you'd like to explore more options or need anything else.",
+  "asr_chunks": [
+    {
+      "text": "Got",
+      "timestamp": [
+        28.16,
+        28.560000000000002
+      ]
+    },
+    {
+      "text": "it.",
+      "timestamp": [
+        28.560000000000002,
+        28.72
+      ]
+    },
+    {
+      "text": "Your",
+      "timestamp": [
+        28.88,
+        29.12
+      ]
+    },
+    {
+      "text": "filter",
+      "timestamp": [
+        29.12,
+        29.6
+      ]
+    },
+    {
+      "text": "is",
+      "timestamp": [
+        29.6,
+        29.76
+      ]
+    },
+    {
+      "text": "now",
+      "timestamp": [
+        29.76,
+        30.080000000000002
+      ]
+    },
+    {
+      "text": "set",
+      "timestamp": [
+        30.080000000000002,
+        30.32
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        30.32,
+        30.560000000000002
+      ]
+    },
+    {
+      "text": "allow",
+      "timestamp": [
+        30.560000000000002,
+        30.96
+      ]
+    },
+    {
+      "text": "pets.",
+      "timestamp": [
+        30.96,
+        31.36
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        31.6,
+        31.76
+      ]
+    },
+    {
+      "text": "found",
+      "timestamp": [
+        31.76,
+        31.92
+      ]
+    },
+    {
+      "text": "a",
+      "timestamp": [
+        31.92,
+        32.08
+      ]
+    },
+    {
+      "text": "one-bedroom",
+      "timestamp": [
+        32.08,
+        32.88
+      ]
+    },
+    {
+      "text": "apartment",
+      "timestamp": [
+        32.88,
+        33.44
+      ]
+    },
+    {
+      "text": "in",
+      "timestamp": [
+        33.44,
+        33.6
+      ]
+    },
+    {
+      "text": "Seattle",
+      "timestamp": [
+        33.6,
+        34.4
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        34.4,
+        34.64
+      ]
+    },
+    {
+      "text": "$1.1,900.",
+      "timestamp": [
+        34.64,
+        36.4
+      ]
+    },
+    {
+      "text": "The",
+      "timestamp": [
+        36.64,
+        36.800000000000004
+      ]
+    },
+    {
+      "text": "commute",
+      "timestamp": [
+        36.800000000000004,
+        37.2
+      ]
+    },
+    {
+      "text": "from",
+      "timestamp": [
+        37.2,
+        37.36
+      ]
+    },
+    {
+      "text": "that",
+      "timestamp": [
+        37.36,
+        37.52
+      ]
+    },
+    {
+      "text": "apartment",
+      "timestamp": [
+        37.52,
+        38.08
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        38.08,
+        38.24
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        38.24,
+        38.4
+      ]
+    },
+    {
+      "text": "stadium",
+      "timestamp": [
+        38.4,
+        39.04
+      ]
+    },
+    {
+      "text": "takes",
+      "timestamp": [
+        39.04,
+        39.52
+      ]
+    },
+    {
+      "text": "about",
+      "timestamp": [
+        39.52,
+        39.76
+      ]
+    },
+    {
+      "text": "twenty-five",
+      "timestamp": [
+        39.76,
+        40.480000000000004
+      ]
+    },
+    {
+      "text": "minutes",
+      "timestamp": [
+        40.480000000000004,
+        40.88
+      ]
+    },
+    {
+      "text": "by",
+      "timestamp": [
+        40.88,
+        41.2
+      ]
+    },
+    {
+      "text": "car.",
+      "timestamp": [
+        41.2,
+        41.44
+      ]
+    },
+    {
+      "text": "Let",
+      "timestamp": [
+        41.68,
+        41.92
+      ]
+    },
+    {
+      "text": "me",
+      "timestamp": [
+        41.92,
+        42.08
+      ]
+    },
+    {
+      "text": "know",
+      "timestamp": [
+        42.08,
+        42.24
+      ]
+    },
+    {
+      "text": "if",
+      "timestamp": [
+        42.24,
+        42.4
+      ]
+    },
+    {
+      "text": "you'd",
+      "timestamp": [
+        42.4,
+        42.72
+      ]
+    },
+    {
+      "text": "like",
+      "timestamp": [
+        42.72,
+        42.96
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        42.96,
+        43.12
+      ]
+    },
+    {
+      "text": "explore",
+      "timestamp": [
+        43.12,
+        43.6
+      ]
+    },
+    {
+      "text": "more",
+      "timestamp": [
+        43.6,
+        43.84
+      ]
+    },
+    {
+      "text": "options",
+      "timestamp": [
+        43.84,
+        44.480000000000004
+      ]
+    },
+    {
+      "text": "or",
+      "timestamp": [
+        44.480000000000004,
+        44.800000000000004
+      ]
+    },
+    {
+      "text": "need",
+      "timestamp": [
+        44.800000000000004,
+        45.12
+      ]
+    },
+    {
+      "text": "anything",
+      "timestamp": [
+        45.12,
+        45.68
+      ]
+    },
+    {
+      "text": "else.",
+      "timestamp": [
+        45.68,
+        46.32
+      ]
+    }
+  ],
+  "perceived_total_latency": 8.64,
+  "audio_agent_speech_start": 28.16,
+  "actual_tool_calls": [
+    {
+      "function": "update_search_filter",
+      "args": {
+        "filter_name": "pets_allowed",
+        "value": true
+      },
+      "timestamp_start": 22.96,
+      "timestamp_end": 23.01
+    },
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Seattle",
+        "bedrooms": 1,
+        "max_price": 2000.0
+      },
+      "timestamp_start": 25.22,
+      "timestamp_end": 25.55
+    },
+    {
+      "function": "calculate_commute",
+      "args": {
+        "origin_address": "APT1",
+        "destination_address": "Seattle Stadium",
+        "mode": "driving"
+      },
+      "timestamp_start": 27.61,
+      "timestamp_end": 27.93
+    }
+  ],
+  "status": "completed"
+}

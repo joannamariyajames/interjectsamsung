@@ -1,0 +1,324 @@
+{
+  "pid": "5f4a4da1575d605c43bef871",
+  "example_id": "ecommerce_17",
+  "category": "ecommerce_support",
+  "title": "False Start then Track",
+  "provider": "interject_nvidia_full",
+  "evaluated_at": "2026-09-30T02:02:47.141731",
+  "inference_time_s": 49.04,
+  "room_name": "eval-b81006d3",
+  "stream_start_time": 1790713969.88372,
+  "input_transcript": "Can you cancel my actually, never mind the cancellation? Um, I changed my mind about that. Can you just track order GG5 for me instead? I want to see where it is.",
+  "input_asr_chunks": [
+    {
+      "text": "Can",
+      "timestamp": [
+        2.8000000000000003,
+        2.96
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        2.96,
+        3.12
+      ]
+    },
+    {
+      "text": "cancel",
+      "timestamp": [
+        3.12,
+        3.68
+      ]
+    },
+    {
+      "text": "my",
+      "timestamp": [
+        3.68,
+        4.0
+      ]
+    },
+    {
+      "text": "actually,",
+      "timestamp": [
+        4.64,
+        4.8
+      ]
+    },
+    {
+      "text": "never",
+      "timestamp": [
+        5.12,
+        5.36
+      ]
+    },
+    {
+      "text": "mind",
+      "timestamp": [
+        5.36,
+        5.68
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        5.68,
+        5.84
+      ]
+    },
+    {
+      "text": "cancellation?",
+      "timestamp": [
+        5.84,
+        6.640000000000001
+      ]
+    },
+    {
+      "text": "Um,",
+      "timestamp": [
+        6.88,
+        7.12
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        7.44,
+        7.68
+      ]
+    },
+    {
+      "text": "changed",
+      "timestamp": [
+        7.68,
+        8.08
+      ]
+    },
+    {
+      "text": "my",
+      "timestamp": [
+        8.08,
+        8.24
+      ]
+    },
+    {
+      "text": "mind",
+      "timestamp": [
+        8.24,
+        8.56
+      ]
+    },
+    {
+      "text": "about",
+      "timestamp": [
+        8.56,
+        8.88
+      ]
+    },
+    {
+      "text": "that.",
+      "timestamp": [
+        8.88,
+        9.120000000000001
+      ]
+    },
+    {
+      "text": "Can",
+      "timestamp": [
+        9.44,
+        9.68
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        9.68,
+        9.84
+      ]
+    },
+    {
+      "text": "just",
+      "timestamp": [
+        9.84,
+        10.08
+      ]
+    },
+    {
+      "text": "track",
+      "timestamp": [
+        10.08,
+        10.48
+      ]
+    },
+    {
+      "text": "order",
+      "timestamp": [
+        10.48,
+        11.040000000000001
+      ]
+    },
+    {
+      "text": "GG5",
+      "timestamp": [
+        11.040000000000001,
+        11.76
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        12.0,
+        12.24
+      ]
+    },
+    {
+      "text": "me",
+      "timestamp": [
+        12.24,
+        12.48
+      ]
+    },
+    {
+      "text": "instead?",
+      "timestamp": [
+        12.48,
+        13.040000000000001
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        13.36,
+        13.6
+      ]
+    },
+    {
+      "text": "want",
+      "timestamp": [
+        13.6,
+        13.84
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        13.84,
+        14.0
+      ]
+    },
+    {
+      "text": "see",
+      "timestamp": [
+        14.0,
+        14.32
+      ]
+    },
+    {
+      "text": "where",
+      "timestamp": [
+        14.32,
+        14.64
+      ]
+    },
+    {
+      "text": "it",
+      "timestamp": [
+        14.64,
+        14.8
+      ]
+    },
+    {
+      "text": "is.",
+      "timestamp": [
+        14.8,
+        15.120000000000001
+      ]
+    }
+  ],
+  "user_speech_end_rel": 15.120000000000001,
+  "latency": {
+    "input_duration_s": 45.677,
+    "output_duration_s": 45.677,
+    "first_speech_s": 18.3
+  },
+  "user_done_unix": 1790713985.0037198,
+  "transcript": "Your order to G5 is currently out for delivery.",
+  "asr_chunks": [
+    {
+      "text": "Your",
+      "timestamp": [
+        18.16,
+        18.400000000000002
+      ]
+    },
+    {
+      "text": "order",
+      "timestamp": [
+        18.400000000000002,
+        18.72
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        18.8,
+        18.88
+      ]
+    },
+    {
+      "text": "G5",
+      "timestamp": [
+        19.12,
+        19.52
+      ]
+    },
+    {
+      "text": "is",
+      "timestamp": [
+        19.76,
+        19.92
+      ]
+    },
+    {
+      "text": "currently",
+      "timestamp": [
+        19.92,
+        20.32
+      ]
+    },
+    {
+      "text": "out",
+      "timestamp": [
+        20.32,
+        20.48
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        20.48,
+        20.64
+      ]
+    },
+    {
+      "text": "delivery.",
+      "timestamp": [
+        20.64,
+        21.68
+      ]
+    }
+  ],
+  "perceived_total_latency": 3.04,
+  "audio_agent_speech_start": 18.16,
+  "actual_tool_calls": [
+    {
+      "function": "track_order",
+      "args": {
+        "order_id": "GG5"
+      },
+      "timestamp_start": 16.95,
+      "timestamp_end": 16.95
+    }
+  ],
+  "status": "completed"
+}

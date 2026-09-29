@@ -1,0 +1,457 @@
+{
+  "pid": "5f4a4da1575d605c43bef871",
+  "example_id": "ecommerce_23",
+  "category": "ecommerce_support",
+  "title": "Unsupported Tool (Refund) + Valid Requests",
+  "provider": "interject_nvidia_full",
+  "evaluated_at": "2026-09-30T02:08:52.927176",
+  "inference_time_s": 55.24,
+  "room_name": "eval-7e539dc7",
+  "stream_start_time": 1790714335.6913733,
+  "input_transcript": "So, you like first, could you track order GG five? Then I'd like to process a refund for it if possible. And also, while we're at it, add item X1 to my cart so I can order a replacement.",
+  "input_asr_chunks": [
+    {
+      "text": "So,",
+      "timestamp": [
+        3.2,
+        3.36
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        3.44,
+        3.68
+      ]
+    },
+    {
+      "text": "like",
+      "timestamp": [
+        3.7600000000000002,
+        4.0
+      ]
+    },
+    {
+      "text": "first,",
+      "timestamp": [
+        4.16,
+        4.4
+      ]
+    },
+    {
+      "text": "could",
+      "timestamp": [
+        4.64,
+        4.8
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        4.8,
+        5.04
+      ]
+    },
+    {
+      "text": "track",
+      "timestamp": [
+        5.04,
+        5.44
+      ]
+    },
+    {
+      "text": "order",
+      "timestamp": [
+        5.44,
+        6.08
+      ]
+    },
+    {
+      "text": "GG",
+      "timestamp": [
+        6.08,
+        6.72
+      ]
+    },
+    {
+      "text": "five?",
+      "timestamp": [
+        6.88,
+        7.44
+      ]
+    },
+    {
+      "text": "Then",
+      "timestamp": [
+        8.08,
+        8.24
+      ]
+    },
+    {
+      "text": "I'd",
+      "timestamp": [
+        8.32,
+        8.64
+      ]
+    },
+    {
+      "text": "like",
+      "timestamp": [
+        8.64,
+        8.8
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        8.8,
+        8.96
+      ]
+    },
+    {
+      "text": "process",
+      "timestamp": [
+        8.96,
+        9.36
+      ]
+    },
+    {
+      "text": "a",
+      "timestamp": [
+        9.36,
+        9.52
+      ]
+    },
+    {
+      "text": "refund",
+      "timestamp": [
+        9.52,
+        10.08
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        10.08,
+        10.32
+      ]
+    },
+    {
+      "text": "it",
+      "timestamp": [
+        10.32,
+        10.48
+      ]
+    },
+    {
+      "text": "if",
+      "timestamp": [
+        10.48,
+        10.8
+      ]
+    },
+    {
+      "text": "possible.",
+      "timestamp": [
+        10.8,
+        11.68
+      ]
+    },
+    {
+      "text": "And",
+      "timestamp": [
+        12.32,
+        12.64
+      ]
+    },
+    {
+      "text": "also,",
+      "timestamp": [
+        12.64,
+        12.96
+      ]
+    },
+    {
+      "text": "while",
+      "timestamp": [
+        13.200000000000001,
+        13.52
+      ]
+    },
+    {
+      "text": "we're",
+      "timestamp": [
+        13.52,
+        13.84
+      ]
+    },
+    {
+      "text": "at",
+      "timestamp": [
+        13.84,
+        14.08
+      ]
+    },
+    {
+      "text": "it,",
+      "timestamp": [
+        14.08,
+        14.4
+      ]
+    },
+    {
+      "text": "add",
+      "timestamp": [
+        14.72,
+        15.040000000000001
+      ]
+    },
+    {
+      "text": "item",
+      "timestamp": [
+        15.040000000000001,
+        15.6
+      ]
+    },
+    {
+      "text": "X1",
+      "timestamp": [
+        15.6,
+        16.240000000000002
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        16.4,
+        16.64
+      ]
+    },
+    {
+      "text": "my",
+      "timestamp": [
+        16.64,
+        16.88
+      ]
+    },
+    {
+      "text": "cart",
+      "timestamp": [
+        16.88,
+        17.44
+      ]
+    },
+    {
+      "text": "so",
+      "timestamp": [
+        18.0,
+        18.32
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        18.88,
+        19.12
+      ]
+    },
+    {
+      "text": "can",
+      "timestamp": [
+        19.12,
+        19.36
+      ]
+    },
+    {
+      "text": "order",
+      "timestamp": [
+        19.36,
+        19.76
+      ]
+    },
+    {
+      "text": "a",
+      "timestamp": [
+        19.76,
+        20.080000000000002
+      ]
+    },
+    {
+      "text": "replacement.",
+      "timestamp": [
+        20.080000000000002,
+        21.04
+      ]
+    }
+  ],
+  "user_speech_end_rel": 21.04,
+  "latency": {
+    "input_duration_s": 51.819,
+    "output_duration_s": 51.819,
+    "first_speech_s": 23.9
+  },
+  "user_done_unix": 1790714356.7313733,
+  "transcript": "I'm sorry, but I don't have a tool to process your funds. I can add the item to your cart, though.",
+  "asr_chunks": [
+    {
+      "text": "I'm",
+      "timestamp": [
+        23.84,
+        24.240000000000002
+      ]
+    },
+    {
+      "text": "sorry,",
+      "timestamp": [
+        24.240000000000002,
+        24.64
+      ]
+    },
+    {
+      "text": "but",
+      "timestamp": [
+        24.88,
+        25.04
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        25.04,
+        25.2
+      ]
+    },
+    {
+      "text": "don't",
+      "timestamp": [
+        25.2,
+        25.44
+      ]
+    },
+    {
+      "text": "have",
+      "timestamp": [
+        25.44,
+        25.6
+      ]
+    },
+    {
+      "text": "a",
+      "timestamp": [
+        25.6,
+        25.68
+      ]
+    },
+    {
+      "text": "tool",
+      "timestamp": [
+        25.68,
+        26.0
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        26.0,
+        26.16
+      ]
+    },
+    {
+      "text": "process",
+      "timestamp": [
+        26.16,
+        26.64
+      ]
+    },
+    {
+      "text": "your",
+      "timestamp": [
+        26.64,
+        26.88
+      ]
+    },
+    {
+      "text": "funds.",
+      "timestamp": [
+        26.88,
+        27.28
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        27.52,
+        27.6
+      ]
+    },
+    {
+      "text": "can",
+      "timestamp": [
+        27.6,
+        27.76
+      ]
+    },
+    {
+      "text": "add",
+      "timestamp": [
+        27.76,
+        27.92
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        27.92,
+        28.080000000000002
+      ]
+    },
+    {
+      "text": "item",
+      "timestamp": [
+        28.080000000000002,
+        28.400000000000002
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        28.400000000000002,
+        28.560000000000002
+      ]
+    },
+    {
+      "text": "your",
+      "timestamp": [
+        28.560000000000002,
+        28.72
+      ]
+    },
+    {
+      "text": "cart,",
+      "timestamp": [
+        28.72,
+        29.12
+      ]
+    },
+    {
+      "text": "though.",
+      "timestamp": [
+        29.36,
+        29.84
+      ]
+    }
+  ],
+  "perceived_total_latency": 2.8,
+  "audio_agent_speech_start": 23.84,
+  "actual_tool_calls": [
+    {
+      "function": "track_order",
+      "args": {
+        "order_id": "GG5"
+      },
+      "timestamp_start": 9.21,
+      "timestamp_end": 9.21
+    }
+  ],
+  "status": "completed"
+}

@@ -1,0 +1,528 @@
+{
+  "pid": "5f4a4da1575d605c43bef871",
+  "example_id": "housing_03",
+  "category": "housing_location",
+  "title": "Filter Update with Fillers",
+  "provider": "interject_nvidia_full",
+  "evaluated_at": "2026-09-30T02:36:09.221029",
+  "inference_time_s": 51.79,
+  "room_name": "eval-79fe9e03",
+  "stream_start_time": 1790715971.9781623,
+  "input_transcript": "So, while, like, um, um, I want to update my search filter. So, the max price is like eighteen hundred dollars a month. Everything I've been seeing is way over budget.",
+  "input_asr_chunks": [
+    {
+      "text": "So,",
+      "timestamp": [
+        2.88,
+        3.04
+      ]
+    },
+    {
+      "text": "while,",
+      "timestamp": [
+        3.2,
+        3.84
+      ]
+    },
+    {
+      "text": "like,",
+      "timestamp": [
+        4.16,
+        4.4
+      ]
+    },
+    {
+      "text": "um,",
+      "timestamp": [
+        4.88,
+        5.2
+      ]
+    },
+    {
+      "text": "um,",
+      "timestamp": [
+        6.48,
+        6.8
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        6.96,
+        7.28
+      ]
+    },
+    {
+      "text": "want",
+      "timestamp": [
+        7.28,
+        7.6000000000000005
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        7.6000000000000005,
+        7.76
+      ]
+    },
+    {
+      "text": "update",
+      "timestamp": [
+        7.76,
+        8.24
+      ]
+    },
+    {
+      "text": "my",
+      "timestamp": [
+        8.24,
+        8.48
+      ]
+    },
+    {
+      "text": "search",
+      "timestamp": [
+        8.48,
+        8.88
+      ]
+    },
+    {
+      "text": "filter.",
+      "timestamp": [
+        8.88,
+        9.52
+      ]
+    },
+    {
+      "text": "So,",
+      "timestamp": [
+        9.84,
+        10.0
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        10.08,
+        10.24
+      ]
+    },
+    {
+      "text": "max",
+      "timestamp": [
+        10.24,
+        10.72
+      ]
+    },
+    {
+      "text": "price",
+      "timestamp": [
+        10.72,
+        11.200000000000001
+      ]
+    },
+    {
+      "text": "is",
+      "timestamp": [
+        11.200000000000001,
+        11.44
+      ]
+    },
+    {
+      "text": "like",
+      "timestamp": [
+        11.44,
+        11.68
+      ]
+    },
+    {
+      "text": "eighteen",
+      "timestamp": [
+        11.92,
+        12.48
+      ]
+    },
+    {
+      "text": "hundred",
+      "timestamp": [
+        12.64,
+        12.96
+      ]
+    },
+    {
+      "text": "dollars",
+      "timestamp": [
+        12.96,
+        13.280000000000001
+      ]
+    },
+    {
+      "text": "a",
+      "timestamp": [
+        13.280000000000001,
+        13.52
+      ]
+    },
+    {
+      "text": "month.",
+      "timestamp": [
+        13.52,
+        14.16
+      ]
+    },
+    {
+      "text": "Everything",
+      "timestamp": [
+        14.48,
+        14.96
+      ]
+    },
+    {
+      "text": "I've",
+      "timestamp": [
+        15.120000000000001,
+        15.44
+      ]
+    },
+    {
+      "text": "been",
+      "timestamp": [
+        15.44,
+        15.76
+      ]
+    },
+    {
+      "text": "seeing",
+      "timestamp": [
+        15.76,
+        16.080000000000002
+      ]
+    },
+    {
+      "text": "is",
+      "timestamp": [
+        16.080000000000002,
+        16.4
+      ]
+    },
+    {
+      "text": "way",
+      "timestamp": [
+        16.4,
+        16.64
+      ]
+    },
+    {
+      "text": "over",
+      "timestamp": [
+        16.64,
+        16.88
+      ]
+    },
+    {
+      "text": "budget.",
+      "timestamp": [
+        16.88,
+        17.68
+      ]
+    }
+  ],
+  "user_speech_end_rel": 17.68,
+  "latency": {
+    "input_duration_s": 48.416,
+    "output_duration_s": 48.416,
+    "first_speech_s": 21.05
+  },
+  "user_done_unix": 1790715989.6581624,
+  "transcript": "Your search filter for the maximum rent has been updated to $1.1,800 per month. If you'd like me to find apartments that fit this new budget, just let me know the city or any other details you're looking for.",
+  "asr_chunks": [
+    {
+      "text": "Your",
+      "timestamp": [
+        20.8,
+        21.2
+      ]
+    },
+    {
+      "text": "search",
+      "timestamp": [
+        21.2,
+        21.6
+      ]
+    },
+    {
+      "text": "filter",
+      "timestamp": [
+        21.6,
+        22.0
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        22.0,
+        22.240000000000002
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        22.240000000000002,
+        22.32
+      ]
+    },
+    {
+      "text": "maximum",
+      "timestamp": [
+        22.32,
+        22.96
+      ]
+    },
+    {
+      "text": "rent",
+      "timestamp": [
+        22.96,
+        23.44
+      ]
+    },
+    {
+      "text": "has",
+      "timestamp": [
+        23.44,
+        23.6
+      ]
+    },
+    {
+      "text": "been",
+      "timestamp": [
+        23.6,
+        23.76
+      ]
+    },
+    {
+      "text": "updated",
+      "timestamp": [
+        23.76,
+        24.16
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        24.16,
+        24.400000000000002
+      ]
+    },
+    {
+      "text": "$1.1,800",
+      "timestamp": [
+        24.400000000000002,
+        26.080000000000002
+      ]
+    },
+    {
+      "text": "per",
+      "timestamp": [
+        26.080000000000002,
+        26.240000000000002
+      ]
+    },
+    {
+      "text": "month.",
+      "timestamp": [
+        26.240000000000002,
+        26.48
+      ]
+    },
+    {
+      "text": "If",
+      "timestamp": [
+        26.72,
+        26.8
+      ]
+    },
+    {
+      "text": "you'd",
+      "timestamp": [
+        26.8,
+        27.12
+      ]
+    },
+    {
+      "text": "like",
+      "timestamp": [
+        27.12,
+        27.28
+      ]
+    },
+    {
+      "text": "me",
+      "timestamp": [
+        27.28,
+        27.44
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        27.44,
+        27.6
+      ]
+    },
+    {
+      "text": "find",
+      "timestamp": [
+        27.6,
+        27.76
+      ]
+    },
+    {
+      "text": "apartments",
+      "timestamp": [
+        27.76,
+        28.400000000000002
+      ]
+    },
+    {
+      "text": "that",
+      "timestamp": [
+        28.400000000000002,
+        28.560000000000002
+      ]
+    },
+    {
+      "text": "fit",
+      "timestamp": [
+        28.560000000000002,
+        28.8
+      ]
+    },
+    {
+      "text": "this",
+      "timestamp": [
+        28.8,
+        29.04
+      ]
+    },
+    {
+      "text": "new",
+      "timestamp": [
+        29.04,
+        29.28
+      ]
+    },
+    {
+      "text": "budget,",
+      "timestamp": [
+        29.28,
+        29.68
+      ]
+    },
+    {
+      "text": "just",
+      "timestamp": [
+        30.0,
+        30.240000000000002
+      ]
+    },
+    {
+      "text": "let",
+      "timestamp": [
+        30.240000000000002,
+        30.48
+      ]
+    },
+    {
+      "text": "me",
+      "timestamp": [
+        30.48,
+        30.64
+      ]
+    },
+    {
+      "text": "know",
+      "timestamp": [
+        30.64,
+        30.88
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        30.88,
+        30.96
+      ]
+    },
+    {
+      "text": "city",
+      "timestamp": [
+        30.96,
+        31.28
+      ]
+    },
+    {
+      "text": "or",
+      "timestamp": [
+        31.28,
+        31.44
+      ]
+    },
+    {
+      "text": "any",
+      "timestamp": [
+        31.44,
+        31.68
+      ]
+    },
+    {
+      "text": "other",
+      "timestamp": [
+        31.68,
+        31.92
+      ]
+    },
+    {
+      "text": "details",
+      "timestamp": [
+        31.92,
+        32.480000000000004
+      ]
+    },
+    {
+      "text": "you're",
+      "timestamp": [
+        32.480000000000004,
+        32.88
+      ]
+    },
+    {
+      "text": "looking",
+      "timestamp": [
+        32.88,
+        33.44
+      ]
+    },
+    {
+      "text": "for.",
+      "timestamp": [
+        33.44,
+        33.76
+      ]
+    }
+  ],
+  "perceived_total_latency": 3.12,
+  "audio_agent_speech_start": 20.8,
+  "actual_tool_calls": [
+    {
+      "function": "update_search_filter",
+      "args": {
+        "filter_name": "max_price",
+        "value": 1800
+      },
+      "timestamp_start": 18.17,
+      "timestamp_end": 18.25
+    }
+  ],
+  "status": "completed"
+}

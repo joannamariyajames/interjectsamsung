@@ -1,0 +1,332 @@
+{
+  "pid": "62a885d5b6af18b3d4579e1b",
+  "example_id": "travel_01",
+  "category": "travel_identity",
+  "title": "Simple Flight Search",
+  "provider": "interject_nvidia_full",
+  "evaluated_at": "2026-09-30T02:59:33.376591",
+  "inference_time_s": 39.7,
+  "room_name": "eval-b8da626c",
+  "stream_start_time": 1790717376.1108534,
+  "input_transcript": "Well, I'm trying to go to Tokyo and I was thinking about leaving around July 15th. Could you look up what flights are available for that day?",
+  "input_asr_chunks": [
+    {
+      "text": "Well,",
+      "timestamp": [
+        0.32,
+        0.56
+      ]
+    },
+    {
+      "text": "I'm",
+      "timestamp": [
+        0.72,
+        0.96
+      ]
+    },
+    {
+      "text": "trying",
+      "timestamp": [
+        0.96,
+        1.12
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        1.12,
+        1.2
+      ]
+    },
+    {
+      "text": "go",
+      "timestamp": [
+        1.2,
+        1.36
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        1.36,
+        1.44
+      ]
+    },
+    {
+      "text": "Tokyo",
+      "timestamp": [
+        1.44,
+        2.0
+      ]
+    },
+    {
+      "text": "and",
+      "timestamp": [
+        2.0,
+        2.16
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        2.16,
+        2.24
+      ]
+    },
+    {
+      "text": "was",
+      "timestamp": [
+        2.24,
+        2.32
+      ]
+    },
+    {
+      "text": "thinking",
+      "timestamp": [
+        2.32,
+        2.48
+      ]
+    },
+    {
+      "text": "about",
+      "timestamp": [
+        2.48,
+        2.64
+      ]
+    },
+    {
+      "text": "leaving",
+      "timestamp": [
+        2.64,
+        2.96
+      ]
+    },
+    {
+      "text": "around",
+      "timestamp": [
+        2.96,
+        3.12
+      ]
+    },
+    {
+      "text": "July",
+      "timestamp": [
+        3.2,
+        3.52
+      ]
+    },
+    {
+      "text": "15th.",
+      "timestamp": [
+        3.52,
+        3.92
+      ]
+    },
+    {
+      "text": "Could",
+      "timestamp": [
+        4.08,
+        4.24
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        4.24,
+        4.4
+      ]
+    },
+    {
+      "text": "look",
+      "timestamp": [
+        4.4,
+        4.48
+      ]
+    },
+    {
+      "text": "up",
+      "timestamp": [
+        4.48,
+        4.64
+      ]
+    },
+    {
+      "text": "what",
+      "timestamp": [
+        4.64,
+        4.8
+      ]
+    },
+    {
+      "text": "flights",
+      "timestamp": [
+        4.8,
+        5.12
+      ]
+    },
+    {
+      "text": "are",
+      "timestamp": [
+        5.12,
+        5.2
+      ]
+    },
+    {
+      "text": "available",
+      "timestamp": [
+        5.2,
+        5.6000000000000005
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        5.6000000000000005,
+        5.84
+      ]
+    },
+    {
+      "text": "that",
+      "timestamp": [
+        5.84,
+        6.16
+      ]
+    },
+    {
+      "text": "day?",
+      "timestamp": [
+        6.16,
+        6.48
+      ]
+    }
+  ],
+  "user_speech_end_rel": 6.48,
+  "latency": {
+    "input_duration_s": 36.36,
+    "output_duration_s": 36.36,
+    "first_speech_s": 10.1
+  },
+  "user_done_unix": 1790717382.5908535,
+  "transcript": "Here are the flights to Toko on July 15. Flight FL 123, priced at $450.",
+  "asr_chunks": [
+    {
+      "text": "Here",
+      "timestamp": [
+        9.92,
+        10.24
+      ]
+    },
+    {
+      "text": "are",
+      "timestamp": [
+        10.24,
+        10.4
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        10.4,
+        10.56
+      ]
+    },
+    {
+      "text": "flights",
+      "timestamp": [
+        10.56,
+        10.88
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        10.88,
+        11.040000000000001
+      ]
+    },
+    {
+      "text": "Toko",
+      "timestamp": [
+        11.040000000000001,
+        11.6
+      ]
+    },
+    {
+      "text": "on",
+      "timestamp": [
+        11.6,
+        11.76
+      ]
+    },
+    {
+      "text": "July",
+      "timestamp": [
+        11.76,
+        12.16
+      ]
+    },
+    {
+      "text": "15.",
+      "timestamp": [
+        12.16,
+        12.64
+      ]
+    },
+    {
+      "text": "Flight",
+      "timestamp": [
+        13.040000000000001,
+        13.52
+      ]
+    },
+    {
+      "text": "FL",
+      "timestamp": [
+        13.52,
+        13.92
+      ]
+    },
+    {
+      "text": "123,",
+      "timestamp": [
+        14.08,
+        15.280000000000001
+      ]
+    },
+    {
+      "text": "priced",
+      "timestamp": [
+        15.52,
+        16.0
+      ]
+    },
+    {
+      "text": "at",
+      "timestamp": [
+        16.0,
+        16.16
+      ]
+    },
+    {
+      "text": "$450.",
+      "timestamp": [
+        16.16,
+        17.6
+      ]
+    }
+  ],
+  "perceived_total_latency": 3.44,
+  "audio_agent_speech_start": 9.92,
+  "actual_tool_calls": [
+    {
+      "function": "search_flights",
+      "args": {
+        "destination": "Tokyo",
+        "date": "July 15"
+      },
+      "timestamp_start": 8.49,
+      "timestamp_end": 9.2
+    }
+  ],
+  "status": "completed"
+}

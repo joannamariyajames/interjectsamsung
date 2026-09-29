@@ -1,0 +1,392 @@
+{
+  "pid": "69a9cf80f4d7668d5c815038",
+  "example_id": "finance_12",
+  "category": "finance_billing",
+  "title": "Amount Self-Correction",
+  "provider": "interject_nvidia_full",
+  "evaluated_at": "2026-09-30T02:24:01.847139",
+  "inference_time_s": 49.66,
+  "room_name": "eval-60178a4c",
+  "stream_start_time": 1790715244.583435,
+  "input_transcript": "Well, I want to calculate how much hundred Euros would be in US dollars. Oh, wait, uh, I was looking at the wrong invoice. It's actually 150 Euros, not 100. So, 150 Euros to US dollars.",
+  "input_asr_chunks": [
+    {
+      "text": "Well,",
+      "timestamp": [
+        1.04,
+        1.36
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        1.52,
+        1.84
+      ]
+    },
+    {
+      "text": "want",
+      "timestamp": [
+        1.84,
+        2.08
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        2.08,
+        2.16
+      ]
+    },
+    {
+      "text": "calculate",
+      "timestamp": [
+        2.16,
+        2.72
+      ]
+    },
+    {
+      "text": "how",
+      "timestamp": [
+        2.72,
+        2.88
+      ]
+    },
+    {
+      "text": "much",
+      "timestamp": [
+        2.88,
+        3.2
+      ]
+    },
+    {
+      "text": "hundred",
+      "timestamp": [
+        3.2,
+        3.68
+      ]
+    },
+    {
+      "text": "Euros",
+      "timestamp": [
+        3.68,
+        4.24
+      ]
+    },
+    {
+      "text": "would",
+      "timestamp": [
+        4.24,
+        4.48
+      ]
+    },
+    {
+      "text": "be",
+      "timestamp": [
+        4.48,
+        4.64
+      ]
+    },
+    {
+      "text": "in",
+      "timestamp": [
+        4.64,
+        4.8
+      ]
+    },
+    {
+      "text": "US",
+      "timestamp": [
+        4.8,
+        5.2
+      ]
+    },
+    {
+      "text": "dollars.",
+      "timestamp": [
+        5.2,
+        6.16
+      ]
+    },
+    {
+      "text": "Oh,",
+      "timestamp": [
+        6.8,
+        6.96
+      ]
+    },
+    {
+      "text": "wait,",
+      "timestamp": [
+        7.04,
+        7.28
+      ]
+    },
+    {
+      "text": "uh,",
+      "timestamp": [
+        7.44,
+        7.6000000000000005
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        7.68,
+        7.84
+      ]
+    },
+    {
+      "text": "was",
+      "timestamp": [
+        7.84,
+        8.0
+      ]
+    },
+    {
+      "text": "looking",
+      "timestamp": [
+        8.0,
+        8.24
+      ]
+    },
+    {
+      "text": "at",
+      "timestamp": [
+        8.24,
+        8.4
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        8.4,
+        8.48
+      ]
+    },
+    {
+      "text": "wrong",
+      "timestamp": [
+        8.48,
+        8.72
+      ]
+    },
+    {
+      "text": "invoice.",
+      "timestamp": [
+        8.72,
+        9.200000000000001
+      ]
+    },
+    {
+      "text": "It's",
+      "timestamp": [
+        9.36,
+        9.52
+      ]
+    },
+    {
+      "text": "actually",
+      "timestamp": [
+        9.52,
+        9.76
+      ]
+    },
+    {
+      "text": "150",
+      "timestamp": [
+        9.76,
+        10.4
+      ]
+    },
+    {
+      "text": "Euros,",
+      "timestamp": [
+        10.4,
+        10.88
+      ]
+    },
+    {
+      "text": "not",
+      "timestamp": [
+        11.040000000000001,
+        11.28
+      ]
+    },
+    {
+      "text": "100.",
+      "timestamp": [
+        11.28,
+        11.68
+      ]
+    },
+    {
+      "text": "So,",
+      "timestamp": [
+        12.32,
+        12.4
+      ]
+    },
+    {
+      "text": "150",
+      "timestamp": [
+        12.56,
+        13.120000000000001
+      ]
+    },
+    {
+      "text": "Euros",
+      "timestamp": [
+        13.120000000000001,
+        13.44
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        13.44,
+        13.6
+      ]
+    },
+    {
+      "text": "US",
+      "timestamp": [
+        13.6,
+        13.92
+      ]
+    },
+    {
+      "text": "dollars.",
+      "timestamp": [
+        13.92,
+        14.8
+      ]
+    }
+  ],
+  "user_speech_end_rel": 14.8,
+  "latency": {
+    "input_duration_s": 46.14,
+    "output_duration_s": 46.14,
+    "first_speech_s": 16.2
+  },
+  "user_done_unix": 1790715259.383435,
+  "transcript": "One hundred and fifty Euros is one hundred and sixty five US dollars.",
+  "asr_chunks": [
+    {
+      "text": "One",
+      "timestamp": [
+        16.16,
+        16.48
+      ]
+    },
+    {
+      "text": "hundred",
+      "timestamp": [
+        16.48,
+        16.8
+      ]
+    },
+    {
+      "text": "and",
+      "timestamp": [
+        16.8,
+        16.96
+      ]
+    },
+    {
+      "text": "fifty",
+      "timestamp": [
+        16.96,
+        17.28
+      ]
+    },
+    {
+      "text": "Euros",
+      "timestamp": [
+        17.28,
+        17.92
+      ]
+    },
+    {
+      "text": "is",
+      "timestamp": [
+        17.92,
+        18.16
+      ]
+    },
+    {
+      "text": "one",
+      "timestamp": [
+        18.16,
+        18.400000000000002
+      ]
+    },
+    {
+      "text": "hundred",
+      "timestamp": [
+        18.400000000000002,
+        18.72
+      ]
+    },
+    {
+      "text": "and",
+      "timestamp": [
+        18.72,
+        18.88
+      ]
+    },
+    {
+      "text": "sixty",
+      "timestamp": [
+        18.88,
+        19.2
+      ]
+    },
+    {
+      "text": "five",
+      "timestamp": [
+        19.28,
+        19.6
+      ]
+    },
+    {
+      "text": "US",
+      "timestamp": [
+        19.6,
+        20.080000000000002
+      ]
+    },
+    {
+      "text": "dollars.",
+      "timestamp": [
+        20.080000000000002,
+        21.04
+      ]
+    }
+  ],
+  "perceived_total_latency": 1.36,
+  "audio_agent_speech_start": 16.16,
+  "actual_tool_calls": [
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 100.0,
+        "from_currency": "EUR",
+        "to_currency": "USD"
+      },
+      "timestamp_start": 7.74,
+      "timestamp_end": 7.74
+    },
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 150.0,
+        "from_currency": "EUR",
+        "to_currency": "USD"
+      },
+      "timestamp_start": 16.85,
+      "timestamp_end": 16.85
+    }
+  ],
+  "status": "completed"
+}

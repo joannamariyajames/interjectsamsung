@@ -1,0 +1,446 @@
+{
+  "pid": "66c4f3cb14cbfc4db836bd4e",
+  "example_id": "finance_10",
+  "category": "finance_billing",
+  "title": "Benefits + Exchange Combo",
+  "provider": "interject_nvidia_full",
+  "evaluated_at": "2026-09-30T02:21:25.276095",
+  "inference_time_s": 49.8,
+  "room_name": "eval-cd56f51e",
+  "stream_start_time": 1790715088.014222,
+  "input_transcript": "Firstly, could you tell me what the benefits are for the travel card? I'm considering applying and then separately, I also need to know how much 200 British pounds would be in Japanese yen.",
+  "input_asr_chunks": [
+    {
+      "text": "Firstly,",
+      "timestamp": [
+        2.16,
+        2.72
+      ]
+    },
+    {
+      "text": "could",
+      "timestamp": [
+        3.2,
+        3.44
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        3.44,
+        3.7600000000000002
+      ]
+    },
+    {
+      "text": "tell",
+      "timestamp": [
+        3.7600000000000002,
+        4.0
+      ]
+    },
+    {
+      "text": "me",
+      "timestamp": [
+        4.0,
+        4.24
+      ]
+    },
+    {
+      "text": "what",
+      "timestamp": [
+        4.24,
+        4.5600000000000005
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        4.5600000000000005,
+        4.72
+      ]
+    },
+    {
+      "text": "benefits",
+      "timestamp": [
+        4.72,
+        5.28
+      ]
+    },
+    {
+      "text": "are",
+      "timestamp": [
+        5.28,
+        5.44
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        5.44,
+        5.6000000000000005
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        5.6000000000000005,
+        5.84
+      ]
+    },
+    {
+      "text": "travel",
+      "timestamp": [
+        5.84,
+        6.32
+      ]
+    },
+    {
+      "text": "card?",
+      "timestamp": [
+        6.32,
+        6.88
+      ]
+    },
+    {
+      "text": "I'm",
+      "timestamp": [
+        7.2,
+        7.5200000000000005
+      ]
+    },
+    {
+      "text": "considering",
+      "timestamp": [
+        7.5200000000000005,
+        8.08
+      ]
+    },
+    {
+      "text": "applying",
+      "timestamp": [
+        8.08,
+        8.56
+      ]
+    },
+    {
+      "text": "and",
+      "timestamp": [
+        8.72,
+        9.040000000000001
+      ]
+    },
+    {
+      "text": "then",
+      "timestamp": [
+        9.200000000000001,
+        9.44
+      ]
+    },
+    {
+      "text": "separately,",
+      "timestamp": [
+        9.44,
+        10.0
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        10.8,
+        11.040000000000001
+      ]
+    },
+    {
+      "text": "also",
+      "timestamp": [
+        11.040000000000001,
+        11.36
+      ]
+    },
+    {
+      "text": "need",
+      "timestamp": [
+        11.36,
+        11.68
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        11.68,
+        12.0
+      ]
+    },
+    {
+      "text": "know",
+      "timestamp": [
+        12.0,
+        12.32
+      ]
+    },
+    {
+      "text": "how",
+      "timestamp": [
+        12.32,
+        12.64
+      ]
+    },
+    {
+      "text": "much",
+      "timestamp": [
+        12.64,
+        12.88
+      ]
+    },
+    {
+      "text": "200",
+      "timestamp": [
+        12.88,
+        13.52
+      ]
+    },
+    {
+      "text": "British",
+      "timestamp": [
+        13.52,
+        13.92
+      ]
+    },
+    {
+      "text": "pounds",
+      "timestamp": [
+        13.92,
+        14.32
+      ]
+    },
+    {
+      "text": "would",
+      "timestamp": [
+        14.32,
+        14.48
+      ]
+    },
+    {
+      "text": "be",
+      "timestamp": [
+        14.48,
+        14.64
+      ]
+    },
+    {
+      "text": "in",
+      "timestamp": [
+        14.64,
+        14.8
+      ]
+    },
+    {
+      "text": "Japanese",
+      "timestamp": [
+        14.8,
+        15.44
+      ]
+    },
+    {
+      "text": "yen.",
+      "timestamp": [
+        15.44,
+        16.080000000000002
+      ]
+    }
+  ],
+  "user_speech_end_rel": 16.080000000000002,
+  "latency": {
+    "input_duration_s": 46.331,
+    "output_duration_s": 46.331,
+    "first_speech_s": 18.8
+  },
+  "user_done_unix": 1790715104.0942218,
+  "transcript": "The travel card gives you two percent cash back and no foreign transaction fee. Two hundred GBP is one hundred and eighty GPY.",
+  "asr_chunks": [
+    {
+      "text": "The",
+      "timestamp": [
+        18.56,
+        18.88
+      ]
+    },
+    {
+      "text": "travel",
+      "timestamp": [
+        18.88,
+        19.28
+      ]
+    },
+    {
+      "text": "card",
+      "timestamp": [
+        19.28,
+        19.6
+      ]
+    },
+    {
+      "text": "gives",
+      "timestamp": [
+        19.6,
+        19.84
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        19.84,
+        20.080000000000002
+      ]
+    },
+    {
+      "text": "two",
+      "timestamp": [
+        20.080000000000002,
+        20.16
+      ]
+    },
+    {
+      "text": "percent",
+      "timestamp": [
+        20.32,
+        20.72
+      ]
+    },
+    {
+      "text": "cash",
+      "timestamp": [
+        20.72,
+        21.12
+      ]
+    },
+    {
+      "text": "back",
+      "timestamp": [
+        21.12,
+        21.28
+      ]
+    },
+    {
+      "text": "and",
+      "timestamp": [
+        21.44,
+        21.68
+      ]
+    },
+    {
+      "text": "no",
+      "timestamp": [
+        21.68,
+        21.92
+      ]
+    },
+    {
+      "text": "foreign",
+      "timestamp": [
+        21.92,
+        22.400000000000002
+      ]
+    },
+    {
+      "text": "transaction",
+      "timestamp": [
+        22.400000000000002,
+        22.96
+      ]
+    },
+    {
+      "text": "fee.",
+      "timestamp": [
+        22.96,
+        23.28
+      ]
+    },
+    {
+      "text": "Two",
+      "timestamp": [
+        23.44,
+        23.68
+      ]
+    },
+    {
+      "text": "hundred",
+      "timestamp": [
+        23.68,
+        23.92
+      ]
+    },
+    {
+      "text": "GBP",
+      "timestamp": [
+        23.92,
+        24.64
+      ]
+    },
+    {
+      "text": "is",
+      "timestamp": [
+        24.88,
+        25.12
+      ]
+    },
+    {
+      "text": "one",
+      "timestamp": [
+        25.12,
+        25.28
+      ]
+    },
+    {
+      "text": "hundred",
+      "timestamp": [
+        25.44,
+        25.52
+      ]
+    },
+    {
+      "text": "and",
+      "timestamp": [
+        25.6,
+        25.68
+      ]
+    },
+    {
+      "text": "eighty",
+      "timestamp": [
+        25.68,
+        26.0
+      ]
+    },
+    {
+      "text": "GPY.",
+      "timestamp": [
+        26.0,
+        26.96
+      ]
+    }
+  ],
+  "perceived_total_latency": 2.48,
+  "audio_agent_speech_start": 18.56,
+  "actual_tool_calls": [
+    {
+      "function": "get_card_benefits",
+      "args": {
+        "card_type": "travel"
+      },
+      "timestamp_start": 16.61,
+      "timestamp_end": 16.61
+    },
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 200.0,
+        "from_currency": "GBP",
+        "to_currency": "JPY"
+      },
+      "timestamp_start": 18.58,
+      "timestamp_end": 18.58
+    }
+  ],
+  "status": "completed"
+}

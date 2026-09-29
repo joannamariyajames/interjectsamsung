@@ -1,0 +1,43 @@
+📖 Loading benchmark data from benchmark_data_v2.json...
+📁 Scanning D:/Samsung_Hackathon/Full-Duplex-Bench/v3/fdb_v3_data_released for provider 'interject_nvidia_full'...
+🔍 Found 100 valid result files matching benchmark scenarios.
+
+📊 PASS RATE REPORT — INTERJECT_NVIDIA_FULL
+========================================================
+  Total Scenarios : 100
+  ✅ Passed       : 56
+  ❌ Failed       : 44
+  📈 Pass Rate    : 56.0%
+
+  Failure Breakdown:
+    Wrong Tools     : 25
+    Wrong Arguments : 19
+
+  By Domain:
+    ecommerce_support: 55.2%
+    finance_billing: 76.0%
+    housing_location: 42.3%
+    travel_identity: 50.0%
+
+  By Difficulty:
+    easy: 66.7%
+    medium: 58.8%
+    hard: 40.0%
+
+  By Num Tool Calls:
+    1 tools: 63.6%
+    2 tools: 55.6%
+    3 tools: 25.0%
+
+  By Disfluency Feature:
+    PAUSE: 33.3%
+    FILLER: 55.2%
+    HESITATION: 40.0%
+    FALSE_START: 66.7%
+    SELF_CORRECTION: 70.6%
+
+  State Rollback:
+    With rollback:    70.6%
+    Without rollback: 53.0%
+
+  📄 Report saved: D:/Samsung_Hackathon/interjectsamsung/results/fdb_v3/interject_nvidia_full-20260930-014327/interject_nvidia_full_pass_rate_report.json

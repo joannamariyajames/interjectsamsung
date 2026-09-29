@@ -1,0 +1,401 @@
+{
+  "pid": "69a9cf80f4d7668d5c815038",
+  "example_id": "ecommerce_01",
+  "category": "ecommerce_support",
+  "title": "Simple Order Tracking",
+  "provider": "interject_nvidia_full",
+  "evaluated_at": "2026-09-30T01:44:52.352812",
+  "inference_time_s": 53.92,
+  "room_name": "eval-44307971",
+  "stream_start_time": 1790712895.9959035,
+  "input_transcript": "Like, uh, you know, well, I ordered something last week and um, I haven't received it yet. Could you track it for me? The order ID is A B C O Three",
+  "input_asr_chunks": [
+    {
+      "text": "Like,",
+      "timestamp": [
+        1.2,
+        1.52
+      ]
+    },
+    {
+      "text": "uh,",
+      "timestamp": [
+        2.0,
+        2.24
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        2.48,
+        2.8000000000000003
+      ]
+    },
+    {
+      "text": "know,",
+      "timestamp": [
+        2.8000000000000003,
+        3.12
+      ]
+    },
+    {
+      "text": "well,",
+      "timestamp": [
+        4.08,
+        4.32
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        4.48,
+        4.64
+      ]
+    },
+    {
+      "text": "ordered",
+      "timestamp": [
+        4.64,
+        5.2
+      ]
+    },
+    {
+      "text": "something",
+      "timestamp": [
+        5.2,
+        5.44
+      ]
+    },
+    {
+      "text": "last",
+      "timestamp": [
+        5.44,
+        5.68
+      ]
+    },
+    {
+      "text": "week",
+      "timestamp": [
+        5.68,
+        6.08
+      ]
+    },
+    {
+      "text": "and",
+      "timestamp": [
+        6.24,
+        6.5600000000000005
+      ]
+    },
+    {
+      "text": "um,",
+      "timestamp": [
+        7.2,
+        7.44
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        8.08,
+        8.32
+      ]
+    },
+    {
+      "text": "haven't",
+      "timestamp": [
+        8.32,
+        8.72
+      ]
+    },
+    {
+      "text": "received",
+      "timestamp": [
+        8.72,
+        9.200000000000001
+      ]
+    },
+    {
+      "text": "it",
+      "timestamp": [
+        9.200000000000001,
+        9.44
+      ]
+    },
+    {
+      "text": "yet.",
+      "timestamp": [
+        9.44,
+        9.84
+      ]
+    },
+    {
+      "text": "Could",
+      "timestamp": [
+        10.48,
+        10.8
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        10.8,
+        10.96
+      ]
+    },
+    {
+      "text": "track",
+      "timestamp": [
+        10.96,
+        11.28
+      ]
+    },
+    {
+      "text": "it",
+      "timestamp": [
+        11.28,
+        11.52
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        11.52,
+        11.84
+      ]
+    },
+    {
+      "text": "me?",
+      "timestamp": [
+        11.84,
+        12.16
+      ]
+    },
+    {
+      "text": "The",
+      "timestamp": [
+        13.120000000000001,
+        13.36
+      ]
+    },
+    {
+      "text": "order",
+      "timestamp": [
+        13.36,
+        13.84
+      ]
+    },
+    {
+      "text": "ID",
+      "timestamp": [
+        13.84,
+        14.4
+      ]
+    },
+    {
+      "text": "is",
+      "timestamp": [
+        14.4,
+        14.72
+      ]
+    },
+    {
+      "text": "A",
+      "timestamp": [
+        14.72,
+        15.040000000000001
+      ]
+    },
+    {
+      "text": "B",
+      "timestamp": [
+        15.36,
+        15.6
+      ]
+    },
+    {
+      "text": "C",
+      "timestamp": [
+        16.0,
+        16.240000000000002
+      ]
+    },
+    {
+      "text": "O",
+      "timestamp": [
+        16.72,
+        16.88
+      ]
+    },
+    {
+      "text": "Three",
+      "timestamp": [
+        18.080000000000002,
+        18.56
+      ]
+    }
+  ],
+  "user_speech_end_rel": 18.56,
+  "latency": {
+    "input_duration_s": 49.62,
+    "output_duration_s": 49.62,
+    "first_speech_s": 21.25
+  },
+  "user_done_unix": 1790712914.5559034,
+  "transcript": "Your package with Order ID ABC one hundred and twenty three is currently out for delivery. It should arrive soon.",
+  "asr_chunks": [
+    {
+      "text": "Your",
+      "timestamp": [
+        21.12,
+        21.36
+      ]
+    },
+    {
+      "text": "package",
+      "timestamp": [
+        21.36,
+        21.84
+      ]
+    },
+    {
+      "text": "with",
+      "timestamp": [
+        21.84,
+        22.0
+      ]
+    },
+    {
+      "text": "Order",
+      "timestamp": [
+        22.0,
+        22.400000000000002
+      ]
+    },
+    {
+      "text": "ID",
+      "timestamp": [
+        22.400000000000002,
+        22.64
+      ]
+    },
+    {
+      "text": "ABC",
+      "timestamp": [
+        22.72,
+        23.36
+      ]
+    },
+    {
+      "text": "one",
+      "timestamp": [
+        23.36,
+        23.52
+      ]
+    },
+    {
+      "text": "hundred",
+      "timestamp": [
+        23.6,
+        23.76
+      ]
+    },
+    {
+      "text": "and",
+      "timestamp": [
+        23.84,
+        23.92
+      ]
+    },
+    {
+      "text": "twenty",
+      "timestamp": [
+        23.92,
+        24.240000000000002
+      ]
+    },
+    {
+      "text": "three",
+      "timestamp": [
+        24.400000000000002,
+        24.72
+      ]
+    },
+    {
+      "text": "is",
+      "timestamp": [
+        24.96,
+        25.2
+      ]
+    },
+    {
+      "text": "currently",
+      "timestamp": [
+        25.2,
+        25.76
+      ]
+    },
+    {
+      "text": "out",
+      "timestamp": [
+        25.76,
+        25.92
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        25.92,
+        26.080000000000002
+      ]
+    },
+    {
+      "text": "delivery.",
+      "timestamp": [
+        26.080000000000002,
+        26.560000000000002
+      ]
+    },
+    {
+      "text": "It",
+      "timestamp": [
+        26.72,
+        26.88
+      ]
+    },
+    {
+      "text": "should",
+      "timestamp": [
+        26.88,
+        27.12
+      ]
+    },
+    {
+      "text": "arrive",
+      "timestamp": [
+        27.12,
+        27.68
+      ]
+    },
+    {
+      "text": "soon.",
+      "timestamp": [
+        27.68,
+        28.16
+      ]
+    }
+  ],
+  "perceived_total_latency": 2.56,
+  "audio_agent_speech_start": 21.12,
+  "actual_tool_calls": [
+    {
+      "function": "track_order",
+      "args": {
+        "order_id": "ABC123"
+      },
+      "timestamp_start": 20.1,
+      "timestamp_end": 20.1
+    }
+  ],
+  "status": "completed"
+}

@@ -1,0 +1,466 @@
+{
+  "pid": "5ff07b5ee7a1d23e719e421e",
+  "example_id": "ecommerce_13",
+  "category": "ecommerce_support",
+  "title": "Cart + Track Combo",
+  "provider": "interject_nvidia_full",
+  "evaluated_at": "2026-09-30T01:55:47.200829",
+  "inference_time_s": 55.2,
+  "room_name": "eval-e412d89c",
+  "stream_start_time": 1790713550.0988717,
+  "input_transcript": "Um, well, so, well, first, could you add item K-2 uh to my cart, just one of them, and then can you check on my last order two? The order ID is D dash e dash l dash i dash v.",
+  "input_asr_chunks": [
+    {
+      "text": "Um,",
+      "timestamp": [
+        1.2,
+        1.76
+      ]
+    },
+    {
+      "text": "well,",
+      "timestamp": [
+        2.4,
+        2.72
+      ]
+    },
+    {
+      "text": "so,",
+      "timestamp": [
+        3.04,
+        3.36
+      ]
+    },
+    {
+      "text": "well,",
+      "timestamp": [
+        3.7600000000000002,
+        4.0
+      ]
+    },
+    {
+      "text": "first,",
+      "timestamp": [
+        4.48,
+        4.72
+      ]
+    },
+    {
+      "text": "could",
+      "timestamp": [
+        5.04,
+        5.28
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        5.28,
+        5.44
+      ]
+    },
+    {
+      "text": "add",
+      "timestamp": [
+        5.44,
+        5.68
+      ]
+    },
+    {
+      "text": "item",
+      "timestamp": [
+        5.68,
+        6.08
+      ]
+    },
+    {
+      "text": "K-2",
+      "timestamp": [
+        6.24,
+        7.12
+      ]
+    },
+    {
+      "text": "uh",
+      "timestamp": [
+        7.92,
+        8.08
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        8.32,
+        8.56
+      ]
+    },
+    {
+      "text": "my",
+      "timestamp": [
+        8.56,
+        8.8
+      ]
+    },
+    {
+      "text": "cart,",
+      "timestamp": [
+        8.8,
+        9.36
+      ]
+    },
+    {
+      "text": "just",
+      "timestamp": [
+        9.68,
+        9.84
+      ]
+    },
+    {
+      "text": "one",
+      "timestamp": [
+        10.08,
+        10.32
+      ]
+    },
+    {
+      "text": "of",
+      "timestamp": [
+        10.32,
+        10.56
+      ]
+    },
+    {
+      "text": "them,",
+      "timestamp": [
+        10.56,
+        10.88
+      ]
+    },
+    {
+      "text": "and",
+      "timestamp": [
+        11.200000000000001,
+        11.36
+      ]
+    },
+    {
+      "text": "then",
+      "timestamp": [
+        11.36,
+        11.6
+      ]
+    },
+    {
+      "text": "can",
+      "timestamp": [
+        11.68,
+        11.92
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        11.92,
+        12.08
+      ]
+    },
+    {
+      "text": "check",
+      "timestamp": [
+        12.08,
+        12.4
+      ]
+    },
+    {
+      "text": "on",
+      "timestamp": [
+        12.4,
+        12.64
+      ]
+    },
+    {
+      "text": "my",
+      "timestamp": [
+        12.64,
+        12.88
+      ]
+    },
+    {
+      "text": "last",
+      "timestamp": [
+        12.88,
+        13.200000000000001
+      ]
+    },
+    {
+      "text": "order",
+      "timestamp": [
+        13.200000000000001,
+        13.6
+      ]
+    },
+    {
+      "text": "two?",
+      "timestamp": [
+        13.84,
+        14.0
+      ]
+    },
+    {
+      "text": "The",
+      "timestamp": [
+        14.64,
+        14.8
+      ]
+    },
+    {
+      "text": "order",
+      "timestamp": [
+        14.8,
+        15.280000000000001
+      ]
+    },
+    {
+      "text": "ID",
+      "timestamp": [
+        15.280000000000001,
+        15.76
+      ]
+    },
+    {
+      "text": "is",
+      "timestamp": [
+        15.76,
+        16.080000000000002
+      ]
+    },
+    {
+      "text": "D",
+      "timestamp": [
+        16.080000000000002,
+        16.4
+      ]
+    },
+    {
+      "text": "dash",
+      "timestamp": [
+        16.56,
+        17.12
+      ]
+    },
+    {
+      "text": "e",
+      "timestamp": [
+        17.12,
+        17.44
+      ]
+    },
+    {
+      "text": "dash",
+      "timestamp": [
+        17.44,
+        17.92
+      ]
+    },
+    {
+      "text": "l",
+      "timestamp": [
+        17.92,
+        18.240000000000002
+      ]
+    },
+    {
+      "text": "dash",
+      "timestamp": [
+        18.32,
+        18.96
+      ]
+    },
+    {
+      "text": "i",
+      "timestamp": [
+        18.96,
+        19.28
+      ]
+    },
+    {
+      "text": "dash",
+      "timestamp": [
+        19.36,
+        20.0
+      ]
+    },
+    {
+      "text": "v.",
+      "timestamp": [
+        20.0,
+        20.32
+      ]
+    }
+  ],
+  "user_speech_end_rel": 20.32,
+  "latency": {
+    "input_duration_s": 51.66,
+    "output_duration_s": 51.66,
+    "first_speech_s": 25.55
+  },
+  "user_done_unix": 1790713570.4188716,
+  "transcript": "Your item K2 has been added to your cart. Your order, DD Yellow V, is currently out for delivery.",
+  "asr_chunks": [
+    {
+      "text": "Your",
+      "timestamp": [
+        25.28,
+        25.68
+      ]
+    },
+    {
+      "text": "item",
+      "timestamp": [
+        25.68,
+        26.080000000000002
+      ]
+    },
+    {
+      "text": "K2",
+      "timestamp": [
+        26.080000000000002,
+        26.560000000000002
+      ]
+    },
+    {
+      "text": "has",
+      "timestamp": [
+        26.72,
+        26.88
+      ]
+    },
+    {
+      "text": "been",
+      "timestamp": [
+        26.88,
+        27.04
+      ]
+    },
+    {
+      "text": "added",
+      "timestamp": [
+        27.04,
+        27.36
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        27.36,
+        27.44
+      ]
+    },
+    {
+      "text": "your",
+      "timestamp": [
+        27.44,
+        27.68
+      ]
+    },
+    {
+      "text": "cart.",
+      "timestamp": [
+        27.68,
+        28.0
+      ]
+    },
+    {
+      "text": "Your",
+      "timestamp": [
+        28.16,
+        28.400000000000002
+      ]
+    },
+    {
+      "text": "order,",
+      "timestamp": [
+        28.400000000000002,
+        28.64
+      ]
+    },
+    {
+      "text": "DD",
+      "timestamp": [
+        28.72,
+        29.04
+      ]
+    },
+    {
+      "text": "Yellow",
+      "timestamp": [
+        29.2,
+        29.44
+      ]
+    },
+    {
+      "text": "V,",
+      "timestamp": [
+        29.52,
+        29.6
+      ]
+    },
+    {
+      "text": "is",
+      "timestamp": [
+        30.16,
+        30.32
+      ]
+    },
+    {
+      "text": "currently",
+      "timestamp": [
+        30.32,
+        30.88
+      ]
+    },
+    {
+      "text": "out",
+      "timestamp": [
+        30.88,
+        31.12
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        31.12,
+        31.28
+      ]
+    },
+    {
+      "text": "delivery.",
+      "timestamp": [
+        31.28,
+        32.24
+      ]
+    }
+  ],
+  "perceived_total_latency": 4.96,
+  "audio_agent_speech_start": 25.28,
+  "actual_tool_calls": [
+    {
+      "function": "add_to_cart",
+      "args": {
+        "product_id": "K2",
+        "quantity": 1
+      },
+      "timestamp_start": 23.35,
+      "timestamp_end": 23.35
+    },
+    {
+      "function": "track_order",
+      "args": {
+        "order_id": "DELIV"
+      },
+      "timestamp_start": 25.04,
+      "timestamp_end": 25.04
+    }
+  ],
+  "status": "completed"
+}

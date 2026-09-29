@@ -1,0 +1,605 @@
+{
+  "pid": "61517db6a7589569521b2356",
+  "example_id": "travel_03",
+  "category": "travel_identity",
+  "title": "Flight Search with Fillers",
+  "provider": "interject_nvidia_full",
+  "evaluated_at": "2026-09-30T03:02:03.095450",
+  "inference_time_s": 46.77,
+  "room_name": "eval-f27618b8",
+  "stream_start_time": 1790717525.845582,
+  "input_transcript": "Um, yeah, well, I've been looking for flights and I'm I was wondering if you could like maybe check what's available to London around August 20th for me.",
+  "input_asr_chunks": [
+    {
+      "text": "Um,",
+      "timestamp": [
+        0.96,
+        1.36
+      ]
+    },
+    {
+      "text": "yeah,",
+      "timestamp": [
+        2.08,
+        2.24
+      ]
+    },
+    {
+      "text": "well,",
+      "timestamp": [
+        2.4,
+        2.56
+      ]
+    },
+    {
+      "text": "I've",
+      "timestamp": [
+        2.64,
+        2.8000000000000003
+      ]
+    },
+    {
+      "text": "been",
+      "timestamp": [
+        2.8000000000000003,
+        2.96
+      ]
+    },
+    {
+      "text": "looking",
+      "timestamp": [
+        2.96,
+        3.2
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        3.2,
+        3.36
+      ]
+    },
+    {
+      "text": "flights",
+      "timestamp": [
+        3.36,
+        3.92
+      ]
+    },
+    {
+      "text": "and",
+      "timestamp": [
+        4.16,
+        4.4
+      ]
+    },
+    {
+      "text": "I'm",
+      "timestamp": [
+        4.72,
+        5.04
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        5.28,
+        5.5200000000000005
+      ]
+    },
+    {
+      "text": "was",
+      "timestamp": [
+        5.5200000000000005,
+        5.68
+      ]
+    },
+    {
+      "text": "wondering",
+      "timestamp": [
+        5.68,
+        6.08
+      ]
+    },
+    {
+      "text": "if",
+      "timestamp": [
+        6.08,
+        6.24
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        6.24,
+        6.32
+      ]
+    },
+    {
+      "text": "could",
+      "timestamp": [
+        6.32,
+        6.48
+      ]
+    },
+    {
+      "text": "like",
+      "timestamp": [
+        6.5600000000000005,
+        6.72
+      ]
+    },
+    {
+      "text": "maybe",
+      "timestamp": [
+        6.8,
+        7.12
+      ]
+    },
+    {
+      "text": "check",
+      "timestamp": [
+        7.12,
+        7.84
+      ]
+    },
+    {
+      "text": "what's",
+      "timestamp": [
+        7.84,
+        8.24
+      ]
+    },
+    {
+      "text": "available",
+      "timestamp": [
+        8.24,
+        8.88
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        8.88,
+        9.040000000000001
+      ]
+    },
+    {
+      "text": "London",
+      "timestamp": [
+        9.200000000000001,
+        9.92
+      ]
+    },
+    {
+      "text": "around",
+      "timestamp": [
+        9.92,
+        10.24
+      ]
+    },
+    {
+      "text": "August",
+      "timestamp": [
+        10.64,
+        11.200000000000001
+      ]
+    },
+    {
+      "text": "20th",
+      "timestamp": [
+        11.200000000000001,
+        11.84
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        11.84,
+        12.16
+      ]
+    },
+    {
+      "text": "me.",
+      "timestamp": [
+        12.16,
+        12.4
+      ]
+    }
+  ],
+  "user_speech_end_rel": 12.4,
+  "latency": {
+    "input_duration_s": 43.2,
+    "output_duration_s": 43.2,
+    "first_speech_s": 13.45
+  },
+  "user_done_unix": 1790717538.245582,
+  "transcript": "Here are the flights I found for London on August 20th. Flight FL, 123, priced at dollar four hundred and fifty. Let me know if you'd like to book or need more options. Sure thing. Let me know if you'd like to book. Would you like me to book that flight for you?",
+  "asr_chunks": [
+    {
+      "text": "Here",
+      "timestamp": [
+        13.280000000000001,
+        13.6
+      ]
+    },
+    {
+      "text": "are",
+      "timestamp": [
+        13.6,
+        13.76
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        13.76,
+        13.92
+      ]
+    },
+    {
+      "text": "flights",
+      "timestamp": [
+        13.92,
+        14.32
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        14.32,
+        14.48
+      ]
+    },
+    {
+      "text": "found",
+      "timestamp": [
+        14.48,
+        14.8
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        14.8,
+        14.96
+      ]
+    },
+    {
+      "text": "London",
+      "timestamp": [
+        14.96,
+        15.36
+      ]
+    },
+    {
+      "text": "on",
+      "timestamp": [
+        15.36,
+        15.52
+      ]
+    },
+    {
+      "text": "August",
+      "timestamp": [
+        15.52,
+        15.92
+      ]
+    },
+    {
+      "text": "20th.",
+      "timestamp": [
+        15.92,
+        16.48
+      ]
+    },
+    {
+      "text": "Flight",
+      "timestamp": [
+        16.72,
+        17.2
+      ]
+    },
+    {
+      "text": "FL,",
+      "timestamp": [
+        17.2,
+        17.68
+      ]
+    },
+    {
+      "text": "123,",
+      "timestamp": [
+        17.92,
+        19.28
+      ]
+    },
+    {
+      "text": "priced",
+      "timestamp": [
+        19.52,
+        19.92
+      ]
+    },
+    {
+      "text": "at",
+      "timestamp": [
+        19.92,
+        20.080000000000002
+      ]
+    },
+    {
+      "text": "dollar",
+      "timestamp": [
+        20.080000000000002,
+        20.32
+      ]
+    },
+    {
+      "text": "four",
+      "timestamp": [
+        20.48,
+        20.64
+      ]
+    },
+    {
+      "text": "hundred",
+      "timestamp": [
+        20.72,
+        20.88
+      ]
+    },
+    {
+      "text": "and",
+      "timestamp": [
+        20.96,
+        21.04
+      ]
+    },
+    {
+      "text": "fifty.",
+      "timestamp": [
+        21.04,
+        21.44
+      ]
+    },
+    {
+      "text": "Let",
+      "timestamp": [
+        21.76,
+        22.0
+      ]
+    },
+    {
+      "text": "me",
+      "timestamp": [
+        22.0,
+        22.16
+      ]
+    },
+    {
+      "text": "know",
+      "timestamp": [
+        22.16,
+        22.32
+      ]
+    },
+    {
+      "text": "if",
+      "timestamp": [
+        22.32,
+        22.56
+      ]
+    },
+    {
+      "text": "you'd",
+      "timestamp": [
+        22.56,
+        22.88
+      ]
+    },
+    {
+      "text": "like",
+      "timestamp": [
+        22.88,
+        23.04
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        23.04,
+        23.2
+      ]
+    },
+    {
+      "text": "book",
+      "timestamp": [
+        23.2,
+        23.52
+      ]
+    },
+    {
+      "text": "or",
+      "timestamp": [
+        23.52,
+        23.76
+      ]
+    },
+    {
+      "text": "need",
+      "timestamp": [
+        23.76,
+        24.080000000000002
+      ]
+    },
+    {
+      "text": "more",
+      "timestamp": [
+        24.080000000000002,
+        24.400000000000002
+      ]
+    },
+    {
+      "text": "options.",
+      "timestamp": [
+        24.400000000000002,
+        25.36
+      ]
+    },
+    {
+      "text": "Sure",
+      "timestamp": [
+        31.68,
+        32.08
+      ]
+    },
+    {
+      "text": "thing.",
+      "timestamp": [
+        32.24,
+        32.480000000000004
+      ]
+    },
+    {
+      "text": "Let",
+      "timestamp": [
+        32.64,
+        32.88
+      ]
+    },
+    {
+      "text": "me",
+      "timestamp": [
+        32.88,
+        33.12
+      ]
+    },
+    {
+      "text": "know",
+      "timestamp": [
+        33.12,
+        33.28
+      ]
+    },
+    {
+      "text": "if",
+      "timestamp": [
+        33.28,
+        33.44
+      ]
+    },
+    {
+      "text": "you'd",
+      "timestamp": [
+        33.44,
+        33.68
+      ]
+    },
+    {
+      "text": "like",
+      "timestamp": [
+        33.68,
+        33.84
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        33.84,
+        34.08
+      ]
+    },
+    {
+      "text": "book.",
+      "timestamp": [
+        34.08,
+        34.56
+      ]
+    },
+    {
+      "text": "Would",
+      "timestamp": [
+        36.4,
+        36.72
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        36.72,
+        36.88
+      ]
+    },
+    {
+      "text": "like",
+      "timestamp": [
+        36.88,
+        37.04
+      ]
+    },
+    {
+      "text": "me",
+      "timestamp": [
+        37.04,
+        37.2
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        37.2,
+        37.36
+      ]
+    },
+    {
+      "text": "book",
+      "timestamp": [
+        37.36,
+        37.6
+      ]
+    },
+    {
+      "text": "that",
+      "timestamp": [
+        37.6,
+        37.84
+      ]
+    },
+    {
+      "text": "flight",
+      "timestamp": [
+        37.84,
+        38.4
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        38.4,
+        38.72
+      ]
+    },
+    {
+      "text": "you?",
+      "timestamp": [
+        38.72,
+        39.04
+      ]
+    }
+  ],
+  "perceived_total_latency": 0.88,
+  "audio_agent_speech_start": 13.280000000000001,
+  "actual_tool_calls": [
+    {
+      "function": "search_flights",
+      "args": {
+        "destination": "London",
+        "date": "August 20"
+      },
+      "timestamp_start": 14.2,
+      "timestamp_end": 14.41
+    }
+  ],
+  "status": "completed"
+}

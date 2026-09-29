@@ -1,0 +1,336 @@
+{
+  "pid": "62a885d5b6af18b3d4579e1b",
+  "example_id": "finance_04",
+  "category": "finance_billing",
+  "title": "Exchange with Pause Before Currency",
+  "provider": "interject_nvidia_full",
+  "evaluated_at": "2026-09-30T02:16:11.491126",
+  "inference_time_s": 42.89,
+  "room_name": "eval-728adf23",
+  "stream_start_time": 1790714774.2320995,
+  "input_transcript": "I need uh to figure out how much one thousand US dollars would be in uh British pounds. Uh do you know the current rate?",
+  "input_asr_chunks": [
+    {
+      "text": "I",
+      "timestamp": [
+        0.32,
+        0.48
+      ]
+    },
+    {
+      "text": "need",
+      "timestamp": [
+        0.48,
+        0.72
+      ]
+    },
+    {
+      "text": "uh",
+      "timestamp": [
+        0.8,
+        0.96
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        1.04,
+        1.28
+      ]
+    },
+    {
+      "text": "figure",
+      "timestamp": [
+        1.28,
+        1.6
+      ]
+    },
+    {
+      "text": "out",
+      "timestamp": [
+        1.6,
+        1.76
+      ]
+    },
+    {
+      "text": "how",
+      "timestamp": [
+        1.76,
+        1.92
+      ]
+    },
+    {
+      "text": "much",
+      "timestamp": [
+        1.92,
+        2.16
+      ]
+    },
+    {
+      "text": "one",
+      "timestamp": [
+        2.16,
+        2.4
+      ]
+    },
+    {
+      "text": "thousand",
+      "timestamp": [
+        2.4,
+        2.8000000000000003
+      ]
+    },
+    {
+      "text": "US",
+      "timestamp": [
+        2.8000000000000003,
+        3.12
+      ]
+    },
+    {
+      "text": "dollars",
+      "timestamp": [
+        3.12,
+        3.68
+      ]
+    },
+    {
+      "text": "would",
+      "timestamp": [
+        3.68,
+        4.0
+      ]
+    },
+    {
+      "text": "be",
+      "timestamp": [
+        4.0,
+        4.32
+      ]
+    },
+    {
+      "text": "in",
+      "timestamp": [
+        4.32,
+        4.64
+      ]
+    },
+    {
+      "text": "uh",
+      "timestamp": [
+        6.08,
+        6.24
+      ]
+    },
+    {
+      "text": "British",
+      "timestamp": [
+        6.4,
+        6.96
+      ]
+    },
+    {
+      "text": "pounds.",
+      "timestamp": [
+        6.96,
+        7.44
+      ]
+    },
+    {
+      "text": "Uh",
+      "timestamp": [
+        7.6000000000000005,
+        7.76
+      ]
+    },
+    {
+      "text": "do",
+      "timestamp": [
+        7.84,
+        8.0
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        8.0,
+        8.08
+      ]
+    },
+    {
+      "text": "know",
+      "timestamp": [
+        8.08,
+        8.24
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        8.24,
+        8.32
+      ]
+    },
+    {
+      "text": "current",
+      "timestamp": [
+        8.32,
+        8.8
+      ]
+    },
+    {
+      "text": "rate?",
+      "timestamp": [
+        8.8,
+        9.36
+      ]
+    }
+  ],
+  "user_speech_end_rel": 9.36,
+  "latency": {
+    "input_duration_s": 39.54,
+    "output_duration_s": 39.54,
+    "first_speech_s": 13.95
+  },
+  "user_done_unix": 1790714783.5920994,
+  "transcript": "Dollar one thousand USD is about pound nine hundred point zero zero at the current rate.",
+  "asr_chunks": [
+    {
+      "text": "Dollar",
+      "timestamp": [
+        13.84,
+        14.24
+      ]
+    },
+    {
+      "text": "one",
+      "timestamp": [
+        14.32,
+        14.48
+      ]
+    },
+    {
+      "text": "thousand",
+      "timestamp": [
+        14.56,
+        15.040000000000001
+      ]
+    },
+    {
+      "text": "USD",
+      "timestamp": [
+        15.040000000000001,
+        15.84
+      ]
+    },
+    {
+      "text": "is",
+      "timestamp": [
+        15.84,
+        16.080000000000002
+      ]
+    },
+    {
+      "text": "about",
+      "timestamp": [
+        16.080000000000002,
+        16.32
+      ]
+    },
+    {
+      "text": "pound",
+      "timestamp": [
+        16.32,
+        16.48
+      ]
+    },
+    {
+      "text": "nine",
+      "timestamp": [
+        16.72,
+        16.96
+      ]
+    },
+    {
+      "text": "hundred",
+      "timestamp": [
+        16.96,
+        17.28
+      ]
+    },
+    {
+      "text": "point",
+      "timestamp": [
+        17.28,
+        17.52
+      ]
+    },
+    {
+      "text": "zero",
+      "timestamp": [
+        17.52,
+        17.92
+      ]
+    },
+    {
+      "text": "zero",
+      "timestamp": [
+        17.92,
+        18.32
+      ]
+    },
+    {
+      "text": "at",
+      "timestamp": [
+        18.400000000000002,
+        18.56
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        18.56,
+        18.64
+      ]
+    },
+    {
+      "text": "current",
+      "timestamp": [
+        18.64,
+        19.12
+      ]
+    },
+    {
+      "text": "rate.",
+      "timestamp": [
+        19.12,
+        19.68
+      ]
+    }
+  ],
+  "perceived_total_latency": 4.48,
+  "audio_agent_speech_start": 13.84,
+  "actual_tool_calls": [
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 1000.0,
+        "from_currency": "USD",
+        "to_currency": "EUR"
+      },
+      "timestamp_start": 9.68,
+      "timestamp_end": 9.68
+    },
+    {
+      "function": "get_exchange_rate",
+      "args": {
+        "amount": 1000.0,
+        "from_currency": "USD",
+        "to_currency": "GBP"
+      },
+      "timestamp_start": 13.04,
+      "timestamp_end": 13.04
+    }
+  ],
+  "status": "completed"
+}

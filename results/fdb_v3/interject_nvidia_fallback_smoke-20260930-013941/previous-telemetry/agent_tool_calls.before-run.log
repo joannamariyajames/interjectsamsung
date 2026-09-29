@@ -1,0 +1,5 @@
+{"room": "eval-d7cba3d3", "call": {"function": "search_products", "args": {"query": "wireless headphones", "max_price": 100.0}, "timestamp_start": 1790699245.4873083, "timestamp_end": 1790699245.4873083}}
+{"room": "eval-49d7e345", "call": {"function": "track_order", "args": {"order_id": "XYZ 88"}, "timestamp_start": 1790699292.8146613, "timestamp_end": 1790699292.8146613}}
+{"room": "eval-8a809b69", "call": {"function": "add_to_cart", "args": {"product_id": "K2", "quantity": 2}, "timestamp_start": 1790699412.1816967, "timestamp_end": 1790699412.1816967}}
+{"room": "eval-25b6d127", "call": {"function": "search_products", "args": {"query": "mechanical keyboard", "max_price": 200.0}, "timestamp_start": 1790699530.0807986, "timestamp_end": 1790699530.0807986}}
+{"room": "eval-11dd2631", "call": {"function": "search_products", "args": {"query": "hiking boots"}, "timestamp_start": 1790699598.2643712, "timestamp_end": 1790699598.2643712}}

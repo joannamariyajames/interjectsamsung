@@ -1,0 +1,6 @@
+{"t": 1790712634.664, "model": "nvidia openai/gpt-oss-20b", "ttft_s": 0.896, "duration_s": 0.905, "cancelled": false}
+{"t": 1790712635.453, "model": "nvidia openai/gpt-oss-20b", "ttft_s": 0.454, "duration_s": 0.778, "cancelled": false}
+{"t": 1790712687.531, "model": "nvidia openai/gpt-oss-20b", "ttft_s": 1.186, "duration_s": 1.193, "cancelled": false}
+{"t": 1790712688.438, "model": "nvidia openai/gpt-oss-20b", "ttft_s": 0.533, "duration_s": 0.901, "cancelled": false}
+{"t": 1790712738.827, "model": "nvidia openai/gpt-oss-20b", "ttft_s": 1.077, "duration_s": 1.083, "cancelled": false}
+{"t": 1790712739.472, "model": "nvidia openai/gpt-oss-20b", "ttft_s": 0.499, "duration_s": 0.637, "cancelled": false}

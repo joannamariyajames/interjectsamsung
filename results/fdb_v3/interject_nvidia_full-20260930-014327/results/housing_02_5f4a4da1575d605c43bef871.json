@@ -1,0 +1,340 @@
+{
+  "pid": "5f4a4da1575d605c43bef871",
+  "example_id": "housing_02",
+  "category": "housing_location",
+  "title": "Simple Commute Check",
+  "provider": "interject_nvidia_full",
+  "evaluated_at": "2026-09-30T02:35:15.021731",
+  "inference_time_s": 48.65,
+  "room_name": "eval-a06f09fe",
+  "stream_start_time": 1790715917.7475092,
+  "input_transcript": "Tell me how long it would take to drive from one oh one Main Street to downtown office during a normal day. Um, I want to make sure it's reasonable.",
+  "input_asr_chunks": [
+    {
+      "text": "Tell",
+      "timestamp": [
+        2.8000000000000003,
+        3.04
+      ]
+    },
+    {
+      "text": "me",
+      "timestamp": [
+        3.04,
+        3.2800000000000002
+      ]
+    },
+    {
+      "text": "how",
+      "timestamp": [
+        3.2800000000000002,
+        3.52
+      ]
+    },
+    {
+      "text": "long",
+      "timestamp": [
+        3.52,
+        3.68
+      ]
+    },
+    {
+      "text": "it",
+      "timestamp": [
+        3.68,
+        3.84
+      ]
+    },
+    {
+      "text": "would",
+      "timestamp": [
+        3.84,
+        4.0
+      ]
+    },
+    {
+      "text": "take",
+      "timestamp": [
+        4.0,
+        4.24
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        4.24,
+        4.5600000000000005
+      ]
+    },
+    {
+      "text": "drive",
+      "timestamp": [
+        4.5600000000000005,
+        5.28
+      ]
+    },
+    {
+      "text": "from",
+      "timestamp": [
+        5.28,
+        5.6000000000000005
+      ]
+    },
+    {
+      "text": "one",
+      "timestamp": [
+        5.6000000000000005,
+        5.76
+      ]
+    },
+    {
+      "text": "oh",
+      "timestamp": [
+        5.92,
+        6.08
+      ]
+    },
+    {
+      "text": "one",
+      "timestamp": [
+        6.16,
+        6.4
+      ]
+    },
+    {
+      "text": "Main",
+      "timestamp": [
+        6.4,
+        6.8
+      ]
+    },
+    {
+      "text": "Street",
+      "timestamp": [
+        6.8,
+        7.2
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        7.2,
+        7.36
+      ]
+    },
+    {
+      "text": "downtown",
+      "timestamp": [
+        7.44,
+        8.24
+      ]
+    },
+    {
+      "text": "office",
+      "timestamp": [
+        8.24,
+        8.88
+      ]
+    },
+    {
+      "text": "during",
+      "timestamp": [
+        9.120000000000001,
+        9.6
+      ]
+    },
+    {
+      "text": "a",
+      "timestamp": [
+        9.6,
+        9.76
+      ]
+    },
+    {
+      "text": "normal",
+      "timestamp": [
+        9.76,
+        10.48
+      ]
+    },
+    {
+      "text": "day.",
+      "timestamp": [
+        10.48,
+        10.8
+      ]
+    },
+    {
+      "text": "Um,",
+      "timestamp": [
+        11.120000000000001,
+        11.76
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        12.08,
+        12.32
+      ]
+    },
+    {
+      "text": "want",
+      "timestamp": [
+        12.32,
+        12.56
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        12.56,
+        12.64
+      ]
+    },
+    {
+      "text": "make",
+      "timestamp": [
+        12.64,
+        12.8
+      ]
+    },
+    {
+      "text": "sure",
+      "timestamp": [
+        12.8,
+        13.040000000000001
+      ]
+    },
+    {
+      "text": "it's",
+      "timestamp": [
+        13.040000000000001,
+        13.44
+      ]
+    },
+    {
+      "text": "reasonable.",
+      "timestamp": [
+        13.44,
+        14.32
+      ]
+    }
+  ],
+  "user_speech_end_rel": 14.32,
+  "latency": {
+    "input_duration_s": 45.136,
+    "output_duration_s": 45.136,
+    "first_speech_s": 18.15
+  },
+  "user_done_unix": 1790715932.0675092,
+  "transcript": "It should take about twenty five minutes by car on a normal day.",
+  "asr_chunks": [
+    {
+      "text": "It",
+      "timestamp": [
+        18.080000000000002,
+        18.32
+      ]
+    },
+    {
+      "text": "should",
+      "timestamp": [
+        18.32,
+        18.56
+      ]
+    },
+    {
+      "text": "take",
+      "timestamp": [
+        18.56,
+        18.8
+      ]
+    },
+    {
+      "text": "about",
+      "timestamp": [
+        18.8,
+        19.04
+      ]
+    },
+    {
+      "text": "twenty",
+      "timestamp": [
+        19.04,
+        19.36
+      ]
+    },
+    {
+      "text": "five",
+      "timestamp": [
+        19.44,
+        19.68
+      ]
+    },
+    {
+      "text": "minutes",
+      "timestamp": [
+        19.68,
+        20.16
+      ]
+    },
+    {
+      "text": "by",
+      "timestamp": [
+        20.16,
+        20.48
+      ]
+    },
+    {
+      "text": "car",
+      "timestamp": [
+        20.48,
+        20.8
+      ]
+    },
+    {
+      "text": "on",
+      "timestamp": [
+        20.8,
+        21.04
+      ]
+    },
+    {
+      "text": "a",
+      "timestamp": [
+        21.04,
+        21.12
+      ]
+    },
+    {
+      "text": "normal",
+      "timestamp": [
+        21.12,
+        21.76
+      ]
+    },
+    {
+      "text": "day.",
+      "timestamp": [
+        21.76,
+        22.080000000000002
+      ]
+    }
+  ],
+  "perceived_total_latency": 3.76,
+  "audio_agent_speech_start": 18.080000000000002,
+  "actual_tool_calls": [
+    {
+      "function": "calculate_commute",
+      "args": {
+        "origin_address": "101 Main Street",
+        "destination_address": "downtown office",
+        "mode": "driving"
+      },
+      "timestamp_start": 17.91,
+      "timestamp_end": 18.4
+    }
+  ],
+  "status": "completed"
+}

@@ -1,0 +1,32 @@
+📖 Loading benchmark data from benchmark_data_v2.json...
+📁 Scanning D:/Samsung_Hackathon/Full-Duplex-Bench/v3/fdb_v3_data_released for provider 'interject_nvidia_full'...
+🔍 Found 100 valid result files matching benchmark scenarios.
+
+📊 EVALUATION REPORT
+========================================================
+  Scenarios evaluated : 100
+  Turn-Take Success   : 99/100 (99.0%)
+  No Response (silent): 1
+
+  By Metric (turn-taken only, N=99):
+    Tool Selection Acc : 90.1%
+    Argument Acc       : 66.7%
+    Response Qual      : (LLM judge disabled, use --use-llm)
+
+  Latency (N=99, turn-taken only):
+    Avg latency        : 4.45s ± 3.77s  (excl. interruptions)
+    Min / Max          : 0.24s / 22.08s
+    Interruptions      : 6 / 99  (6.1%)
+
+  By Domain (all samples):
+    ecommerce_support: tool_selection_acc=90.8%, argument_acc=64.9%
+    finance_billing: tool_selection_acc=92.5%, argument_acc=84.7%
+    housing_location: tool_selection_acc=90.7%, argument_acc=55.1%
+    travel_identity: tool_selection_acc=84.6%, argument_acc=61.7%
+
+  By Difficulty (all samples):
+    easy: tool_selection_acc=91.2%, argument_acc=69.4%
+    medium: tool_selection_acc=90.2%, argument_acc=61.8%
+    hard: tool_selection_acc=88.2%, argument_acc=68.9%
+
+  📄 Full report saved: D:/Samsung_Hackathon/interjectsamsung/results/fdb_v3/interject_nvidia_full-20260930-014327/interject_nvidia_full_evaluation_report.json

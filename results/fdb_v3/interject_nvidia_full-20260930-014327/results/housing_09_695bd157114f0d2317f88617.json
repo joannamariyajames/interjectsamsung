@@ -1,0 +1,438 @@
+{
+  "pid": "695bd157114f0d2317f88617",
+  "example_id": "housing_09",
+  "category": "housing_location",
+  "title": "City Self-Correction",
+  "provider": "interject_nvidia_full",
+  "evaluated_at": "2026-09-30T02:41:53.535245",
+  "inference_time_s": 49.76,
+  "room_name": "eval-a28d8e64",
+  "stream_start_time": 1790716316.298117,
+  "input_transcript": "Well well, uh, I'm interested in two-bedroom in Boston. Wait, actually, um, I changed my mind. Let's look in Chicago instead and keep the max price around two thousand dollars a month.",
+  "input_asr_chunks": [
+    {
+      "text": "Well",
+      "timestamp": [
+        0.56,
+        0.72
+      ]
+    },
+    {
+      "text": "well,",
+      "timestamp": [
+        1.68,
+        1.92
+      ]
+    },
+    {
+      "text": "uh,",
+      "timestamp": [
+        2.08,
+        2.24
+      ]
+    },
+    {
+      "text": "I'm",
+      "timestamp": [
+        2.4,
+        2.64
+      ]
+    },
+    {
+      "text": "interested",
+      "timestamp": [
+        2.64,
+        2.96
+      ]
+    },
+    {
+      "text": "in",
+      "timestamp": [
+        2.96,
+        3.04
+      ]
+    },
+    {
+      "text": "two-bedroom",
+      "timestamp": [
+        3.2,
+        3.84
+      ]
+    },
+    {
+      "text": "in",
+      "timestamp": [
+        4.0,
+        4.16
+      ]
+    },
+    {
+      "text": "Boston.",
+      "timestamp": [
+        4.16,
+        4.88
+      ]
+    },
+    {
+      "text": "Wait,",
+      "timestamp": [
+        5.2,
+        6.0
+      ]
+    },
+    {
+      "text": "actually,",
+      "timestamp": [
+        6.32,
+        6.5600000000000005
+      ]
+    },
+    {
+      "text": "um,",
+      "timestamp": [
+        7.12,
+        7.36
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        8.0,
+        8.24
+      ]
+    },
+    {
+      "text": "changed",
+      "timestamp": [
+        8.24,
+        8.64
+      ]
+    },
+    {
+      "text": "my",
+      "timestamp": [
+        8.64,
+        8.8
+      ]
+    },
+    {
+      "text": "mind.",
+      "timestamp": [
+        8.8,
+        9.120000000000001
+      ]
+    },
+    {
+      "text": "Let's",
+      "timestamp": [
+        9.44,
+        9.76
+      ]
+    },
+    {
+      "text": "look",
+      "timestamp": [
+        9.76,
+        9.92
+      ]
+    },
+    {
+      "text": "in",
+      "timestamp": [
+        9.92,
+        10.08
+      ]
+    },
+    {
+      "text": "Chicago",
+      "timestamp": [
+        10.08,
+        10.88
+      ]
+    },
+    {
+      "text": "instead",
+      "timestamp": [
+        10.88,
+        11.44
+      ]
+    },
+    {
+      "text": "and",
+      "timestamp": [
+        11.76,
+        11.92
+      ]
+    },
+    {
+      "text": "keep",
+      "timestamp": [
+        11.92,
+        12.16
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        12.16,
+        12.32
+      ]
+    },
+    {
+      "text": "max",
+      "timestamp": [
+        12.32,
+        12.64
+      ]
+    },
+    {
+      "text": "price",
+      "timestamp": [
+        12.64,
+        13.040000000000001
+      ]
+    },
+    {
+      "text": "around",
+      "timestamp": [
+        13.040000000000001,
+        13.36
+      ]
+    },
+    {
+      "text": "two",
+      "timestamp": [
+        13.36,
+        13.44
+      ]
+    },
+    {
+      "text": "thousand",
+      "timestamp": [
+        13.6,
+        14.08
+      ]
+    },
+    {
+      "text": "dollars",
+      "timestamp": [
+        14.08,
+        14.4
+      ]
+    },
+    {
+      "text": "a",
+      "timestamp": [
+        14.4,
+        14.72
+      ]
+    },
+    {
+      "text": "month.",
+      "timestamp": [
+        14.72,
+        15.280000000000001
+      ]
+    }
+  ],
+  "user_speech_end_rel": 15.280000000000001,
+  "latency": {
+    "input_duration_s": 46.38,
+    "output_duration_s": 46.38,
+    "first_speech_s": 21.4
+  },
+  "user_done_unix": 1790716331.578117,
+  "transcript": "Here are the results for a two-bedroom apartment in Chicago with a maximum rent of $1.2,000 a month. Apartment APT1, priced at $1.1,900 per month.",
+  "asr_chunks": [
+    {
+      "text": "Here",
+      "timestamp": [
+        21.28,
+        21.6
+      ]
+    },
+    {
+      "text": "are",
+      "timestamp": [
+        21.6,
+        21.76
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        21.76,
+        21.92
+      ]
+    },
+    {
+      "text": "results",
+      "timestamp": [
+        21.92,
+        22.32
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        22.32,
+        22.48
+      ]
+    },
+    {
+      "text": "a",
+      "timestamp": [
+        22.48,
+        22.64
+      ]
+    },
+    {
+      "text": "two-bedroom",
+      "timestamp": [
+        22.64,
+        23.36
+      ]
+    },
+    {
+      "text": "apartment",
+      "timestamp": [
+        23.36,
+        23.76
+      ]
+    },
+    {
+      "text": "in",
+      "timestamp": [
+        23.76,
+        23.92
+      ]
+    },
+    {
+      "text": "Chicago",
+      "timestamp": [
+        23.92,
+        24.64
+      ]
+    },
+    {
+      "text": "with",
+      "timestamp": [
+        24.72,
+        24.88
+      ]
+    },
+    {
+      "text": "a",
+      "timestamp": [
+        24.88,
+        25.04
+      ]
+    },
+    {
+      "text": "maximum",
+      "timestamp": [
+        25.04,
+        25.44
+      ]
+    },
+    {
+      "text": "rent",
+      "timestamp": [
+        25.44,
+        25.68
+      ]
+    },
+    {
+      "text": "of",
+      "timestamp": [
+        25.68,
+        25.92
+      ]
+    },
+    {
+      "text": "$1.2,000",
+      "timestamp": [
+        25.92,
+        26.96
+      ]
+    },
+    {
+      "text": "a",
+      "timestamp": [
+        26.96,
+        27.12
+      ]
+    },
+    {
+      "text": "month.",
+      "timestamp": [
+        27.12,
+        27.36
+      ]
+    },
+    {
+      "text": "Apartment",
+      "timestamp": [
+        27.52,
+        28.0
+      ]
+    },
+    {
+      "text": "APT1,",
+      "timestamp": [
+        28.080000000000002,
+        28.96
+      ]
+    },
+    {
+      "text": "priced",
+      "timestamp": [
+        29.44,
+        29.84
+      ]
+    },
+    {
+      "text": "at",
+      "timestamp": [
+        29.84,
+        30.0
+      ]
+    },
+    {
+      "text": "$1.1,900",
+      "timestamp": [
+        30.0,
+        31.68
+      ]
+    },
+    {
+      "text": "per",
+      "timestamp": [
+        31.68,
+        31.92
+      ]
+    },
+    {
+      "text": "month.",
+      "timestamp": [
+        31.92,
+        32.56
+      ]
+    }
+  ],
+  "perceived_total_latency": 6.0,
+  "audio_agent_speech_start": 21.28,
+  "actual_tool_calls": [
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Chicago",
+        "bedrooms": 2,
+        "max_price": 2000.0
+      },
+      "timestamp_start": 17.75,
+      "timestamp_end": 18.02
+    }
+  ],
+  "status": "completed"
+}

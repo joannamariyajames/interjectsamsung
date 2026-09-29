@@ -1,0 +1,480 @@
+{
+  "pid": "695bd157114f0d2317f88617",
+  "example_id": "housing_04",
+  "category": "housing_location",
+  "title": "Apartment Search with Pause",
+  "provider": "interject_nvidia_full",
+  "evaluated_at": "2026-09-30T02:37:07.238490",
+  "inference_time_s": 52.7,
+  "room_name": "eval-88e1e28b",
+  "stream_start_time": 1790716029.9662726,
+  "input_transcript": "Well, um uh, you know, I'm looking for an apartment in Denver that has one bedroom. I'm living alone, um, so I don't need anything too big.",
+  "input_asr_chunks": [
+    {
+      "text": "Well,",
+      "timestamp": [
+        0.56,
+        0.8
+      ]
+    },
+    {
+      "text": "um",
+      "timestamp": [
+        1.6,
+        1.84
+      ]
+    },
+    {
+      "text": "uh,",
+      "timestamp": [
+        3.92,
+        4.16
+      ]
+    },
+    {
+      "text": "you",
+      "timestamp": [
+        4.32,
+        4.64
+      ]
+    },
+    {
+      "text": "know,",
+      "timestamp": [
+        4.64,
+        4.96
+      ]
+    },
+    {
+      "text": "I'm",
+      "timestamp": [
+        6.16,
+        6.48
+      ]
+    },
+    {
+      "text": "looking",
+      "timestamp": [
+        6.48,
+        6.8
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        6.8,
+        6.96
+      ]
+    },
+    {
+      "text": "an",
+      "timestamp": [
+        6.96,
+        7.12
+      ]
+    },
+    {
+      "text": "apartment",
+      "timestamp": [
+        7.12,
+        7.5200000000000005
+      ]
+    },
+    {
+      "text": "in",
+      "timestamp": [
+        7.5200000000000005,
+        7.68
+      ]
+    },
+    {
+      "text": "Denver",
+      "timestamp": [
+        7.68,
+        8.56
+      ]
+    },
+    {
+      "text": "that",
+      "timestamp": [
+        9.44,
+        9.76
+      ]
+    },
+    {
+      "text": "has",
+      "timestamp": [
+        9.76,
+        10.08
+      ]
+    },
+    {
+      "text": "one",
+      "timestamp": [
+        10.08,
+        10.32
+      ]
+    },
+    {
+      "text": "bedroom.",
+      "timestamp": [
+        10.32,
+        11.28
+      ]
+    },
+    {
+      "text": "I'm",
+      "timestamp": [
+        12.48,
+        12.8
+      ]
+    },
+    {
+      "text": "living",
+      "timestamp": [
+        12.8,
+        13.44
+      ]
+    },
+    {
+      "text": "alone,",
+      "timestamp": [
+        13.44,
+        14.08
+      ]
+    },
+    {
+      "text": "um,",
+      "timestamp": [
+        15.44,
+        15.68
+      ]
+    },
+    {
+      "text": "so",
+      "timestamp": [
+        16.32,
+        16.56
+      ]
+    },
+    {
+      "text": "I",
+      "timestamp": [
+        16.56,
+        16.64
+      ]
+    },
+    {
+      "text": "don't",
+      "timestamp": [
+        16.64,
+        16.88
+      ]
+    },
+    {
+      "text": "need",
+      "timestamp": [
+        16.88,
+        17.12
+      ]
+    },
+    {
+      "text": "anything",
+      "timestamp": [
+        17.12,
+        17.76
+      ]
+    },
+    {
+      "text": "too",
+      "timestamp": [
+        17.76,
+        18.080000000000002
+      ]
+    },
+    {
+      "text": "big.",
+      "timestamp": [
+        18.080000000000002,
+        18.400000000000002
+      ]
+    }
+  ],
+  "user_speech_end_rel": 1.84,
+  "latency": {
+    "input_duration_s": 49.32,
+    "output_duration_s": 49.32,
+    "first_speech_s": 8.95
+  },
+  "user_done_unix": 1790716031.8062725,
+  "transcript": "Sure. Got it looking for a cozy one-bedroom place in Denver. I've pulled up a few options that fit a single-person lifestyle. Let me know if you'd like to see more details or adjust the budget.",
+  "asr_chunks": [
+    {
+      "text": "Sure.",
+      "timestamp": [
+        8.96,
+        9.200000000000001
+      ]
+    },
+    {
+      "text": "Got",
+      "timestamp": [
+        21.68,
+        21.92
+      ]
+    },
+    {
+      "text": "it",
+      "timestamp": [
+        22.0,
+        22.16
+      ]
+    },
+    {
+      "text": "looking",
+      "timestamp": [
+        22.240000000000002,
+        22.56
+      ]
+    },
+    {
+      "text": "for",
+      "timestamp": [
+        22.56,
+        22.64
+      ]
+    },
+    {
+      "text": "a",
+      "timestamp": [
+        22.64,
+        22.8
+      ]
+    },
+    {
+      "text": "cozy",
+      "timestamp": [
+        22.8,
+        23.12
+      ]
+    },
+    {
+      "text": "one-bedroom",
+      "timestamp": [
+        23.28,
+        24.080000000000002
+      ]
+    },
+    {
+      "text": "place",
+      "timestamp": [
+        24.080000000000002,
+        24.32
+      ]
+    },
+    {
+      "text": "in",
+      "timestamp": [
+        24.32,
+        24.400000000000002
+      ]
+    },
+    {
+      "text": "Denver.",
+      "timestamp": [
+        24.400000000000002,
+        24.88
+      ]
+    },
+    {
+      "text": "I've",
+      "timestamp": [
+        25.04,
+        25.28
+      ]
+    },
+    {
+      "text": "pulled",
+      "timestamp": [
+        25.28,
+        25.6
+      ]
+    },
+    {
+      "text": "up",
+      "timestamp": [
+        25.6,
+        25.76
+      ]
+    },
+    {
+      "text": "a",
+      "timestamp": [
+        25.76,
+        25.92
+      ]
+    },
+    {
+      "text": "few",
+      "timestamp": [
+        25.92,
+        26.16
+      ]
+    },
+    {
+      "text": "options",
+      "timestamp": [
+        26.16,
+        26.72
+      ]
+    },
+    {
+      "text": "that",
+      "timestamp": [
+        26.72,
+        26.96
+      ]
+    },
+    {
+      "text": "fit",
+      "timestamp": [
+        26.96,
+        27.2
+      ]
+    },
+    {
+      "text": "a",
+      "timestamp": [
+        27.2,
+        27.36
+      ]
+    },
+    {
+      "text": "single-person",
+      "timestamp": [
+        27.36,
+        28.16
+      ]
+    },
+    {
+      "text": "lifestyle.",
+      "timestamp": [
+        28.16,
+        28.88
+      ]
+    },
+    {
+      "text": "Let",
+      "timestamp": [
+        29.12,
+        29.36
+      ]
+    },
+    {
+      "text": "me",
+      "timestamp": [
+        29.36,
+        29.6
+      ]
+    },
+    {
+      "text": "know",
+      "timestamp": [
+        29.6,
+        29.76
+      ]
+    },
+    {
+      "text": "if",
+      "timestamp": [
+        29.76,
+        30.0
+      ]
+    },
+    {
+      "text": "you'd",
+      "timestamp": [
+        30.0,
+        30.32
+      ]
+    },
+    {
+      "text": "like",
+      "timestamp": [
+        30.32,
+        30.560000000000002
+      ]
+    },
+    {
+      "text": "to",
+      "timestamp": [
+        30.560000000000002,
+        30.8
+      ]
+    },
+    {
+      "text": "see",
+      "timestamp": [
+        30.8,
+        31.04
+      ]
+    },
+    {
+      "text": "more",
+      "timestamp": [
+        31.04,
+        31.28
+      ]
+    },
+    {
+      "text": "details",
+      "timestamp": [
+        31.28,
+        31.84
+      ]
+    },
+    {
+      "text": "or",
+      "timestamp": [
+        31.84,
+        32.08
+      ]
+    },
+    {
+      "text": "adjust",
+      "timestamp": [
+        32.08,
+        32.480000000000004
+      ]
+    },
+    {
+      "text": "the",
+      "timestamp": [
+        32.480000000000004,
+        32.64
+      ]
+    },
+    {
+      "text": "budget.",
+      "timestamp": [
+        32.64,
+        33.6
+      ]
+    }
+  ],
+  "perceived_total_latency": 7.12,
+  "audio_agent_speech_start": 8.96,
+  "actual_tool_calls": [
+    {
+      "function": "search_apartments",
+      "args": {
+        "city": "Denver",
+        "bedrooms": 1,
+        "max_price": 2000.0
+      },
+      "timestamp_start": 14.68,
+      "timestamp_end": 15.37
+    }
+  ],
+  "status": "completed"
+}

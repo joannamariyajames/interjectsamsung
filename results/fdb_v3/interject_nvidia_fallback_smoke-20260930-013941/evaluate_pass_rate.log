@@ -1,0 +1,28 @@
+📖 Loading benchmark data from benchmark_data_v2.json...
+📁 Scanning D:/Samsung_Hackathon/interjectsamsung/results/fdb_v3/interject_nvidia_fallback_smoke-20260930-013941/subset-data for provider 'interject_nvidia_fallback_smoke'...
+🔍 Found 3 valid result files matching benchmark scenarios.
+
+📊 PASS RATE REPORT — INTERJECT_NVIDIA_FALLBACK_SMOKE
+========================================================
+  Total Scenarios : 3
+  ✅ Passed       : 3
+  ❌ Failed       : 0
+  📈 Pass Rate    : 100.0%
+
+  Failure Breakdown:
+    Wrong Tools     : 0
+    Wrong Arguments : 0
+
+  By Domain:
+    ecommerce_support: 100.0%
+
+  By Difficulty:
+    easy: 100.0%
+
+  By Num Tool Calls:
+    1 tools: 100.0%
+
+  By Disfluency Feature:
+    PAUSE: 100.0%
+
+  📄 Report saved: D:/Samsung_Hackathon/interjectsamsung/results/fdb_v3/interject_nvidia_fallback_smoke-20260930-013941/interject_nvidia_fallback_smoke_pass_rate_report.json
