@@ -131,6 +131,12 @@ A rate limit (429) or transient server error (5xx) is retried before any text
 is shown, honouring the provider's `Retry-After`; a long wait (a spent daily
 quota) fails the turn at once with the provider's message.
 
+Answers are kept short for speech (two to four sentences unless you ask for
+detail) and capped at `LLM_MAX_TOKENS` (default 900; 0 disables). Reasoning
+models such as `openai/gpt-oss-120b` are asked for `LLM_REASONING_EFFORT=low`
+(default), which shortens the silence before the first word. An endpoint that
+rejects either field is asked again without it.
+
 Or Gemini (takes precedence over `LLM_API_KEY` when both are set):
 
 ```bash

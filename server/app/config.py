@@ -50,6 +50,14 @@ class Settings:
         default_factory=lambda: os.environ.get("LLM_BASE_URL", "https://api.openai.com/v1")
     )
     llm_model: str = field(default_factory=lambda: os.environ.get("LLM_MODEL", "gpt-4o-mini"))
+    # A spoken answer should be short; the cap is a backstop for when a model
+    # ignores the prompt (0 disables it).
+    llm_max_tokens: int = field(default_factory=lambda: _env_int("LLM_MAX_TOKENS", 900))
+    # Reasoning models (gpt-oss) think before the first word; "low" keeps the
+    # silence before an answer short, which matters more in voice than depth.
+    llm_reasoning_effort: str = field(
+        default_factory=lambda: os.environ.get("LLM_REASONING_EFFORT", "low")
+    )
 
     # Gemini configuration
     gemini_api_key: Any = _UNSET

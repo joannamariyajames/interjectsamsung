@@ -207,3 +207,58 @@ def test_evidence_reaches_the_model_labelled_as_fictional_sample_data() -> None:
     user = OpenAICompatProvider()._messages(request)[-1]["content"]
     assert "Evidence (Interject Travel demo knowledge base - fictional sample data):" in user
     assert "[policy#7] Approval thresholds" in user
+
+
+def _use_model(monkeypatch: pytest.MonkeyPatch, model: str, **overrides: Any) -> None:
+    monkeypatch.setattr(
+        openai_compat,
+        "settings",
+        openai_compat.settings.__class__(
+            llm_api_key="test-key", llm_base_url="https://llm.example/openai/v1/", llm_model=model, **overrides
+        ),
+    )
+
+
+async def test_reasoning_models_are_asked_to_think_briefly_and_answers_are_capped(endpoint, sleeps, monkeypatch) -> None:
+    fake = endpoint(_ok("ok"))
+    _use_model(monkeypatch, "openai/gpt-oss-120b")
+    await _collect([])
+    body = json.loads(fake.requests[0].content)
+    assert body["reasoning_effort"] == "low"
+    assert body["max_completion_tokens"] == 900
+
+
+async def test_other_models_get_the_cap_but_no_reasoning_field(endpoint, sleeps) -> None:
+    fake = endpoint(_ok("ok"))
+    await _collect([])
+    body = json.loads(fake.requests[0].content)
+    assert "reasoning_effort" not in body
+    assert body["max_completion_tokens"] == 900
+
+
+async def test_tuning_can_be_switched_off(endpoint, sleeps, monkeypatch) -> None:
+    fake = endpoint(_ok("ok"))
+    _use_model(monkeypatch, "openai/gpt-oss-120b", llm_max_tokens=0, llm_reasoning_effort="")
+    await _collect([])
+    body = json.loads(fake.requests[0].content)
+    assert "reasoning_effort" not in body and "max_completion_tokens" not in body
+
+
+async def test_an_endpoint_rejecting_a_tuning_field_is_asked_again_without_it(endpoint, sleeps, monkeypatch) -> None:
+    fake = endpoint(_error(400, message="property 'reasoning_effort' is unsupported"), _ok("answer"))
+    _use_model(monkeypatch, "openai/gpt-oss-120b")
+    received: list[str] = []
+    await _collect(received)
+    assert received == ["answer"]
+    assert len(fake.requests) == 2 and sleeps == []
+    retry = json.loads(fake.requests[1].content)
+    assert "reasoning_effort" not in retry and "max_completion_tokens" not in retry
+
+
+def test_the_prompt_keeps_spoken_answers_short_and_honest() -> None:
+    lowered = SYSTEM.lower()
+    assert "two to four sentences" in lowered and "at most five short items" in lowered
+    assert "never attach interject travel's fare names" in lowered
+    assert "no booking system, portal, account or live fares" in lowered
+    assert "say briefly that you have no live data" in lowered
+    assert "never name a specific business, building, office or project unless" in lowered

@@ -78,6 +78,8 @@ class OpenAICompatProvider:
             "stream": True,
             "temperature": 0.3,
         }
+        tuning = _tuning(settings.llm_model)
+        payload.update(tuning)
         headers = {"Authorization": f"Bearer {settings.llm_api_key}"}
         url = settings.llm_base_url.rstrip("/") + "/chat/completions"
 
@@ -111,11 +113,30 @@ class OpenAICompatProvider:
                         return
 
                     detail = (await response.aread()).decode("utf-8", "replace")[:400]
+                    if response.status_code == 400 and any(key in detail for key in tuning):
+                        # This endpoint does not take an optional tuning field:
+                        # ask again at once without them rather than fail the turn.
+                        for key in tuning:
+                            payload.pop(key, None)
+                        tuning = {}
+                        continue
                     wait = _retry_wait(response.headers.get("retry-after"), attempt)
                     retryable = response.status_code in _RETRYABLE_STATUS and wait <= _MAX_RETRY_WAIT_S
                     if not retryable or attempt == _MAX_ATTEMPTS:
                         raise RuntimeError(f"provider returned {response.status_code}: {detail}")
                 await asyncio.sleep(wait)
+            # only reached when the last attempt was spent dropping tuning fields
+            raise RuntimeError(f"provider returned 400: {detail}")
+
+
+def _tuning(model: str) -> dict[str, object]:
+    """Optional request fields that keep a spoken answer short and prompt."""
+    extra: dict[str, object] = {}
+    if settings.llm_max_tokens > 0:
+        extra["max_completion_tokens"] = settings.llm_max_tokens
+    if "gpt-oss" in model.lower() and settings.llm_reasoning_effort:
+        extra["reasoning_effort"] = settings.llm_reasoning_effort
+    return extra
 
 
 _MAX_ATTEMPTS = 3
