@@ -4,11 +4,14 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import uuid
+from pathlib import Path
 from typing import Any
 
 from fastapi import Depends, FastAPI, HTTPException, Request, Response, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from .auth import COOKIE_NAME, SESSION_TTL_S, AuthError, AuthStore, User
@@ -393,3 +396,27 @@ async def drive_socket(socket: WebSocket) -> None:
     finally:
         closed = True
         await runtime.shutdown()
+
+
+# -- the built web app (a deployment) --------------------------------------------
+# In development Vite serves the pages and proxies /api and /ws here. Deployed,
+# this process serves the built app too (``npm run build`` -> web/dist), so
+# pages, API and sockets share one address and the login cookie stays
+# first-party. Registered last: every /api and /ws route above wins.
+def web_dist() -> Path:
+    return Path(os.environ.get("WEB_DIST") or Path(__file__).resolve().parents[2] / "web" / "dist")
+
+
+@app.api_route("/{path:path}", methods=["GET", "HEAD"], include_in_schema=False)
+async def web_app(path: str) -> FileResponse:
+    root = web_dist().resolve()
+    index = root / "index.html"
+    if path == "api" or path.startswith(("api/", "ws/")) or path == "ws" or not index.is_file():
+        raise HTTPException(status_code=404, detail="Not Found")
+    target = (root / path).resolve()
+    if path and target.is_file() and target.is_relative_to(root):
+        # file names under assets/ carry a content hash: safe to cache for good
+        immutable = target.parent.name == "assets"
+        return FileResponse(target, headers={"Cache-Control": "public, max-age=31536000, immutable"} if immutable else None)
+    # any other path is a page of the app (routes live in the URL hash)
+    return FileResponse(index, headers={"Cache-Control": "no-cache"})
