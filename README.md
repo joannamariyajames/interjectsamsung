@@ -16,6 +16,19 @@ Interject does neither. It starts retrieving before you stop typing, it stops
 mid-word the instant you cut in, and it keeps what it had already worked out so
 the next thing you say continues the answer instead of restarting it.
 
+## Submission
+
+| | |
+|---|---|
+| Team | **SamSung, We Coded**, MS Ramaiah Institute of Technology (MSRIT) |
+| Theme | 05 - Interruptible Real-Time Agents |
+| Demo video (under 5 min) | <https://www.youtube.com/watch?v=UI59hoOJY4A> |
+| Live app | <https://interject.onrender.com> (free hosting: the first visit after a quiet spell takes about a minute to wake up) |
+| Presentation | [PPTX](docs/MSRIT_SamSung_We_Coded_Submission_ppt.pptx) · [PDF](docs/MSRIT_SamSung_We_Coded_Submission_ppt.pdf) |
+| AI disclosure | [AI_Disclosure_SamSung_We_Coded.pdf](docs/AI_Disclosure_SamSung_We_Coded.pdf) |
+| Benchmark results | [Full 100-recording run](results/fdb_v3/interject_nvidia_full-20260930-014327) and [text replay](results/fdb_v3/text-replay-nvidia-gpt-oss-20b-20260929) |
+| Release tag | `PRISM_GENAI_HACKATHON_Y2026` |
+
 ## For judges: quick start
 
 **Nothing to pay for.** Every key below is from a free account and takes about a
