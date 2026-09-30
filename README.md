@@ -61,6 +61,28 @@ Open <http://localhost:5174> in Chrome or Edge, click **Sign up**, then:
 - For open-ended general questions on the main page, start the backend with a
   Groq key instead: see [Using a real model](#using-a-real-model).
 
+**3. Or the web app with Docker, one image:** the `Dockerfile` builds the
+frontend and serves it from the backend on one port. Offline, no keys:
+
+```bash
+docker build -t interject .
+docker run --rm -p 8000:8000 interject
+```
+
+Open <http://localhost:8000>. For general answers from a real model, pass a Groq
+key (and optionally an NVIDIA key as the backup); keys stay out of the image:
+
+```bash
+docker run --rm -p 8000:8000 \
+  -e LLM_API_KEY=gsk_... -e LLM_BASE_URL=https://api.groq.com/openai/v1 \
+  -e LLM_MODEL=openai/gpt-oss-120b -e LLM_FALLBACK_API_KEY=nvapi-... \
+  interject
+```
+
+Accounts are stored in `/app/server/data` inside the container; add
+`-v interject-data:/app/server/data` to keep them between runs. The benchmark
+is not in the image: it runs with the one-command script above.
+
 
 ---
 
