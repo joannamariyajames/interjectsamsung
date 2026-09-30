@@ -187,7 +187,7 @@ fi
 DATA="$V3/fdb_v3_data_released"
 if [[ ! -d "$DATA" ]]; then
   log "downloading the benchmark data (Google Drive)"
-  "$PY" -m gdown --fuzzy "$FDB_DATA_GDRIVE" -O "$FDB_DIR/fdb_v3_data_released.zip"
+  "$PY" -m gdown "$FDB_DATA_GDRIVE" -O "$FDB_DIR/fdb_v3_data_released.zip"
   "$PY" -c "import zipfile,sys; z=zipfile.ZipFile(sys.argv[1]); [z.extract(m, sys.argv[2]) for m in z.namelist() if not m.startswith('__MACOSX') and not m.endswith('.DS_Store')]" \
     "$FDB_DIR/fdb_v3_data_released.zip" "$V3"
 fi
