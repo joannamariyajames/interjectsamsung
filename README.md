@@ -165,7 +165,9 @@ powershell -ExecutionPolicy Bypass -File scripts\start-backend-groq.ps1
 
 Check <http://localhost:8000/api/health>: `"provider": "openai-compatible"`
 means Groq, `"local-deterministic"` means the offline engine. The sidebar shows
-the same badge. With `NVIDIA_API_KEY` in `.env` too, NVIDIA's free
+the same badge. Offline, the app says so: a notice reads "Offline demo mode", and a
+question the demo knowledge base does not cover (the weather, a sum, a joke) gets a
+plain "I'm in offline demo mode..." reply instead of an unrelated passage. With `NVIDIA_API_KEY` in `.env` too, NVIDIA's free
 `openai/gpt-oss-20b` is the backup (`"fallback_model"` in the health check):
 it answers a turn whenever Groq's free rate limit is reached, so a demo keeps
 talking. By hand instead, in PowerShell from `server/`:

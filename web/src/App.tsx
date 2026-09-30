@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Car, LogOut, Menu, PanelRightClose, PanelRightOpen, Wifi, WifiOff, X } from "lucide-react";
+import { Car, CloudOff, LogOut, Menu, PanelRightClose, PanelRightOpen, Wifi, WifiOff, X } from "lucide-react";
 import { Logo } from "~/components/Logo";
 import { Badge, Button, Panel } from "~/components/ui/primitives";
 import { Composer } from "~/components/Composer";
@@ -54,6 +54,28 @@ function ConnectionBadge() {
     <Badge tone={status === "connecting" ? "warn" : "danger"}>
       <WifiOff size={11} /> {status === "connecting" ? "connecting" : "reconnecting"}
     </Badge>
+  );
+}
+
+/** The backend runs without a model key: say what that means before anyone asks. */
+function OfflineNotice() {
+  const provider = useSession((s) => s.provider);
+  if (provider !== "local-deterministic") return null;
+  return (
+    <div
+      role="status"
+      className="flex items-start gap-2 border-b border-line/70 bg-warn-soft/40 px-5 py-2 text-xs leading-snug text-warn"
+    >
+      <CloudOff size={13} className="mt-px shrink-0" />
+      <p>
+        <span className="font-semibold">Offline demo mode</span> - answers come only from a fictional demo
+        agency&rsquo;s knowledge base.
+        <span className="hidden sm:inline">
+          {" "}No AI model is connected; for general questions, start the backend with a Groq key (
+          <code className="font-mono">scripts/start-backend-groq.ps1</code>).
+        </span>
+      </p>
+    </div>
   );
 }
 
@@ -209,6 +231,7 @@ function AssistantApp() {
           </div>
         </header>
 
+        <OfflineNotice />
         <Transcript />
         <Composer />
       </Panel>

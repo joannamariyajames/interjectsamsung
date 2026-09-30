@@ -18,6 +18,37 @@ from .base import GenerationRequest
 
 _SENTENCE = re.compile(r"(?<=[.!?])\s+")
 
+# What the demo agency's knowledge base is about. Without a model, a question
+# that names none of this is off-topic: a passage it happens to share one word
+# with ("what time is it" -> hotel check-in times) is not an answer to it.
+_TRAVEL_WORDS = frozenset(tokenize(
+    "flight flights fly flying airline airport plane cabin class economy business fare fares "
+    "ticket seat baggage luggage bag bags kg checked change changing cancel cancelled "
+    "cancellation refund refunds reschedule rebook booking book booked reservation hotel hotels "
+    "room rooms stay property checkin checkout arrival departure depart delay delayed "
+    "connection missed itinerary trip trips travel traveller travelling insurance claim "
+    "expense expenses reimbursement reimburse diem allowance approval approve policy "
+    "corporate desk contact support agency interject rate rates flex saver fee fees "
+    "penalty compensation schedule schedules lounge meal visa passport"
+))
+
+OFFLINE_NOTE = (
+    "I'm in offline demo mode, so I can only answer from the knowledge base of Interject "
+    "Travel, a fictional demo agency"
+)
+
+
+def _on_topic(request: GenerationRequest) -> bool:
+    """Whether the offline engine has any business answering from the demo knowledge base."""
+    asked = set(tokenize(f"{request.utterance} {request.goal}"))
+    if asked & _TRAVEL_WORDS:
+        return True
+    if not request.evidence:
+        return False
+    top = request.evidence[0]
+    # otherwise only a passage that shares several of the question's words
+    return len(asked & set(tokenize(f"{top['title']} {top['snippet']}"))) >= 2
+
 
 def _relevant_sentences(text: str, query: str, limit: int = 2) -> list[str]:
     wanted = set(tokenize(query))
@@ -73,11 +104,15 @@ class MockProvider:
             parts.append("(reading the attached image alongside your question) ")
 
         evidence = request.evidence
-        if not evidence:
+        if not request.resume_from and (not evidence or not _on_topic(request)):
+            # No model is running: say so instead of reading out a passage that
+            # merely shares a word with the question, or offering an answer
+            # "from general knowledge" this engine does not have.
             parts.append(
-                f"I don't have anything in the corpus that covers \"{request.utterance.strip()}\" yet. "
-                "I can still reason about it, but nothing below would be grounded - "
-                "want me to answer from general knowledge instead?"
+                f"{OFFLINE_NOTE} - and I don't have anything in the corpus that covers "
+                f"\"{request.utterance.strip()}\". Try asking about its flights, baggage, hotels, "
+                "refunds or travel policy. General questions need the backend started with a "
+                "Groq key (scripts/start-backend-groq.ps1)."
             )
             return "".join(parts)
 
