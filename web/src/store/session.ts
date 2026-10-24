@@ -20,6 +20,7 @@ const TIMELINE_CAP = 120;
 const METRIC_CAP = 60;
 
 let socket: AgentSocket | null = null;
+let paceChosen = false; // the user moved the speaking-pace slider this page load
 let eventSeq = 0;
 let scenarioCancelled = false;
 const frameListeners = new Set<(frame: ServerFrame) => void>();
@@ -279,6 +280,7 @@ export const useSession = create<SessionState>((set, get) => ({
   },
 
   setTokenDelay: (value) => {
+    paceChosen = true;
     set({ tokenDelayMs: value });
     socket?.send({ t: "config", token_delay_ms: value });
   },
@@ -293,8 +295,11 @@ function applyFrame(set: Setter, get: () => SessionState, frame: ServerFrame) {
         sessionId: frame.session_id,
         provider: frame.provider,
         speculationOn: frame.speculation,
-        tokenDelayMs: frame.token_delay_ms,
       });
+      // A new socket starts at the server's default pace. Keep the one the user
+      // picked across a reconnect; until they pick one, follow the server.
+      if (paceChosen) socket?.send({ t: "config", token_delay_ms: get().tokenDelayMs });
+      else set({ tokenDelayMs: frame.token_delay_ms });
       break;
 
     case "stage":

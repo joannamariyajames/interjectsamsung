@@ -9,6 +9,7 @@ import {
   voiceInputSupported,
   voiceOutputSupported,
 } from "./speech";
+import { voiceRateFor } from "./pace";
 import type { ServerFrame } from "./types";
 
 /**
@@ -39,6 +40,11 @@ speaker.toSpeech = (text) =>
     .replace(/(^|\s)[-•]\s+/g, "$1") // list bullets
     .replace(/\s+/g, " ")
     .trim();
+// The sidebar's speaking pace sets the voice too, not just the on-screen stream.
+speaker.rate = voiceRateFor(useSession.getState().tokenDelayMs);
+useSession.subscribe((s) => {
+  speaker.rate = voiceRateFor(s.tokenDelayMs);
+});
 
 let listener: Listener | null = null;
 const replyText: Record<string, string> = {};

@@ -3,6 +3,7 @@ import { Moon, Play, RotateCcw, Square, Sun, Trash2, Wand2 } from "lucide-react"
 import { Badge, Button, Panel, SectionLabel, Toggle } from "~/components/ui/primitives";
 import { GoalStack } from "~/components/GoalStack";
 import { Logo } from "~/components/Logo";
+import { msToSlider, PACE_DEFAULT_MS, PACE_PRESETS, paceLabel, sliderToMs, voiceRateFor } from "~/lib/pace";
 import { useScenarios } from "~/lib/scenarios";
 import { useSession } from "~/store/session";
 import { cn } from "~/lib/utils";
@@ -119,19 +120,42 @@ export function Sidebar({ onAction }: { onAction?: () => void } = {}) {
           <div className="rounded-[var(--radius-item)] px-2 py-1.5">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium">Speaking pace</span>
-              <span className="font-mono text-[11px] text-muted">{tokenDelayMs} ms/token</span>
+              <span className="font-mono text-[11px] text-muted">
+                {paceLabel(tokenDelayMs)} · {tokenDelayMs} ms
+              </span>
             </div>
             <input
               type="range"
               min={0}
-              max={120}
-              step={2}
-              value={tokenDelayMs}
-              aria-label="Milliseconds between tokens"
-              onChange={(event) => setTokenDelay(Number(event.target.value))}
+              max={100}
+              step={0.5}
+              value={msToSlider(tokenDelayMs)}
+              aria-label="Speaking pace"
+              aria-valuetext={`${paceLabel(tokenDelayMs)}, ${tokenDelayMs} milliseconds between words`}
+              onChange={(event) => setTokenDelay(sliderToMs(Number(event.target.value)))}
               className="mt-2 w-full accent-[var(--accent)]"
             />
-            <p className="mt-1 text-[11px] text-muted">Slow it down to make barging in easier.</p>
+            <div className="mt-1.5 flex flex-wrap gap-1">
+              {PACE_PRESETS.map((preset) => (
+                <button
+                  key={preset.label}
+                  type="button"
+                  onClick={() => setTokenDelay(preset.ms)}
+                  className={cn(
+                    "rounded-full border px-2 py-0.5 text-[10.5px] transition-colors",
+                    paceLabel(tokenDelayMs) === preset.label
+                      ? "border-[var(--accent)] text-[var(--accent)]"
+                      : "border-line text-muted hover:text-foreground",
+                  )}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+            <p className="mt-1.5 text-[11px] text-muted">
+              Text and voice together (voice ×{voiceRateFor(tokenDelayMs).toFixed(2)}
+              {tokenDelayMs === PACE_DEFAULT_MS ? ", default" : ""}). Slow it down to make barging in easier.
+            </p>
           </div>
 
           <Button variant="outline" size="sm" className="mt-1 justify-start" onClick={reset}>
