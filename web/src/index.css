@@ -398,3 +398,42 @@ body::after {
 }
 
 .grain-off body::after { opacity: 0; }
+
+/* -- Drive route map (RouteMap.tsx): line styles follow the theme ---------- */
+.drive-map .leaflet-container { background: var(--subtle); font: inherit; }
+/* OpenStreetMap tiles are light; in dark mode they are inverted to match. */
+.dark .drive-map .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.88) saturate(0.7); }
+.drive-map .dm-line { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.drive-map .dm-route { stroke: var(--info); stroke-opacity: 0.95; }
+.drive-map .dm-route-casing { stroke: var(--panel); stroke-opacity: 0.9; }
+.drive-map .dm-guess { stroke: var(--muted); stroke-opacity: 0.8; stroke-dasharray: 8 10; }
+.drive-map .dm-dropped { stroke: var(--accent); stroke-opacity: 0.55; stroke-dasharray: 3 9; }
+.drive-map .dm-stale { stroke: var(--warn); stroke-opacity: 0.85; stroke-dasharray: 10 8; }
+.drive-map .dm-dot { stroke: var(--panel); fill-opacity: 1; }
+.drive-map .dm-dot-origin { fill: var(--foreground); }
+.drive-map .dm-dot-dest { fill: var(--info); }
+.drive-map .dm-dot-guess { fill: var(--muted); }
+.drive-map .dm-dot-dropped { fill: var(--accent); fill-opacity: 0.7; }
+.drive-map .dm-tip {
+  background: var(--panel); color: var(--foreground); border: 1px solid var(--line);
+  border-radius: 8px; padding: 2px 8px; font-size: 12px; box-shadow: var(--shadow-lift);
+}
+.drive-map .dm-tip::before { display: none; }
+.drive-map .dm-stop {
+  transform: translate(-50%, -50%); white-space: nowrap; display: inline-block;
+  background: var(--warn); color: #1a1405; border-radius: 999px; padding: 2px 8px;
+  font-size: 11px; font-weight: 600; box-shadow: 0 1px 4px rgb(0 0 0 / 0.3);
+}
+.drive-map .dm-legend {
+  display: flex; flex-wrap: wrap; gap: 4px 10px; max-width: 70%;
+  background: color-mix(in oklab, var(--panel) 88%, transparent); border: 1px solid var(--line);
+  border-radius: 10px; padding: 6px 10px; font-size: 10.5px; color: var(--muted);
+}
+.drive-map .dm-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.drive-map .dm-key { display: inline-block; width: 18px; border-top: 3px solid; }
+.drive-map .dm-key-guess { border-color: var(--muted); border-top-style: dashed; }
+.drive-map .dm-key-dropped { border-color: var(--accent); border-top-style: dotted; }
+.drive-map .dm-key-stale { border-color: var(--warn); border-top-style: dashed; }
+.drive-map .dm-key-route { border-color: var(--info); }
+.drive-map .leaflet-control-attribution { background: color-mix(in oklab, var(--panel) 85%, transparent); color: var(--muted); }
+.drive-map .leaflet-control-attribution a { color: var(--info); }

@@ -1,8 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { ArrowLeft, Car, Mic, MicOff, Navigation, Send, Square, Volume2, VolumeX, Wifi, WifiOff } from "lucide-react";
 import { Badge, Button, Panel, SectionLabel } from "~/components/ui/primitives";
 import { cn } from "~/lib/utils";
 import { useDrive, type ScriptStep } from "./store";
+
+// The map library is only downloaded when Drive is opened, not with the assistant.
+const RouteMap = lazy(() => import("./RouteMap").then((m) => ({ default: m.RouteMap })));
 import type { RouteInfo } from "./types";
 
 /** One-click demos, spoken word by word through the same path as the microphone. */
@@ -53,9 +56,11 @@ function duration(min: number) {
 }
 
 function RouteLine({ route }: { route: RouteInfo }) {
+  const stopLabel = (s: RouteInfo["stops"][number]) =>
+    s.kind === "place" ? `Stop at ${s.near}` : `${s.label[0].toUpperCase()}${s.label.slice(1)} ${s.at_named_place ? "at" : "near"} ${s.near}`;
   const nodes = [
     { label: route.origin.name, kind: "start" },
-    ...route.stops.map((s) => ({ label: `${s.label} near ${s.near}`, kind: "stop" })),
+    ...[...route.stops].sort((a, b) => a.km_from_start - b.km_from_start).map((s) => ({ label: stopLabel(s), kind: "stop" })),
     { label: route.destination.name, kind: "end" },
   ];
   return (
@@ -304,7 +309,13 @@ export function DriveView({ onExit }: { onExit: () => void }) {
           </Panel>
         </div>
 
-        <Panel className="min-h-[420px] overflow-hidden">
+        <div className="flex min-h-0 flex-col gap-3">
+        <Panel className="h-[300px] shrink-0 overflow-hidden lg:h-[44%]">
+          <Suspense fallback={<div className="grid h-full place-items-center text-xs text-muted">Loading the map...</div>}>
+            <RouteMap />
+          </Suspense>
+        </Panel>
+        <Panel className="min-h-[360px] flex-1 overflow-hidden">
           <div className="flex shrink-0 items-center justify-between border-b border-line/60 px-5 py-2 text-xs text-muted">
             <span className="truncate">{stageDetail || "Ready."}</span>
             {speaking ? (
@@ -353,6 +364,7 @@ export function DriveView({ onExit }: { onExit: () => void }) {
             </p>
           </div>
         </Panel>
+        </div>
 
         <div className="flex min-h-0 flex-col gap-3">
           <Panel className="p-4">

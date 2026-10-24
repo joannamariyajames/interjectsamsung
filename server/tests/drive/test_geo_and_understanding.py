@@ -173,3 +173,104 @@ def test_route_preferences() -> None:
     assert understand("no tolls please").avoid_highways is True
     assert understand("highways are fine").avoid_highways is False
     assert understand("take me to Delhi").avoid_highways is None
+
+
+# -- stops in the driver's own words (stops.py) ------------------------------
+
+def test_the_reported_request_two_snack_stops_from_pune_to_mumbai() -> None:
+    """The exact sentence that produced a route with no stops, as the recogniser heard it ("to" for "two")."""
+    u = understand("I want to travel from Pune to Mumbai also add to stops for snacks one in the morning and one in the evening")
+    assert (u.origin.place.name, u.destination.place.name) == ("Pune", "Mumbai")
+    assert u.add_stops == ["snacks", "snacks"]
+    assert u.timed_stops  # it was asked by time of day; the reply has to be honest about spacing instead
+    assert u.abandoned == []  # "to travel" is not a town ("travel" is one letter from Tral)
+
+
+@pytest.mark.parametrize(
+    ("spoken", "added"),
+    [
+        ("grab some samosas on the way", ["snacks"]),
+        ("a quick chai break", ["coffee"]),
+        ("two coffee stops", ["coffee", "coffee"]),
+        ("add a couple of stops for snacks", ["snacks", "snacks"]),
+        ("add a stop", ["rest"]),  # a stop with no kind is a short break
+        ("stop for medicines", ["pharmacy"]),
+        ("stop for snaks", ["snacks"]),  # a near-miss spelling
+        ("I need to stretch my legs on the way", ["rest"]),
+        ("stop somewhere for lassi", ["drinks"]),
+        ("need an ATM on the way", ["atm"]),
+        ("stop for flowers and water", ["custom:flowers", "drinks"]),  # any word works: "flowers" is in no list
+        ("stop to pick up a birthday cake", ["custom:birthday cake"]),
+    ],
+)
+def test_stops_in_the_drivers_own_words(spoken: str, added: list[str]) -> None:
+    assert understand(spoken).add_stops == added
+
+
+@pytest.mark.parametrize(
+    "spoken",
+    ["stop", "stop talking", "stop the navigation", "take me to the bus stop", "don't stop", "I can see the water",
+     "wait a second"],
+)
+def test_things_that_are_not_stop_requests(spoken: str) -> None:
+    assert understand(spoken).add_stops == []
+
+
+def test_another_adds_on_top_of_the_trip() -> None:
+    u = understand("add another fuel stop")
+    assert (u.add_stops, u.more_stops) == (["fuel"], ["fuel"])
+
+
+def _id(name: str) -> str:
+    return gazetteer().lookup(name).place_id
+
+
+@pytest.mark.parametrize(
+    ("spoken", "destination", "added"),
+    [
+        ("take me to Mumbai via Nashik", "Mumbai", ["place@Nashik"]),  # was read as "take me to Nashik"
+        ("take me to Mumbai and stop at Lonavala", "Mumbai", ["place@Lonavala"]),
+        ("stop for lunch at Lonavala on the way to Mumbai", "Mumbai", ["food@Lonavala"]),
+        ("from Pune to Mumbai with two stops at Lonavala and Khopoli", "Mumbai", ["place@Lonavala", "place@Khopoli"]),
+        ("take me to Jaipur, not Agra, and stop at Alwar", "Jaipur", ["place@Alwar"]),
+    ],
+)
+def test_stops_in_named_towns(spoken: str, destination: str, added: list[str]) -> None:
+    u = understand(spoken)
+    assert u.destination.place.name == destination
+    expected = [f"{a.split('@')[0]}@{_id(a.split('@')[1])}" for a in added]
+    assert u.add_stops == expected
+
+
+@pytest.mark.parametrize("spoken", ["skip Lonavala", "remove the Lonavala stop", "don't stop at Lonavala",
+                                    "no need to stop at Lonavala"])
+def test_dropping_a_stop_in_a_named_town(spoken: str) -> None:
+    u = understand(spoken)
+    assert (u.add_stops, u.remove_stops, u.destination) == ([], [f"@{_id('Lonavala')}"], None)
+
+
+def test_a_corrected_named_stop_keeps_only_the_final_one() -> None:
+    u = understand("take me to Jaipur, stop at Alwar, actually no, stop at Behror")
+    assert u.add_stops == [f"place@{_id('Behror')}"]
+    assert u.abandoned_stops == [f"place@{_id('Alwar')}"]
+
+
+def test_repeated_stops_are_spread_along_the_route_not_piled_up() -> None:
+    gz = gazetteer()
+    route = plan_route(gz.lookup("Pune"), gz.lookup("Mumbai"), ("snacks", "snacks"))
+    first, second = sorted(route.stops, key=lambda s: s["km_from_start"])
+    assert first["near"] != second["near"]
+    assert 0.2 < first["km_from_start"] / route.distance_km < 0.45
+    assert 0.55 < second["km_from_start"] / route.distance_km < 0.8
+    mixed = plan_route(gz.lookup("Delhi"), gz.lookup("Jaipur"), ("fuel", "custom:flowers", "rest"))
+    assert len({s["near"] for s in mixed.stops}) == 3  # three stops, three towns
+
+
+def test_a_named_town_is_a_waypoint_the_route_passes_through() -> None:
+    gz = gazetteer()
+    direct = plan_route(gz.lookup("Pune"), gz.lookup("Mumbai"))
+    via = plan_route(gz.lookup("Pune"), gz.lookup("Mumbai"), (f"food@{_id('Lonavala')}",))
+    (stop,) = via.stops
+    assert (stop["kind"], stop["near"], stop["at_named_place"]) == ("food", "Lonavla", True)
+    assert via.via == "Lonavla" and via.distance_km >= direct.distance_km
+    assert 0 < stop["km_from_start"] < via.distance_km

@@ -51,11 +51,71 @@ from ..schemas import (
     now_ms,
 )
 from ..speech_control import is_hold
-from .geo import Place, Route, describe_duration, gazetteer, km_between, plan_route
-from .understanding import Understanding, understand
+from .geo import Place, Route, StopSpec, describe_duration, describe_stop, gazetteer, km_between, plan_route
+from .understanding import Understanding, matches_removal, understand
 
 _log = logging.getLogger(__name__)
 Emit = Callable[[ServerFrame], Awaitable[None]]
+
+
+# -- how stops are said --------------------------------------------------------
+_COUNT_WORDS = {2: "two", 3: "three", 4: "four", 5: "five"}
+
+
+def _join(items: list[str]) -> str:
+    return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " and " + items[-1]
+
+
+def _stop_phrase(spec: str) -> str:
+    """One requested stop in a few words: "a fuel stop", "a snack break", "a stop at Lonavla"."""
+    s = StopSpec.parse(spec)
+    if s.kind == "place":
+        return f"a stop at {s.label}"
+    if s.kind == "custom":
+        what = f"a stop for {s.label}"
+    elif s.label.startswith(("a ", "an ")):
+        what = s.label
+    else:
+        what = f"{'an' if s.label[:1].lower() in 'aeiou' else 'a'} {s.label} stop"
+    return f"{what} at {s.at.name}" if s.at else what
+
+
+_STOP_NOUN = {"snacks": "snack", "food": "meal", "rest": "rest", "atm": "ATM", "charging": "charging"}
+
+
+def _removed_phrase(removal: str, count: int = 1) -> str:
+    """What a removal key ("coffee", "@<place_id>", "custom:flowers") dropped, as words."""
+    plural = "s" if count > 1 else ""
+    if removal.startswith("@"):
+        place = gazetteer().by_id(removal[1:])
+        return f"the stop{plural} at {place.name}" if place else "that stop"
+    label = removal[len("custom:"):] if removal.startswith("custom:") else _STOP_NOUN.get(removal, removal)
+    return f"the {label} stop{plural}"
+
+
+def _route_stop_phrase(stop: dict[str, Any]) -> str:
+    if stop["kind"] == "place":
+        return f"a stop at {stop['near']}"
+    where = "at" if stop.get("at_named_place") else "near"
+    return f"a stop for {stop['label']} {where} {stop['near']}"
+
+
+def _stop_lines(stops: list[dict[str, Any]]) -> list[str]:
+    """The route's stops as sentences, with repeats said once: "two stops for a snack break, near A and B"."""
+    places = [s["near"] for s in stops if s["kind"] == "place"]
+    lines = [f"I've added a stop at {_join(places)}."] if places else []
+    groups: dict[tuple[str, bool], list[str]] = {}
+    for s in stops:
+        if s["kind"] != "place":
+            groups.setdefault((s["label"], bool(s.get("at_named_place"))), []).append(s["near"])
+    for (label, named), nears in groups.items():
+        where = "at" if named else "near"
+        if len(nears) == 1:
+            lines.append(f"I've added a stop for {label} {where} {nears[0]}.")
+        else:
+            many = _COUNT_WORDS.get(len(nears), str(len(nears)))
+            lines.append(f"I've added {many} stops for {label}, {where} {_join(nears)}.")
+    return lines
 
 
 class DriveStateFrame(ServerFrame):
@@ -73,6 +133,7 @@ class DriveEventFrame(ServerFrame):
 class _Speculation:
     key: tuple[Any, ...]
     task: asyncio.Task[Route]
+    place: Place | None = None  # the guessed destination, shown on the map while the user speaks
     started: float = field(default_factory=now_ms)
 
 
@@ -118,6 +179,7 @@ class DriveRuntime:
         self._route_task: asyncio.Task[Route | None] | None = None
         self._stream_progress = 0
         self._turn = 0
+        self._dropped: dict[str, int] = {}  # per removal in the current turn: how many stops it dropped
         # Every fact the route depends on exists from the start, so the first
         # change to any of them (adding a stop, avoiding highways) is a CHANGE
         # that invalidates the planned route - not a silent first observation.
@@ -144,7 +206,8 @@ class DriveRuntime:
             return
         await self._discard_spec("the utterance moved on")
         await self.emit(SpecFrame(status="started", query=f"route to {target.label}"))
-        self._spec = _Speculation(key, asyncio.ensure_future(self._compute(origin, target, key[2], key[3])))
+        self._spec = _Speculation(key, asyncio.ensure_future(self._compute(origin, target, key[2], key[3])), place=target)
+        await self._state()
 
     async def on_final(self, text: str, modality: str = "voice") -> None:
         """A finished utterance. Supersedes whatever turn was still running."""
@@ -239,6 +302,13 @@ class DriveRuntime:
 
         new_origin = self._resolve_origin(u)
         target = self._resolve_destination(u)
+        if target is None and u.destination is None and not u.unresolved and self.destination is None:
+            # "stop at Lonavala" before any trip: that town is where we're going
+            named = [s for s in u.add_stops if s.startswith("place@")]
+            place = StopSpec.parse(named[-1]).at if named else None
+            if place is not None:
+                target = place
+                u.add_stops = [s for s in u.add_stops if s != named[-1]]
         if target is None and (u.destination is not None or u.unresolved):
             # The destination is unknown, but a "from" city the user gave still counts.
             moved = ""
@@ -285,6 +355,8 @@ class DriveRuntime:
         stops = [s for s in u.add_stops] if new_trip else self._next_stops(u)
         if new_trip:
             notes.append("New trip, so I've cleared the earlier stops.")
+        # how many stops each removal drops, so the reply can say "the snack stops"
+        self._dropped = {r: sum(1 for s in self.stops if matches_removal(s, [r])) for r in u.remove_stops}
         if stops != self.stops:
             self.stops = stops
             await self._facts("stops", ",".join(sorted(stops)), turn_id)
@@ -418,8 +490,18 @@ class DriveRuntime:
         return (origin.place_id, dest.place_id, tuple(sorted(stops)), bool(avoid))
 
     def _next_stops(self, u: Understanding) -> list[str]:
-        stops = [s for s in self.stops if s not in u.remove_stops]
-        return stops + [s for s in u.add_stops if s not in stops]
+        """The trip's stops after this request.
+
+        Asking again for a stop the trip already has changes nothing ("stop for
+        fuel" twice is still one fuel stop - ask twice, act once); a count asks
+        for that many ("two snack stops"), and "another" adds on top.
+        """
+        stops = [s for s in self.stops if not matches_removal(s, u.remove_stops)]
+        for spec in dict.fromkeys(u.add_stops):
+            wanted = u.add_stops.count(spec)
+            have = stops.count(spec)
+            stops += [spec] * (wanted if spec in u.more_stops else max(0, wanted - have))
+        return stops
 
     def _next_avoid(self, u: Understanding) -> bool:
         return self.avoid_highways if u.avoid_highways is None else u.avoid_highways
@@ -431,6 +513,7 @@ class DriveRuntime:
         spec.task.cancel()
         if reason:
             await self.emit(SpecFrame(status="discarded", query=reason))
+        await self._state()  # the map drops the guess
 
     def _resolve_destination(self, u: Understanding) -> Place | None:
         m = u.destination
@@ -453,7 +536,7 @@ class DriveRuntime:
         if target:
             return f"Checking the route to {target.name}..."
         if u.add_stops:
-            return f"Finding a {u.add_stops[0]} stop on the way..."
+            return f"Finding {_stop_phrase(u.add_stops[0])} on the way..."
         return "One moment, updating the route..."
 
     def _describe(self, route: Route, *, changed_from: Place | None, started: bool, u: Understanding) -> str:
@@ -467,10 +550,12 @@ class DriveRuntime:
         lead = "Updated the route to" if same_trip else "Heading to"
         parts.append(f"{lead} {route.destination.label}: {route.distance_km:g} kilometres, about "
                      f"{describe_duration(route.eta_min)}{via}.")
-        for stop in route.stops:
-            parts.append(f"I've added a stop for {stop['label']} near {stop['near']}.")
+        parts += _stop_lines(route.stops)
+        floating = [s for s in route.stops if not s.get("at_named_place")]
+        if u.timed_stops and len(floating) > 1:
+            parts.append("I don't know when you're setting off, so I've spaced them out along the way.")
         if u.remove_stops:
-            parts.append(f"Dropped the {', '.join(u.remove_stops)} stop.")
+            parts.append(f"Dropped {_join([_removed_phrase(r, self._dropped.get(r, 1)) for r in u.remove_stops])}.")
         if u.avoid_highways is True:
             parts.append("Avoiding highways.")
         if not started and self.navigation and self.navigation.get("destination") == route.destination.label and changed_from is None \
@@ -486,7 +571,7 @@ class DriveRuntime:
             return f"{r.destination.label} is about {r.distance_km:g} kilometres by road from {r.origin.name}."
         if u.eta:
             return f"About {describe_duration(r.eta_min)} to {r.destination.label}."
-        stops = f", with stops for {', '.join(s['label'] for s in r.stops)}" if r.stops else ""
+        stops = f", with {_join([_route_stop_phrase(s) for s in r.stops])}" if r.stops else ""
         return f"We're going from {r.origin.name} to {r.destination.label}{stops}, arriving in about {describe_duration(r.eta_min)}."
 
     async def _save(self, u: Understanding, turn_id: str) -> str:
@@ -580,4 +665,6 @@ class DriveRuntime:
             "navigation": dict(self.navigation) if self.navigation else None,
             "saved": {label: place.label for label, place in self.saved.items()},
             "straight_km": round(km_between(self.origin, self.destination), 1) if self.destination else None,
+            # Planned early from partial speech, not yet acted on (never navigated to).
+            "guess": self._spec.place.to_dict() if self._spec and self._spec.place else None,
         }))
