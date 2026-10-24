@@ -261,3 +261,36 @@ def test_speaking_pace_setting_controls_streaming_speed(monkeypatch) -> None:
     slow, _ = stream_duration(40)
     assert slow >= 0.25, f"11 gaps at 40 ms/token took only {slow:.3f}s - pace setting ignored"
     assert fast < slow
+
+
+def test_speaking_pace_change_mid_answer_slows_the_rest_of_that_answer() -> None:
+    """Moving the slider while the agent talks must change that same answer, not only the next one.
+
+    400 ms is the slider's slowest setting ("Speech-like"); the server has to accept it.
+    """
+    import time
+
+    with TestClient(app) as client:
+        ws, _ = _connect(client)
+        try:
+            ws.send_json({"t": "config", "token_delay_ms": 2})
+            assert ws.receive_json()["detail"] == "Settings applied."
+            ws.send_json({"t": "final", "text": "What are the baggage limits on each cabin?", "modality": "text"})
+            stamps: list[float] = []
+            for _ in range(_MAX_FRAMES):
+                frame = ws.receive_json()
+                if frame.get("t") != "token":
+                    continue
+                stamps.append(time.monotonic())
+                if len(stamps) == 6:
+                    ws.send_json({"t": "config", "token_delay_ms": 400})
+                if len(stamps) == 11:
+                    break
+        finally:
+            ws.send_json({"t": "interrupt", "reason": "stop"})
+            ws.__exit__(None, None, None)
+
+    before = stamps[5] - stamps[1]  # 4 gaps at 2 ms
+    after = stamps[10] - stamps[7]  # 3 gaps once 400 ms has applied
+    assert before < 0.2, f"4 gaps at 2 ms/word took {before:.3f}s"
+    assert after >= 0.9, f"3 gaps after switching to 400 ms/word took only {after:.3f}s - change ignored mid-answer"

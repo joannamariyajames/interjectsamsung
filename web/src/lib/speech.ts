@@ -48,6 +48,8 @@ export class Speaker {
   onSpeaking: (speaking: boolean) => void = () => {};
   /** What is actually read out for a sentence (e.g. without citation markers). */
   toSpeech: (text: string) => string = (text) => text;
+  /** Speech rate for the next sentence; a change never cuts off the sentence being spoken. */
+  rate = 1.05;
 
   get speaking() {
     return this.current !== null;
@@ -98,7 +100,7 @@ export class Speaker {
     const spoken = this.toSpeech(item.text);
     const utterance = new SpeechSynthesisUtterance(spoken || item.text);
     utterance.lang = "en-IN";
-    utterance.rate = 1.05;
+    utterance.rate = this.rate;
     // Boundaries index the spoken text; map them back onto the original.
     const scale = spoken ? item.text.length / spoken.length : 1;
     utterance.onboundary = (event) => {
@@ -115,7 +117,8 @@ export class Speaker {
     utterance.onerror = done;
     // Chrome can drop an utterance's end event (or never start it), which would
     // leave the agent "speaking" forever and everything after it unspoken.
-    const watchdog = setTimeout(done, 4000 + (spoken || item.text).length * 120);
+    // A slower voice takes longer per character, so the allowance grows with it.
+    const watchdog = setTimeout(done, 4000 + ((spoken || item.text).length * 120) / Math.min(1, utterance.rate));
     // ...and it can garbage-collect an utterance mid-speech unless it is referenced.
     this.utterance = utterance;
     if (window.speechSynthesis.paused) window.speechSynthesis.resume();
