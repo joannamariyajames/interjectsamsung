@@ -14,6 +14,11 @@ export interface RouteStop {
   label: string;
   near: string;
   km_from_start: number;
+  lat?: number;
+  lon?: number;
+  /** In a town the driver named ("lunch at Lonavala", "via Nashik"), not just near the road. */
+  at_named_place?: boolean;
+  spec?: string;
 }
 
 export interface RouteInfo {
@@ -37,6 +42,8 @@ export interface DriveState {
   navigation: { action_id: string; destination: string; attempt: number } | null;
   saved: Record<string, string>;
   straight_km: number | null;
+  /** Destination guessed from partial speech; planned early, never acted on. */
+  guess?: PlaceInfo | null;
 }
 
 export type DriveFrame =

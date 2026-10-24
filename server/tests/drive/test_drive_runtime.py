@@ -285,3 +285,79 @@ async def test_a_from_city_counts_even_when_the_destination_is_unknown() -> None
     assert car.of(car.frames, "drive")[-1]["state"]["origin"]["name"] == "Bengaluru"
     # the next request routes from there
     assert "Bengaluru" in car.reply(await car.say("take me to Mysore")) or car.rt.route.origin.name == "Bengaluru"
+
+
+async def test_map_state_shows_the_early_guess_and_drops_it_on_a_correction() -> None:
+    """The route map draws what the agent is guessing while the driver speaks - and only that."""
+    car = Car()
+    frames = await car.say("take me to, um, Agra - actually no, Jaipur", partials=True)
+    guesses = [f["state"]["guess"] for f in car.of(frames, "drive") if f["state"].get("guess")]
+    names = [g["name"] for g in guesses]
+    assert "Agra" in names and "Jaipur" in names  # Agra guessed first, then replaced by Jaipur
+    assert names.index("Agra") < names.index("Jaipur")
+    assert all({"lat", "lon"} <= set(g) for g in guesses)  # every guess can be placed on the map
+    final = car.of(frames, "drive")[-1]["state"]
+    assert final["guess"] is None  # once acted on, it is the route, no longer a guess
+    assert final["route"]["destination"]["name"] == "Jaipur"
+
+
+async def test_route_stops_carry_coordinates_for_the_map() -> None:
+    car = Car()
+    await car.say("take me to Jaipur")
+    frames = await car.say("stop for fuel on the way")
+    stops = car.of(frames, "drive")[-1]["state"]["route"]["stops"]
+    assert stops and stops[0]["kind"] == "fuel"
+    assert isinstance(stops[0]["lat"], float) and isinstance(stops[0]["lon"], float)
+
+
+async def test_the_reported_trip_gets_two_snack_stops_on_the_map() -> None:
+    """The request that produced a Pune -> Mumbai route with no stops at all."""
+    car = Car(start="Delhi")
+    frames = await car.say("I want to travel from Pune to Mumbai also add to stops for snacks "
+                           "one in the morning and one in the evening")
+    route = car.of(frames, "drive")[-1]["state"]["route"]
+    assert (route["origin"]["name"], route["destination"]["name"]) == ("Pune", "Mumbai")
+    snacks = [s for s in route["stops"] if s["kind"] == "snacks"]
+    assert len(snacks) == 2 and snacks[0]["near"] != snacks[1]["near"]
+    assert all(isinstance(s["lat"], float) for s in snacks)  # both drawn on the map
+    reply = car.reply(frames)
+    assert "two stops for a snack break" in reply
+    assert "spaced them out" in reply  # honest: it does not know the departure time
+    assert "Got it, Mumbai" not in reply  # nothing was corrected
+
+
+async def test_asking_twice_keeps_the_count_and_another_adds_one() -> None:
+    car = Car()
+    await car.say("take me to Jaipur with two snack stops")
+    assert car.rt.stops == ["snacks", "snacks"]
+    await car.say("stop for snacks")  # already there: ask twice, act once
+    assert car.rt.stops == ["snacks", "snacks"]
+    await car.say("add another snack stop")
+    assert car.rt.stops == ["snacks", "snacks", "snacks"]
+    frames = await car.say("skip the snack stops")
+    assert car.rt.stops == [] and not car.rt.route.stops
+    assert "Dropped the snack stops" in car.reply(frames)
+
+
+async def test_named_stops_are_passed_through_and_can_be_dropped() -> None:
+    car = Car(start="Pune")
+    frames = await car.say("take me to Mumbai and stop for lunch at Lonavala")
+    route = car.rt.route
+    assert route.destination.name == "Mumbai" and route.via == "Lonavla"
+    assert [(s["kind"], s["near"]) for s in route.stops] == [("food", "Lonavla")]
+    assert "a meal at Lonavla" in car.reply(frames)
+    frames = await car.say("remove the Lonavala stop")
+    assert car.rt.route.stops == [] and "Dropped the stop at Lonavla" in car.reply(frames)
+
+
+async def test_via_keeps_the_destination() -> None:
+    car = Car()
+    await car.say("take me to Mumbai via Nashik")
+    assert car.rt.destination.name == "Mumbai"  # used to navigate to Nashik
+    assert [s["near"] for s in car.rt.route.stops] == ["Nashik"]
+
+
+async def test_stop_at_a_town_with_no_trip_yet_goes_there() -> None:
+    car = Car(start="Pune")
+    await car.say("stop at Lonavala")
+    assert car.rt.destination.name == "Lonavla" and car.rt.route.stops == []

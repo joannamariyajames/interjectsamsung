@@ -98,6 +98,11 @@ class Gazetteer:
     def lookup(self, phrase: str, state: str | None = None) -> Place | None:
         return self.exact(phrase, state) or self.fuzzy(phrase)
 
+    def by_id(self, place_id: str) -> Place | None:
+        if not hasattr(self, "_by_id"):
+            self._by_id = {p.place_id: p for places in self.by_name.values() for p in places}
+        return self._by_id.get(place_id)
+
 
 @lru_cache(maxsize=1)
 def gazetteer() -> Gazetteer:
@@ -117,10 +122,42 @@ def _haversine(a_lat: float, a_lon: float, b_lat: float, b_lon: float) -> float:
     return 2 * 6371.0 * math.asin(math.sqrt(h))
 
 
-STOP_KINDS = ("fuel", "charging", "food", "coffee", "rest")
-STOP_LABEL = {"fuel": "fuel", "charging": "EV charging", "food": "a meal", "coffee": "coffee", "rest": "a rest break"}
-STOP_MINUTES = {"fuel": 8, "charging": 30, "food": 30, "coffee": 12, "rest": 10}
-STOP_AT_FRACTION = {"fuel": 0.5, "charging": 0.55, "food": 0.45, "coffee": 0.3, "rest": 0.6}
+STOP_KINDS = ("fuel", "charging", "food", "snacks", "coffee", "drinks", "rest", "pharmacy", "atm", "shopping",
+              "custom", "place")
+STOP_LABEL = {"fuel": "fuel", "charging": "EV charging", "food": "a meal", "snacks": "a snack break", "coffee": "coffee",
+              "drinks": "drinks", "rest": "a rest break", "pharmacy": "a pharmacy", "atm": "an ATM",
+              "shopping": "shopping"}
+STOP_MINUTES = {"fuel": 8, "charging": 30, "food": 30, "snacks": 12, "coffee": 12, "drinks": 8, "rest": 10,
+                "pharmacy": 10, "atm": 6, "shopping": 20, "custom": 10, "place": 10}
+STOP_AT_FRACTION = {"fuel": 0.5, "charging": 0.55, "food": 0.45, "snacks": 0.4, "coffee": 0.3, "drinks": 0.35,
+                    "rest": 0.6, "pharmacy": 0.5, "atm": 0.5, "shopping": 0.5, "custom": 0.5}
+
+
+@dataclass(frozen=True)
+class StopSpec:
+    """A stop as the runtime stores it ("snacks", "custom:medicines", "place@<id>", "food@<id>"), decoded."""
+    kind: str             # a STOP_KINDS entry
+    label: str            # how it is said: "a snack break", "medicines", "Lonavla"
+    at: Place | None      # the town it must be in, if one was named
+
+    @staticmethod
+    def parse(spec: str) -> "StopSpec":
+        base, _, place_id = spec.partition("@")
+        at = gazetteer().by_id(place_id) if place_id else None
+        if base == "place":
+            return StopSpec("place", at.name if at else "a stop", at)
+        if base.startswith("custom:"):
+            return StopSpec("custom", base[len("custom:"):], at)
+        return StopSpec(base, STOP_LABEL.get(base, base), at)
+
+
+def describe_stop(spec: str) -> str:
+    """A stop in a short phrase: "a snack break", "a stop at Lonavla", "a meal at Lonavla"."""
+    s = StopSpec.parse(spec)
+    if s.kind == "place":
+        return f"a stop at {s.label}"
+    what = s.label if s.kind != "custom" else f"a stop for {s.label}"
+    return f"{what} at {s.at.name}" if s.at else what
 
 
 @dataclass
@@ -163,28 +200,91 @@ def _town_near(lat: float, lon: float, radius_km: float, exclude: set[str]) -> P
     return best
 
 
+def _road_km(straight: float) -> float:
+    return straight * (1.35 if straight < 40 else 1.22)
+
+
+def _progress(origin: Place, destination: Place, p: Place) -> float:
+    """How far along origin -> destination a place lies (0 at the start, 1 at the end)."""
+    dx, dy = destination.lon - origin.lon, destination.lat - origin.lat
+    span = dx * dx + dy * dy
+    if span == 0:
+        return 0.5
+    return ((p.lon - origin.lon) * dx + (p.lat - origin.lat) * dy) / span
+
+
 def plan_route(origin: Place, destination: Place, stop_kinds: tuple[str, ...] = (), avoid_highways: bool = False) -> Route:
-    straight = km_between(origin, destination)
-    road_factor = 1.35 if straight < 40 else 1.22
-    distance = straight * road_factor
+    """Plan a trip. ``stop_kinds`` are stop specs (see StopSpec); a spec repeated N times is N stops.
+
+    Named towns ("via Nashik", "lunch at Lonavala") become waypoints the route
+    passes through, in driving order. Other stops are placed near a real town
+    at a typical point of the trip; several of the same kind are spread out.
+    """
+    specs = [StopSpec.parse(s) for s in stop_kinds]
     endpoints = {origin.place_id, destination.place_id}
+
+    # The road goes through every named town, in the order they come along the way.
+    waypoints: list[Place] = []
+    for s in specs:
+        if s.at is not None and s.at.place_id not in endpoints and s.at not in waypoints:
+            waypoints.append(s.at)
+    waypoints.sort(key=lambda p: _progress(origin, destination, p))
+    path = [origin, *waypoints, destination]
+    legs = [km_between(a, b) for a, b in zip(path, path[1:])]
+    straight = sum(legs)
+    distance = sum(_road_km(leg) for leg in legs)
+    km_at = {origin.place_id: 0.0}
+    run = 0.0
+    for place, leg in zip(path[1:], legs):
+        run += _road_km(leg)
+        km_at[place.place_id] = run
+
+    def point_at(fraction: float) -> tuple[float, float]:
+        """A point a fraction of the way along the whole path."""
+        target = fraction * straight
+        for (a, b), leg in zip(zip(path, path[1:]), legs):
+            if target <= leg or b is destination:
+                t = 0.0 if leg == 0 else min(1.0, target / leg)
+                return a.lat + (b.lat - a.lat) * t, a.lon + (b.lon - a.lon) * t
+            target -= leg
+        return destination.lat, destination.lon
 
     if distance < 35:
         speed, via = 24.0, ""
     else:
         speed = 42.0 if avoid_highways else 58.0
-        mid = _town_near(*_point_along(origin, destination, 0.5), max(20.0, straight * 0.15), endpoints)
-        via = mid.name if mid else ""
+        if waypoints:
+            via = waypoints[0].name
+        else:
+            mid = _town_near(*point_at(0.5), max(20.0, straight * 0.15), endpoints)
+            via = mid.name if mid else ""
+
+    # Where each stop without a named town goes. One stop sits at its usual point of
+    # the trip (coffee early, a rest break later); several are spread evenly in that
+    # same order, so two snack stops land a third and two-thirds of the way along
+    # and no two stops pile up in the same town.
+    floating = [i for i, s in enumerate(specs) if s.at is None]
+    usual = {i: STOP_AT_FRACTION.get(specs[i].kind, 0.5) for i in floating}
+    if len(floating) == 1:
+        fractions = {floating[0]: usual[floating[0]] if distance >= 35 else 0.5}
+    else:
+        ranked = sorted(floating, key=lambda i: usual[i])  # stable: repeats keep their order
+        fractions = {i: (rank + 1) / (len(ranked) + 1) for rank, i in enumerate(ranked)}
 
     stops: list[dict[str, object]] = []
     extra_min = 0
-    for kind in stop_kinds:
-        fraction = STOP_AT_FRACTION[kind] if distance >= 35 else 0.5
-        near = _town_near(*_point_along(origin, destination, fraction), max(15.0, straight * 0.12), endpoints)
-        near = near or (origin if fraction < 0.5 else destination)
-        stops.append({"kind": kind, "label": STOP_LABEL[kind], "near": near.name,
-                      "km_from_start": round(distance * fraction, 1)})
-        extra_min += STOP_MINUTES[kind]
+    for i, (spec, s) in enumerate(zip(stop_kinds, specs)):
+        if s.at is not None:  # in the named town
+            near, km = s.at, km_at.get(s.at.place_id, 0.0 if s.at.place_id == origin.place_id else distance)
+        else:
+            fraction = fractions[i]
+            found = _town_near(*point_at(fraction), max(15.0, straight * 0.12), endpoints)
+            near = found or (origin if fraction < 0.5 else destination)
+            km = distance * fraction
+        stops.append({"kind": s.kind, "label": s.label, "near": near.name, "km_from_start": round(km, 1),
+                      "at_named_place": s.at is not None, "spec": spec,
+                      "lat": near.lat, "lon": near.lon})  # for the route map
+        extra_min += STOP_MINUTES.get(s.kind, 10)
 
     minutes = distance / speed * 60 + extra_min
     return Route(origin, destination, round(distance, 1), max(1, round(minutes)), via, avoid_highways, stops)

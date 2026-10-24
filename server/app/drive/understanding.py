@@ -20,6 +20,7 @@ import re
 from dataclasses import dataclass, field
 
 from ..speech_control import is_hold
+from . import stops as stop_words
 from .geo import Place, gazetteer, normalise
 
 FILLERS = {"um", "umm", "uh", "uhh", "uhm", "er", "erm", "hmm", "hm", "mm", "ah", "eh", "oh", "like"}
@@ -49,6 +50,7 @@ SLOT_CUES = {
     "near", "instead", "actually", "no", "not", "rather", "make", "it", "its", "is", "as", "go", "drive",
     "head", "navigate", "change", "switch", "wait", "sorry", "mean", "and", "or", "then", "for", "into",
     "reroute", "redirect", "destination", "correction", "also", "except", "me", "us", "of", "maybe", "be",
+    "skip", "remove", "delete",
 }
 CORRECTION_CUES = ("actually", "instead", "rather", "i mean", "no wait", "wait", "sorry", "scratch that",
                    "make that", "make it", "change it to", "change that to", "switch to", "no no", "correction")
@@ -58,17 +60,20 @@ NEGATION_BEFORE = {"not", "except"}
 # "to <verb>" is not a destination ("I need to get fuel")
 VERBS_AFTER_TO = {"get", "find", "stop", "eat", "have", "grab", "fill", "charge", "know", "go", "be", "take",
                   "reach", "see", "make", "add", "change", "cancel", "avoid", "use", "drive", "save", "set",
-                  "check", "tell", "hear", "do", "pick", "drop", "buy", "rest", "refuel", "head", "visit"}
+                  "check", "tell", "hear", "do", "pick", "drop", "buy", "rest", "refuel", "head", "visit",
+                  # "I want to travel from Pune" ("travel" is one letter from the town Tral)
+                  "travel", "travelling", "traveling", "fly", "commute", "ride", "move", "come", "return",
+                  "leave", "start", "depart", "relocate", "shift", "plan", "book", "add", "stay", "spend"}
 
-STOP_KEYWORDS = {
-    "fuel": "fuel", "petrol": "fuel", "diesel": "fuel", "gas": "fuel", "refuel": "fuel", "cng": "fuel",
-    "pump": "fuel", "charge": "charging", "charging": "charging", "charger": "charging", "ev": "charging",
-    "recharge": "charging", "food": "food", "eat": "food", "lunch": "food", "dinner": "food",
-    "breakfast": "food", "meal": "food", "dhaba": "food", "restaurant": "food", "hungry": "food",
-    "coffee": "coffee", "chai": "coffee", "tea": "coffee", "cafe": "coffee", "restroom": "rest",
-    "washroom": "rest", "toilet": "rest", "bathroom": "rest", "break": "rest",
-}
-STOP_REMOVERS = {"skip", "cancel", "remove", "without", "drop", "forget", "dont", "don't", "delete"}
+# Words that name a kind of stop are never place names ("stop for chai", not the town Chai).
+STOP_KEYWORDS = {**stop_words.STRONG, **stop_words.WEAK}
+STOP_REMOVERS = stop_words.REMOVERS
+# A place right after one of these is a stop on the way, not the destination:
+# "via Nashik", "stop at Lonavala", "passing through Khandala".
+VIA_CUES = ("via", "through", "passing through", "pass through", "going through", "stop at", "stops at",
+            "stop in", "stopping at", "stopping in", "stop by", "stopover at", "stopover in", "stop over at",
+            "halt at", "break at", "break in", "stop near", "break the journey at", "break the journey in")
+VIA_REMOVERS = {"skip", "remove", "delete"}  # "skip Lonavala" drops the stop; "forget Agra" stays a correction
 SAVED_LABELS = {"home", "office", "work", "gym", "school", "college", "hotel", "parents", "hostel"}
 LABEL_ALIASES = {"work": "office", "house": "home", "place": "home"}
 
@@ -78,7 +83,7 @@ class Mention:
     text: str
     start: int
     end: int
-    role: str  # "to" | "from"
+    role: str  # "to" | "from" | "via" (a stop on the way)
     place: Place | None = None
     saved_label: str | None = None  # "home", "office"... resolved later against saved places
     negated: bool = False
@@ -91,9 +96,13 @@ class Understanding:
     abandoned: list[Mention] = field(default_factory=list)
     origin: Mention | None = None
     unresolved: str | None = None  # a spoken destination the map does not know
+    # Stops as specs (see stops.py): "fuel", "custom:medicines", "place@<id>", "food@<id>".
+    # A spec appears once per stop: two snack stops are ["snacks", "snacks"].
     add_stops: list[str] = field(default_factory=list)
     remove_stops: list[str] = field(default_factory=list)
     abandoned_stops: list[str] = field(default_factory=list)
+    more_stops: list[str] = field(default_factory=list)  # "another fuel stop": add on top of existing ones
+    timed_stops: bool = False  # "one in the morning, one in the evening"
     avoid_highways: bool | None = None
     save_label: str | None = None  # "save this as office" / "my office is in Noida"
     save_place: Mention | None = None
@@ -153,11 +162,26 @@ def _in_slot(tokens: list[str], i: int, end: int) -> bool:
     return weak and not (end - i == 1 and tokens[i] in COMMON_WORDS)
 
 
-def _role(tokens: list[str], i: int) -> str:
+def _role(tokens: list[str], i: int, end: int | None = None) -> str:
     before = " " + " ".join(tokens[max(0, i - 4):i]) + " "
     before = re.sub(r"\b(the|a|an|my|our)\b", " ", before)
     before = re.sub(r"\s+", " ", before)
-    return "from" if any(before.endswith(f" {cue} ") for cue in ORIGIN_CUES) else "to"
+    if any(before.endswith(f" {cue} ") for cue in ORIGIN_CUES):
+        return "from"
+    if any(before.endswith(f" {cue} ") for cue in VIA_CUES):
+        return "via"
+    prev, j = _prev_word(tokens, i)
+    if prev in VIA_REMOVERS:
+        return "via"  # "skip Lonavala", "remove the Lonavala stop"
+    # "stop for lunch at Lonavala", "fuel in Khopoli": a stop request just before "at/in <town>"
+    if prev in {"at", "in", "near", "by"}:
+        window = [t for t in tokens[max(0, j - 4):j] if t != ","]
+        if window and (set(window) & stop_words.STOP_NOUNS or stop_words.category_of(window, in_request=False)):
+            return "via"
+    # "the Lonavala stop", "a Khandala break"
+    if end is not None and end < len(tokens) and tokens[end] in stop_words.STOP_NOUNS:
+        return "via"
+    return "to"
 
 
 def _negated(tokens: list[str], i: int) -> bool:
@@ -181,7 +205,7 @@ def _find_places(tokens: list[str]) -> tuple[list[Mention], str | None]:
         label = LABEL_ALIASES.get(tokens[i], tokens[i])
         prev, _ = _prev_word(tokens, i)
         if label in SAVED_LABELS and (prev is None or prev in SLOT_CUES or prev == ","):
-            match = Mention(tokens[i], i, i + 1, _role(tokens, i), saved_label=label)
+            match = Mention(tokens[i], i, i + 1, _role(tokens, i, i + 1), saved_label=label)
         if match is None:
             for n in range(min(gz.max_words, 4), 0, -1):
                 window = tokens[i:i + n]
@@ -190,7 +214,7 @@ def _find_places(tokens: list[str]) -> tuple[list[Mention], str | None]:
                 phrase = " ".join(window)
                 place = gz.exact(phrase)
                 if place and (n > 1 or _in_slot(tokens, i, i + n)):
-                    match = Mention(phrase, i, i + n, _role(tokens, i), place=place)
+                    match = Mention(phrase, i, i + n, _role(tokens, i, i + n), place=place)
                     break
         if match is None and _in_slot(tokens, i, i + 1) and tokens[i] not in SLOT_CUES | ARTICLES | VERBS_AFTER_TO:
             # a near-miss spelling in a place slot ("jaipor", "coimbatur")
@@ -199,10 +223,15 @@ def _find_places(tokens: list[str]) -> tuple[list[Mention], str | None]:
                 if len(window) == n and "," not in window and not set(window) & (SLOT_CUES | FUNCTION_WORDS | COMMON_WORDS | set(STOP_KEYWORDS)):
                     place = gz.fuzzy(" ".join(window))
                     if place:
-                        match = Mention(" ".join(window), i, i + n, _role(tokens, i), place=place)
+                        match = Mention(" ".join(window), i, i + n, _role(tokens, i, i + n), place=place)
                         break
         if match:
             match.negated = _negated(tokens, i)
+            # "stop at Lonavala and Khandala": a place listed right after a stop is a stop too
+            prev, _ = _prev_word(tokens, i)
+            if match.role == "to" and prev in {"and", ",", "then"} and mentions and mentions[-1].role == "via" \
+                    and mentions[-1].end >= i - 2:
+                match.role = "via"
             mentions.append(match)
             i = match.end
             continue
@@ -214,7 +243,8 @@ def _find_places(tokens: list[str]) -> tuple[list[Mention], str | None]:
             nxt = [t for t in tokens[k + 1:k + 4] if t not in ARTICLES]
             words = []
             for t in nxt:
-                if t == "," or t in SLOT_CUES or t in VERBS_AFTER_TO or t in STOP_KEYWORDS or t in {"me", "us", "please", "there", "here", "it", "that", "this"}:
+                if t == "," or t in SLOT_CUES or t in VERBS_AFTER_TO or t in STOP_KEYWORDS or t in stop_words.STOP_NOUNS \
+                        or t in {"me", "us", "please", "there", "here", "it", "that", "this", "two"}:
                     break
                 words.append(t)
             if words and not any(w in {"a", "stop", "the"} for w in words):
@@ -235,29 +265,80 @@ def _correction_positions(tokens: list[str]) -> list[int]:
     return sorted(positions)
 
 
-def _stops(tokens: list[str], corrections: list[int]) -> tuple[list[str], list[str], list[str]]:
-    added: list[tuple[int, str]] = []
-    removed: list[str] = []
-    for k, t in enumerate(tokens):
-        kind = STOP_KEYWORDS.get(t)
-        if kind is None:
-            continue
-        if t in {"charge", "break"} and k + 1 < len(tokens) and tokens[k + 1] in {"me", "you", "it"}:
-            continue
-        window = tokens[max(0, k - 3):k]
-        immediate = tokens[k - 1] if k else ""
-        if immediate in {"no", "not"} or any(w in STOP_REMOVERS for w in window) or tokens[k + 1:k + 3] == ["not", "needed"]:
-            removed.append(kind)
+@dataclass
+class _StopResult:
+    add: list[str]
+    remove: list[str]
+    abandoned: list[str]
+    more: list[str]
+    timed: bool
+
+
+def _stops(tokens: list[str], corrections: list[int], mentions: list[Mention]) -> _StopResult:
+    request = stop_words.parse(tokens, {m.start: m.end for m in mentions})
+    items = list(request.items)
+
+    # Named places: "via Nashik", "stop at Lonavala" - or a stop anchored there ("lunch at Lonavala").
+    for m in (m for m in mentions if m.role == "via" and m.place is not None):
+        prev, _ = _prev_word(tokens, m.start)
+        removed = (m.negated or prev in VIA_REMOVERS or stop_words.removed_before(tokens, m.start)
+                   or _negated_stop(tokens, m.start))
+        host = next((it for it in items if "@" not in it.spec and it.end <= m.start <= it.end + 2
+                     and it.end < len(tokens) and tokens[it.end] in {"at", "in", "near", "by", "over"}), None)
+        if host is not None and not removed:
+            host.spec = f"{host.spec}@{m.place.place_id}"
         else:
-            added.append((k, kind))
+            items.append(stop_words.StopItem(m.start, m.end, f"place@{m.place.place_id}", 1, False, removed))
+    items.sort(key=lambda it: it.pos)
+
+    live = [it for it in items if not it.removed]
     # "stop for coffee, actually no, fuel": a correction between two stops drops the earlier one
-    abandoned = [kind for idx, (k, kind) in enumerate(added)
-                 if any(k < c < later_k for c in corrections for later_k, _ in added[idx + 1:])]
-    final = []
-    for k, kind in added:
-        if kind not in abandoned and kind not in final and kind not in removed:
-            final.append(kind)
-    return final, sorted(set(removed)), abandoned
+    abandoned = [it for idx, it in enumerate(live)
+                 if any(it.pos < c < later.pos for c in corrections for later in live[idx + 1:])]
+    removed_specs = sorted({_removal_key(it.spec) for it in items if it.removed})
+    kept = [it for it in live if it not in abandoned and not matches_removal(it.spec, removed_specs)]
+
+    # The same stop said twice is one stop ("stop for fuel ... yes, fuel"); a count or
+    # "another" is what makes several.
+    order: list[str] = []
+    base: dict[str, int] = {}
+    extra: dict[str, int] = {}
+    for it in kept:
+        if it.spec not in order:
+            order.append(it.spec)
+        if it.additive:
+            extra[it.spec] = extra.get(it.spec, 0) + it.count
+        else:
+            base[it.spec] = max(base.get(it.spec, 0), it.count)
+    add: list[str] = []
+    for spec in order:
+        add += [spec] * (base.get(spec, 0) + extra.get(spec, 0))
+    more = [spec for spec in order if spec not in base]
+    abandoned_specs = list(dict.fromkeys(it.spec for it in abandoned))
+    return _StopResult(add, removed_specs, abandoned_specs, more, request.timed and bool(add))
+
+
+def _negated_stop(tokens: list[str], start: int) -> bool:
+    """ "not via Nashik", "don't stop at Lonavala", "no need to stop at Lonavala" - but not the
+    correction "actually no, stop at Behror", where "no" is followed by a pause."""
+    between_ok = {"via", "through", "stop", "stops", "stopping", "at", "in", "by", "near", "need", "to", "want",
+                  "the", "a", "any", "halt", "break", "over", "going", "pass", "passing", "go", "drive"}
+    for w in range(max(0, start - 5), start):
+        if tokens[w] in {"not", "no", "dont", "don't", "without", "avoid", "never"} and tokens[w + 1] != "," \
+                and all(t in between_ok for t in tokens[w + 1:start]):
+            return True
+    return False
+
+
+def _removal_key(spec: str) -> str:
+    """What a dropped stop removes: a category drops every stop of that kind, a town every stop there."""
+    if spec.startswith("place@"):
+        return "@" + spec.split("@", 1)[1]
+    return spec.split("@", 1)[0]
+
+
+def matches_removal(spec: str, removals: list[str]) -> bool:
+    return any(spec.endswith(r) if r.startswith("@") else spec.split("@", 1)[0] == r for r in removals)
 
 
 def _save_request(tokens: list[str], mentions: list[Mention]) -> tuple[str | None, Mention | None]:
@@ -296,7 +377,9 @@ def understand(text: str) -> Understanding:
         u.destination = live[-1]
         u.abandoned = [m for m in destinations if m is not u.destination]
         u.unresolved = None
-    u.add_stops, u.remove_stops, u.abandoned_stops = _stops(tokens, corrections)
+    stops = _stops(tokens, corrections, mentions)
+    u.add_stops, u.remove_stops, u.abandoned_stops = stops.add, stops.remove, stops.abandoned
+    u.more_stops, u.timed_stops = stops.more, stops.timed
 
     if re.search(r"\b(avoid|no|skip|without) (the )?(highways?|tolls?|expressways?)\b|\b(toll|highway)[ -]free\b", joined):
         u.avoid_highways = True
